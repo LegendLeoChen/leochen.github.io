@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta name="description" content="一个秘密空间" />
+      
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>微信小程序云托管数据传输（Python restful） |  LegendLeo Chen 的空间</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/mylogo.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+<!-- 封面标闪烁 -->
+<link rel="stylesheet" href="/css/zhyBlogTitle.css">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- jquery，懒加载、统计、说说需要的jquery -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-微信小程序云托管数据传输"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  微信小程序云托管数据传输（Python restful）
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" class="article-date">
+  <time datetime="2023-03-16T13:05:57.000Z" itemprop="datePublished">2023-03-16</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a> / <a class="article-category-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a> / <a class="article-category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.6k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">10 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>研究半天，搭建起了小程序和本地 restful 工程的数据链路。restful 是通过 Python 的 flask 模块实现的，服务器是小程序官方的云托管功能，同时可以配合 git（我用的 gitee ）仓库实现自动化更新服务。本文在实现链路的同时通过数据文件进行数据传输，没有使用到 MySQL 数据库等其他功能<span id="more"></span></p>
+</blockquote>
+<h1 id="restful工程"><a href="#restful工程" class="headerlink" title="restful工程"></a>restful工程</h1><h2 id="·文件准备"><a href="#·文件准备" class="headerlink" title="·文件准备"></a>·文件准备</h2><ul>
+<li>我的工程名是 linedetect ，在自己需要的位置新建一个文件夹作为工程（应该可以是中文名），工程结构如下：<blockquote>
+<p>linedetect:<br>——Dockerfile<br>——app:<br>————-main.py<br>————-data:<br>——————-userlist.csv</p>
+</blockquote>
+</li>
+<li><strong>Dockerfile</strong>：没有后缀，名字必须一样，云托管目前只支持有 Dock 的，里面写这两行</li>
+</ul>
+<pre class="line-numbers language-dockerfile"><code class="language-dockerfile">FROM tiangolo/uwsgi-nginx-flask:python3.8
+COPY ./app /app
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ul>
+<li><p><strong>app</strong>文件夹里面有<strong>main.py</strong>，这是实现 restful 功能的主文件，<strong>data</strong>文件夹是我自己搞的，存放需要处理的数据（也可以不做，只不过 main 文件的文件操作路径改一改而已），里面存放数据文件，这里以 csv 为例</p>
+</li>
+<li><p>csv 数据准备：第一行是表头，数据由 user、device、activation 三个属性组成</p>
+</li>
+</ul>
+<pre><code>user,device,activation
+abc,121380,1
+Leo,1442676170,0
+jiang,231214,0
+Tim,123124,0
+</code></pre>
+<h2 id="·Python代码"><a href="#·Python代码" class="headerlink" title="·Python代码"></a>·Python代码</h2><ul>
+<li>导入如下库</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> os
+<span class="token keyword">import</span> csv
+<span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask<span class="token punctuation">,</span> jsonify<span class="token punctuation">,</span> request
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>全局变量和方法</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python">app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">)</span>
+datalist <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">'user'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'device'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token string">'activation'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token punctuation">}</span>
+
+<span class="token keyword">def</span> <span class="token function">openCsv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>          <span class="token comment" spellcheck="true"># 获取data文件夹里面的csv并打开,存入datalist</span>
+    <span class="token keyword">global</span> datalist
+    users <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    devices <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    activations <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">with</span> open<span class="token punctuation">(</span>r<span class="token string">"data/{}"</span><span class="token punctuation">.</span>format<span class="token punctuation">(</span><span class="token string">"userlist.csv"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> mode<span class="token operator">=</span><span class="token string">"r"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> file<span class="token punctuation">:</span>
+        reader <span class="token operator">=</span> csv<span class="token punctuation">.</span>DictReader<span class="token punctuation">(</span>file<span class="token punctuation">)</span>   <span class="token comment" spellcheck="true"># 基于文件，创建csv.DictReader实例</span>
+        <span class="token keyword">for</span> row <span class="token keyword">in</span> reader<span class="token punctuation">:</span>        <span class="token comment" spellcheck="true"># 遍历每列</span>
+            users<span class="token punctuation">.</span>append<span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token string">"user"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            devices<span class="token punctuation">.</span>append<span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token string">"device"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            activations<span class="token punctuation">.</span>append<span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token string">"activation"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        data<span class="token operator">=</span><span class="token punctuation">{</span><span class="token string">"user"</span><span class="token punctuation">:</span> users<span class="token punctuation">,</span> <span class="token string">"device"</span><span class="token punctuation">:</span> devices<span class="token punctuation">,</span> <span class="token string">"activation"</span><span class="token punctuation">:</span> activations<span class="token punctuation">}</span>
+        datalist<span class="token punctuation">.</span>update<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">activateCode</span><span class="token punctuation">(</span>invitecode<span class="token punctuation">)</span><span class="token punctuation">:</span>          <span class="token comment" spellcheck="true"># 激活</span>
+    in_file <span class="token operator">=</span> open<span class="token punctuation">(</span>r<span class="token string">"data/{}"</span><span class="token punctuation">.</span>format<span class="token punctuation">(</span><span class="token string">"userlist.csv"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> mode<span class="token operator">=</span><span class="token string">"r"</span><span class="token punctuation">)</span>
+    reader <span class="token operator">=</span> csv<span class="token punctuation">.</span>reader<span class="token punctuation">(</span>in_file<span class="token punctuation">)</span>
+    out_file<span class="token operator">=</span>open<span class="token punctuation">(</span>r<span class="token string">"data/{}"</span><span class="token punctuation">.</span>format<span class="token punctuation">(</span><span class="token string">"userlist.csv"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> newline<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">,</span> mode<span class="token operator">=</span><span class="token string">"r+"</span><span class="token punctuation">)</span>
+    writer <span class="token operator">=</span> csv<span class="token punctuation">.</span>writer<span class="token punctuation">(</span>out_file<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> row <span class="token keyword">in</span> reader<span class="token punctuation">:</span>
+        <span class="token keyword">if</span> row<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">==</span> invitecode<span class="token punctuation">:</span>  <span class="token comment" spellcheck="true"># 如果找到名字，就把它的activation置1</span>
+            row<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span>
+        writer<span class="token punctuation">.</span>writerow<span class="token punctuation">(</span>row<span class="token punctuation">)</span>
+    in_file<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    out_file<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>上面两个本质是文件操作，第一个方法是打开 csv 并获取所有数据存入 datalist，datalist 是 json 格式，三个列表相同索引的元素对应着同一行的三个属性。第二个方法是模拟激活操作，打开 csv 文件修改激活 user 对应的 activation 值并保存。这两个方法分别用来演示小程序的 GET 和 POST 请求</li>
+<li>两个服务请求、主函数</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python">@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/get'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'GET'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true"># 获取数据</span>
+<span class="token keyword">def</span> <span class="token function">get_data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    openCsv<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span>datalist<span class="token punctuation">)</span>
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/activate'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true"># 激活邀请码</span>
+<span class="token keyword">def</span> <span class="token function">activate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    args <span class="token operator">=</span> request<span class="token punctuation">.</span>json
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        goal <span class="token operator">=</span> args<span class="token punctuation">[</span><span class="token string">"invitecode"</span><span class="token punctuation">]</span>       <span class="token comment" spellcheck="true"># 被激活的邀请码</span>
+        activateCode<span class="token punctuation">(</span>goal<span class="token punctuation">)</span>              <span class="token comment" spellcheck="true"># 将该邀请码激活状态置为1</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">True</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"成功"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> None<span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token keyword">except</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"错误"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> None<span class="token punctuation">}</span><span class="token punctuation">)</span>
+      
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span>debug<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span>host<span class="token operator">=</span><span class="token string">'0.0.0.0'</span><span class="token punctuation">,</span>port<span class="token operator">=</span>int<span class="token punctuation">(</span>os<span class="token punctuation">.</span>environ<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'PORT'</span><span class="token punctuation">,</span> <span class="token number">80</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true"># app.run() 也可以</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>第一个请求就对应第一个方法，返回的是 json 格式的 datalist，是 GET 请求。</li>
+<li>第二个对应的就是第二个方法，主要进行数据修改操作，request.json 是访问者（小程序、公网）传来的数据（参数），也就是说这是个需要参数的服务请求，args[“invitecode”] 则是传来的 json 数据中叫作 invitercode 的一项。返回值调试时候可以看看。主函数运行app即可</li>
+</ul>
+<h1 id="云托管"><a href="#云托管" class="headerlink" title="云托管"></a>云托管</h1><blockquote>
+<p>官方文档：<a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/wxcloudrun/src/">https://developers.weixin.qq.com/miniprogram/dev/wxcloudrun/src/</a><br>进入<strong>快速开始</strong>，选择 Python 部分就可以跟着做最简单的部署，也可以跟着下面的步骤进行</p>
+</blockquote>
+<h2 id="·创建服务"><a href="#·创建服务" class="headerlink" title="·创建服务"></a>·创建服务</h2><ol>
+<li>新建服务，为自己的服务命名，我的命名还是linedetect<br><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/%E6%96%B0%E5%BB%BA%E6%9C%8D%E5%8A%A1.png" alt="新建服务"></li>
+<li>选择代码，先按图中选择，上传工程文件夹（linedetect）点击发布<br><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/%E4%BB%A3%E7%A0%81%E9%80%89%E6%8B%A9.png" alt="代码选择"></li>
+<li>等待部署，两分钟左右，然后在服务列表可以看到服务<br><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/%E6%9C%8D%E5%8A%A1%E5%88%97%E8%A1%A8.png" alt="服务列表"></li>
+<li>点击服务进入如下，下面是未来更新的历代版本（这是后来的图所以已经有版本）<br><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/%E6%9C%8D%E5%8A%A1%E7%95%8C%E9%9D%A2.png" alt="服务界面"></li>
+</ol>
+<h2 id="·云端调试"><a href="#·云端调试" class="headerlink" title="·云端调试"></a>·云端调试</h2><p>点击云端调试<br><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/%E4%BA%91%E7%AB%AF%E8%B0%83%E8%AF%95.png" alt="云端调试"></p>
+<ul>
+<li>里面有三种调试，这次就做小程序的，先调试第一个请求：</li>
+</ul>
+<ol>
+<li>选择 GET，右边这个 &#x2F;get 是<strong>路径</strong>，就是前面 python 代码里面 <code>@app.route(&#39;/get&#39;,methods=[&#39;GET&#39;])</code> 的 &#x2F;get 也就是说这个可以随便改，只要所有用到的地方都是这个路径名就行了，也可以是多级路径如 &#x2F;get&#x2F;getdata 等。</li>
+<li>Header 由于我们就是 json 格式就不改</li>
+<li>Body 这步用不上，因为 GET 我们没有传参</li>
+<li>点击调试会得到右边这个结果，就是我们 python 文件处理得到的 csv 里面的数据</li>
+</ol>
+<ul>
+<li>再调试第二个请求</li>
+</ul>
+<ol>
+<li>选择 POST，右边的路径改为对应的 &#x2F;activate</li>
+<li>Body代码如下，这代表传参值（json），invitecode 对应 py 代码里面的 args[“invitecode”]</li>
+</ol>
+<pre class="line-numbers language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"invitecode"</span><span class="token operator">:</span><span class="token string">"jiang"</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<ol start="3">
+<li>点击调试，得到如下结果，正是我们设置的返回值<br><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/POST%E8%B0%83%E8%AF%95%E7%BB%93%E6%9E%9C.png" alt="POST调试结果"></li>
+<li>再次调试 GET 请求，会发现得到的 jiang 对应的 activation 值变成1了。调试成功</li>
+</ol>
+<ul>
+<li>每次调试成功后，点击<strong>复制调用代码</strong>就可以复制到代码，在小程序可以直接使用，后面会叙述，悬浮可以预览代码</li>
+</ul>
+<h2 id="·Gitee仓库链接"><a href="#·Gitee仓库链接" class="headerlink" title="·Gitee仓库链接"></a>·Gitee仓库链接</h2><p>这样每次都要手动发布服务很麻烦，所以可以使用<strong>流水线</strong>功能，首先创建 Gitee 仓库，方法可以网上搜，大致就是在网站上创建完，在 linedetect 文件夹内打开 Git Bash，依次输入仓库配置指令</p>
+<pre class="line-numbers language-git"><code class="language-git">git config --global user.name <span class="token string">"这里填你的Gitee名字"</span>
+git config --global user.email <span class="token string">"这里填你的Gitee的绑定邮箱"</span>
+git init
+git remote add origin <span class="token string">"这里填gitee仓库的SSH"</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后就能轻松更新：</p>
+<pre class="line-numbers language-git"><code class="language-git">git add .
+git commit -m <span class="token string">"这里填你的更新说明，也会同步到云托管的历史版本"</span>
+git push origin master
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>上传完进入云托管的服务列表，点击发布，这次选择绑定 Gitee 仓库，其他一般不用调整，勾选灰度发布，点击发布。</li>
+<li>接下来就和以前一样部署两分钟。完成后，此时你配置的代码仓库信息已经保存在「服务设置-流水线」中，你可以前往修改。此后每次发布时，可以直接在 Bash 里面按上面那三步直接更新，云托管这边会自动流水线部署，如下图；也可以直接选择「执行流水线」，总之不需要每次配置仓库信息。<br><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%83%A8%E7%BD%B2.png" alt="流水线部署"><br><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/%E6%B5%8B%E8%AF%95%E9%A1%B5%E9%9D%A2.png" alt="测试页面"></li>
+<li>随即进入测试界面，如上，选白名单就行了，暂时不用别的操作，点灰度上线，下一个界面把灰度流量比例调成百分百，点击结单就行了。</li>
+<li><strong>回退版本</strong>可以在服务页面内点击回退，就可以选择历史版本回溯</li>
+</ul>
+<h1 id="微信小程序端"><a href="#微信小程序端" class="headerlink" title="微信小程序端"></a>微信小程序端</h1><p>做一个简单的demo，wxss&#x2F;wxml略过</p>
+<ul>
+<li>js代码如下，写在 Page 里面</li>
+</ul>
+<pre class="line-numbers language-js"><code class="language-js">  onLoad<span class="token punctuation">:</span> <span class="token keyword">async</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">let</span> that <span class="token operator">=</span> <span class="token keyword">this</span>
+    wx<span class="token punctuation">.</span>cloud<span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//初始化云托管环境</span>
+    <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token keyword">await</span> wx<span class="token punctuation">.</span>cloud<span class="token punctuation">.</span><span class="token function">callContainer</span><span class="token punctuation">(</span><span class="token punctuation">{</span>  <span class="token comment" spellcheck="true">//从云托管获取数据</span>
+      config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        env<span class="token punctuation">:</span> <span class="token string">"xxx"</span><span class="token punctuation">,</span>   <span class="token comment" spellcheck="true">// 微信云托管环境ID，不能为空，替换自己的</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      path<span class="token punctuation">:</span> <span class="token string">'/get'</span><span class="token punctuation">,</span> 
+      method<span class="token punctuation">:</span> <span class="token string">'GET'</span><span class="token punctuation">,</span>
+      header<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        <span class="token string">'X-WX-SERVICE'</span><span class="token punctuation">:</span> <span class="token string">'linedetect'</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>res<span class="token punctuation">.</span>data<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>注意我写在onLoad函数，是为了小程序加载就获取数据，wx.cloud.init 初始化是必要的，但是不用填参数</li>
+<li>async 和 await 成对存在，作用可以上网查。简单来说就是完成async函数里面的await部分，才会执行后面的内容（这里就是consol.log）</li>
+<li>wx.cloud.callContainer 就是访问我们的云托管服务容器，里面的参数 env 是环境ID在云托管右上角找得到<br><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/%E7%8E%AF%E5%A2%83ID.png" alt="环境ID"></li>
+<li>path 就是之前提到的路径，这里 method 用 GET 请求，对应的 &#x2F;get 路径，header 里面 linedetect 就是服务名</li>
+<li>这时候即可编译文件，控制台打印出来数据，GET 调用成功<br><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/GET%E7%BB%93%E6%9E%9C.png" alt="GET结果"></li>
+</ul>
+<pre class="line-numbers language-js"><code class="language-js"><span class="token keyword">const</span> res2 <span class="token operator">=</span> wx<span class="token punctuation">.</span>cloud<span class="token punctuation">.</span><span class="token function">callContainer</span><span class="token punctuation">(</span><span class="token punctuation">{</span>     <span class="token comment" spellcheck="true">//从云托管发送请求激活对应邀请码，使得邀请码一次性使用</span>
+  config<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    env<span class="token punctuation">:</span> <span class="token string">"xxx"</span><span class="token punctuation">,</span> <span class="token comment" spellcheck="true">// 微信云托管环境ID，不能为空，替换自己的</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  path<span class="token punctuation">:</span> <span class="token string">'/activate'</span><span class="token punctuation">,</span> 
+  method<span class="token punctuation">:</span> <span class="token string">'POST'</span><span class="token punctuation">,</span>
+  header<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">'X-WX-SERVICE'</span><span class="token punctuation">:</span> <span class="token string">'linedetect'</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  data<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">"invitecode"</span><span class="token punctuation">:</span> res<span class="token punctuation">.</span>content
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>第二项服务请求调试如上，把 path 和 method 改成对应的，项目名称记得改，data 即传递的数据，内容正是云调试 Body 里面的，这里 res.content 可以是输入框的输入值等需要的输入。这段代码可以封装进一个函数绑定到一个组件上进行触发，比如点一个按钮，弹出输入框，输入的 csv 里面有的 jiang，然后再次发送第一项服务请求，就可以发现 jiang 对应的 activation 变成1。调试完成。<br><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/POST%E7%BB%93%E6%9E%9C.png" alt="POST结果"></li>
+</ul>
+<h1 id="PC端请求"><a href="#PC端请求" class="headerlink" title="PC端请求"></a>PC端请求</h1><ul>
+<li>我们可以通过 Python 的 requests 库通过公网获取数据，这样可以在本地轻松地备份云端数据，防止数据损坏或意外修改等。</li>
+<li>我们需要找到自己云托管服务的公网访问域名（前提是要开启公网访问）</li>
+<li><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/%E5%85%AC%E7%BD%91%E5%9F%9F%E5%90%8D.png" alt="公网域名"></li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> requests
+<span class="token keyword">import</span> json
+response <span class="token operator">=</span> requests<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">'这里填入公网访问的域名/get'</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>response<span class="token punctuation">.</span>text<span class="token punctuation">)</span>  <span class="token comment" spellcheck="true"># 打印响应内容</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/PC%E8%AF%B7%E6%B1%82%E7%BB%93%E6%9E%9C.png" alt="PC请求结果"></p>
+<ul>
+<li>如上，我们通过 requests 请求获得了响应内容（这个数据和开头创建的不是同一个，只是做一个演示），后面我们可以接着用csv库将json数据转字典后存入文档，按自己的需求任意处理数据。</li>
+</ul>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><ul>
+<li>至此完成了本地 python 的简单 restful 工程上传小程序云托管、小程序访问云托管数据、gitee 仓库绑定轻松更新。</li>
+<li>注意：这种方法下，每次更新都要用 GET 请求获取一下当前 csv 文件的数据，因为此时云端的 csv 文件已经和本地的不一样了，要获取后手动更新在本地文件里面，否则上传新的工程后 csv 又会覆盖云端。</li>
+<li>在云托管服务设置位置可以将最小实例数改为1，如果是0的话服务器没响应30分钟就会关闭，下次请求就得等服务器开启，需要一两分钟，期间请求都是超时的</li>
+<li>数据要更改很容易，只需要按自己的需求编写更多的 POST 请求，甚至能完成空数据文件下仅通过请求就完成一个不需要 MySQL 的低配数据库。这很适合数据量很小的项目，能节约资金成本。同时云托管的费用也比租服务器便宜很多，按量计费可以让小数据项目节约不少。</li>
+</ul>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://localhost:4000/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/API/" rel="tag">API</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/restful/" rel="tag">restful</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%BA%91%E6%89%98%E7%AE%A1/" rel="tag">云托管</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/" rel="tag">微信小程序</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/03/19/Python-restful-API%E5%85%A5%E9%97%A8%E5%8F%8A%E8%B0%83%E8%AF%95/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Python restful API入门及本地调试
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">数据结构第八章 排序</div>
+      </a>
+    
+  </nav>
+
+  
+   
+  
+    
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023-2024
+        <i class="ri-heart-fill heart_icon"></i> LegendLeo Chen
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/mylogo.png" alt="LegendLeo Chen 的空间"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">🚀主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">💾归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">🧭分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">🏷️标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">🛸关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/analytics">📊统计</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/secret">🔐秘密</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=1491212&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+  <!-- 背景气泡 -->
+  <!--
+  <div class="balls-container">
+    <div class="balls-particles">
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+    </div>
+  </div>
+  <style>
+    *
+    {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .balls-container
+    { 
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+    
+    .balls-particles
+    {
+      position: fixed;
+      display: flex;
+      z-index: 3;
+      padding: 0 20px;
+    }
+    
+    .balls-particles span
+    {
+      position: relative;
+      bottom: 30px;
+      width: 30px;
+      height: 30px;
+      background-color: #4fc3dc;
+      box-shadow: 0 0 0 10px #4fc3dc44,
+      0 0 50px #4fc3dc,
+      -100px 0 #4fc3dc99,
+      100px 0 #ff2d7599;
+      margin: 0 4px;
+      border-radius: 50%;
+      animation: animate 15s ease infinite;
+      animation-delay: calc(125s / var(--i));
+      transform: translateY(120vh);
+    }
+    .balls-particles span:nth-child(even) {
+      background-color: #ff2d75;
+      box-shadow: 0 0 0 10px #ff267544,
+      0 0 50px #ff2d75,
+      -100px 0 #4fc3dc99,
+      100px 0 #4fc3dc99;
+      ;
+    }
+    
+    @keyframes animate {
+      0%
+      {
+        transform: translateY(120vh) scale(0) rotate(0deg);
+      }
+      20%
+      {
+        transform: translateY(100vh) scale(1) rotate(0deg);
+      }
+      100%
+      {
+        transform: translateY(-50vh) scale(0.5) rotate(360deg);
+      }
+    }
+  </style> -->
+  <!-- 地月系统 -->
+  <!-- <div class="earth-container" >
+    <div class="planet"></div>
+    <div class="satellite"></div>
+   </div>
+   <style>
+    *{
+      padding: 0;
+      margin: 0;
+      }
+      .earth-container {
+        width: 36.25em;
+        height: 36.25em;
+        position: absolute;
+        top:5%;
+        left: 93%;
+        transform: translate(-50%, -50%);
+        opacity: 0.3;
+      }
+      
+      .planet{
+        width: 15.62*3em;
+        height: 15.62*3em;
+        background-color: #02c0f5;
+        border-radius: 50%;
+        position: absolute;
+        margin: auto;
+        top:0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+      }
+      
+      .planet::before{
+        content: '';
+        width: 4em;
+        height: 4em;
+        background-color: #008fd6;
+        position: absolute;
+        top:10em;
+        left: 8em;
+        border-radius: 50%; 
+        box-shadow: 15em 15em 0 2em #00d68b, 5em 8em 0 3em #10ade1;
+      }
+      
+      .satellite{
+        width: 5em;
+        height: 5em;
+        background-color: #dee517;
+        border-radius: 50%;
+        position: relative;
+        left: -5em;
+        bottom: -30em;
+        animation: spin 5s infinite;
+        z-index: 1;
+      }
+      
+      @keyframes spin {
+        49%{
+          z-index: 1;
+        }
+        50%{
+          bottom: 3em;
+          left: 35em;
+          z-index: -1;
+        }
+        100%{
+          z-index: -1;
+        }
+      }
+    </style> -->
+<!-- 三角彩带背景 -->
+  <canvas id="evanyou-canvas" style="opacity: 0.3; position: fixed; top: 0px; left: 0px; z-index: -1; width: 100%; height: 100%; pointer-events: none;"></canvas>
+  <script src="https://cdn.jsdelivr.net/gh/XXXZhy/Blog_Image/js/evanyou_canvas.js"></script>
+</body>
+
+</html>

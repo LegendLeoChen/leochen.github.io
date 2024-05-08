@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta name="description" content="一个秘密空间" />
+      
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>Pytorch机器学习知识 |  LegendLeo Chen 的空间</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/mylogo.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+<!-- 封面标闪烁 -->
+<link rel="stylesheet" href="/css/zhyBlogTitle.css">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- jquery，懒加载、统计、说说需要的jquery -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Pytorch机器学习知识"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Pytorch机器学习知识
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/04/15/Pytorch%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9F%A5%E8%AF%86/" class="article-date">
+  <time datetime="2023-04-15T09:33:38.000Z" itemprop="datePublished">2023-04-15</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a> / <a class="article-category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">7.2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">26 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="🔥SummaryWriter"><a href="#🔥SummaryWriter" class="headerlink" title="🔥SummaryWriter"></a>🔥SummaryWriter</h1><p><code>SummaryWriter</code> 是 PyTorch 中的一个可视化工具，用于帮助开发者更好地理解和调试他们的模型。可以将训练过程中的结果写入到 TensorBoard 中，以便进行可视化展示和分析。<span id="more"></span></p>
+<p>具体来说，<code>SummaryWriter</code> 用于创建一个写入器，将训练过程中的标量、图像、音频等数据写入到指定的目录下，以供 TensorBoard 进行可视化展示。其中，<code>log_dir</code> 参数指定了写入的目录。</p>
+<p>使用 <code>SummaryWriter</code> 的一般流程如下：</p>
+<ol>
+<li>创建 <code>SummaryWriter</code> 对象，指定写入的目录：</li>
+</ol>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> torch<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>tensorboard <span class="token keyword">import</span> SummaryWriter
+
+log_dir <span class="token operator">=</span> <span class="token string">"logs"</span>
+writer <span class="token operator">=</span> SummaryWriter<span class="token punctuation">(</span>log_dir<span class="token operator">=</span>log_dir<span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<ol start="2">
+<li>在训练循环中，将需要可视化的数据写入到 <code>SummaryWriter</code> 中：</li>
+</ol>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">for</span> epoch <span class="token keyword">in</span> range<span class="token punctuation">(</span>num_epochs<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment" spellcheck="true"># 训练代码</span>
+    loss <span class="token operator">=</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    accuracy <span class="token operator">=</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    
+    <span class="token comment" spellcheck="true"># 将训练结果写入 SummaryWriter</span>
+    writer<span class="token punctuation">.</span>add_scalar<span class="token punctuation">(</span><span class="token string">"train/loss"</span><span class="token punctuation">,</span> loss<span class="token punctuation">,</span> epoch<span class="token punctuation">)</span>
+    writer<span class="token punctuation">.</span>add_scalar<span class="token punctuation">(</span><span class="token string">"train/accuracy"</span><span class="token punctuation">,</span> accuracy<span class="token punctuation">,</span> epoch<span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在上面的例子中，<code>add_scalar</code> 方法用于将标量数据写入到 <code>SummaryWriter</code> 中，第一个参数是数据的名称，第二个参数是数据的值，第三个参数是数据所对应的步数（即训练的 epoch 数）。</p>
+<ol start="3">
+<li>训练结束后，关闭 <code>SummaryWriter</code>：</li>
+</ol>
+<pre class="line-numbers language-python"><code class="language-python">writer<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>关闭 <code>SummaryWriter</code> 会将写入的数据保存到指定的目录下，以供 TensorBoard 进行可视化展示。</p>
+<p>需要注意的是，使用 <code>SummaryWriter</code> 需要先安装 TensorFlow 和 TensorBoard，可以使用以下命令进行安装：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">pip <span class="token function">install</span> tensorflow tensorboard
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>另外，<code>SummaryWriter</code> 还有其他方法可以用于写入不同类型的数据，比如 <code>add_image</code> 用于写入图像数据，<code>add_audio</code> 用于写入音频数据等，具体可以参考 PyTorch 官方文档。</p>
+<p>使用 <code>SummaryWriter</code> 产生的记录，需要使用 TensorBoard 进行可视化展示。TensorBoard 是 TensorFlow 提供的一个可视化工具，可以用于展示训练过程中的各种指标、模型结构、图像等信息。</p>
+<p>要使用 TensorBoard 进行可视化展示，可以使用以下命令启动 TensorBoard：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">tensorboard --logdir<span class="token operator">=</span><span class="token operator">&lt;</span>log_dir<span class="token operator">></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>其中，<code>&lt;log_dir&gt;</code> 是 <code>SummaryWriter</code> 中指定的日志目录。启动后，可以在浏览器中访问 <code>http://localhost:6006</code>，即可看到 TensorBoard 的界面。</p>
+<p>在 TensorBoard 的界面中，可以选择查看不同的指标、模型结构、图像等信息。比如，在 Scalars 标签页中，可以查看训练过程中的各种指标变化趋势；在 Images 标签页中，可以查看训练过程中生成的图像；在 Graphs 标签页中，可以查看模型结构等。</p>
+<p>需要注意的是，TensorBoard 可以读取多个日志目录，可以使用以下命令启动 TensorBoard：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">tensorboard --logdir<span class="token operator">=</span><span class="token operator">&lt;</span>log_dir_1<span class="token operator">></span>:<span class="token operator">&lt;</span>log_dir_2<span class="token operator">></span>:<span class="token operator">&lt;</span>log_dir_3<span class="token operator">></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>其中，多个日志目录之间使用冒号分隔。这样，就可以将多个模型的训练结果同时展示在 TensorBoard 中，方便比较和分析。</p>
+<h1 id="🔥数据集划分"><a href="#🔥数据集划分" class="headerlink" title="🔥数据集划分"></a>🔥数据集划分</h1><pre class="line-numbers language-python"><code class="language-python">X_train<span class="token punctuation">,</span> X_test<span class="token punctuation">,</span> y_train<span class="token punctuation">,</span> y_test <span class="token operator">=</span> train_test_split<span class="token punctuation">(</span>features_scaled<span class="token punctuation">,</span> targets_scaled<span class="token punctuation">,</span> test_size<span class="token operator">=</span><span class="token number">0.1</span><span class="token punctuation">,</span> random_state<span class="token operator">=</span><span class="token number">22</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这是使用Scikit-learn库中train_test_split函数将一组特征和目标值数据集按照0.1的比例进行随机拆分，其中被拆分为测试集的数据占原始数据集的10%。该函数返回四个数据集：训练数据集（X_train, y_train）和测试数据集（X_test, y_test）。random_state&#x3D;22表示设置了随机数种子以确保结果可重现。而features_scaled是进行特征缩放后的特征数据集，targets_scaled是进行目标的缩放后的目标数据集。</p>
+<h1 id="🔥dataset和dataloader"><a href="#🔥dataset和dataloader" class="headerlink" title="🔥dataset和dataloader"></a>🔥dataset和dataloader</h1><p>在PyTorch中，<code>Dataset</code>和<code>DataLoader</code>是用于数据处理和数据加载的两个关键类。</p>
+<p><code>Dataset</code>类是将训练或测试数据加载到模型中的接口。它需要实现__len__()方法和__getitem__()方法，分别提供数据集的大小和数据。</p>
+<p><code>DataLoader</code>类是通过批量加载和并行处理数据增加训练效率的工具。它接受一个Dataset，并允许使用多个进程或线程异步加载数据、并以一定的batch大小进行划分数据集。</p>
+<p>简而言之，<code>Dataset</code>负责将数据准备好，<code>DataLoader</code>则从<code>Dataset</code>中获取数据，并将其整理成可供模型使用的批量数据。这样就可以对大规模数据集进行高效的训练了。</p>
+<ul>
+<li>以下是一个简单的使用<code>Dataset</code>和<code>DataLoader</code>的代码示例:</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> torch
+<span class="token keyword">from</span> torch<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>data <span class="token keyword">import</span> Dataset<span class="token punctuation">,</span> DataLoader
+
+<span class="token comment" spellcheck="true"># 创建自定义数据集类，继承自Dataset，并重载__len__()和__getitem__()方法</span>
+<span class="token keyword">class</span> <span class="token class-name">CustomDataset</span><span class="token punctuation">(</span>Dataset<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> data<span class="token punctuation">,</span> targets<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>data <span class="token operator">=</span> data
+        self<span class="token punctuation">.</span>targets <span class="token operator">=</span> targets
+        
+    <span class="token keyword">def</span> <span class="token function">__len__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> len<span class="token punctuation">(</span>self<span class="token punctuation">.</span>data<span class="token punctuation">)</span>
+    
+    <span class="token keyword">def</span> <span class="token function">__getitem__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> index<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> self<span class="token punctuation">.</span>data<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">,</span> self<span class="token punctuation">.</span>targets<span class="token punctuation">[</span>index<span class="token punctuation">]</span>
+
+<span class="token comment" spellcheck="true"># 创建数据集对象，并设置超参数</span>
+data <span class="token operator">=</span> torch<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1000</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+targets <span class="token operator">=</span> torch<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1000</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+train_dataset <span class="token operator">=</span> CustomDataset<span class="token punctuation">(</span>data<span class="token punctuation">,</span> targets<span class="token punctuation">)</span>
+batch_size <span class="token operator">=</span> <span class="token number">32</span>
+
+<span class="token comment" spellcheck="true"># 使用数据集对象创建数据加载器，并设置超参数</span>
+train_dataloader <span class="token operator">=</span> DataLoader<span class="token punctuation">(</span>train_dataset<span class="token punctuation">,</span> batch_size<span class="token operator">=</span>batch_size<span class="token punctuation">,</span> shuffle<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true"># 遍历数据加载器进行模型的训练</span>
+<span class="token keyword">for</span> batch_idx<span class="token punctuation">,</span> <span class="token punctuation">(</span>data<span class="token punctuation">,</span> target<span class="token punctuation">)</span> <span class="token keyword">in</span> enumerate<span class="token punctuation">(</span>train_dataloader<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment" spellcheck="true"># ...</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在此示例中，我们首先创建了一个自定义数据集类 <code>CustomDataset</code>，该类继承自<code>Dataset</code>并实现__len__()和__getitem__()方法。然后我们创建了数据集对象并设置了超参数。接下来，我们使用数据集对象创建了数据加载器，并将其用于多批数据的训练过程。在训练过程中，数据加载器会逐步从数据集中提取数据，每个batch大小为32。在此基础上，可以根据实际需求修改<code>Dataset</code>和<code>DataLoader</code>的实现方法和超参数，以优化模型训练的效率和精度。</p>
+<h1 id="🔥batch"><a href="#🔥batch" class="headerlink" title="🔥batch"></a>🔥batch</h1><p>在机器学习中，通常会使用batch（批次）来处理数据。每个batch表示一组数据样本，通常是以矩阵的形式存储。这些样本被分成许多组，并且模型只能在一组中学习模型参数。在完成一组batch的所有样本的训练后，模型将根据损失函数计算一个平均梯度，然后使用这个平均值来更新网络的权重和偏差, 这个过程被称为”批量梯度下降”。</p>
+<p>使用batch训练模型的好处包括：</p>
+<ul>
+<li>内存效率：每个batch的大小可以控制内存使用，从而避免计算机内存不足或过剩的情况。</li>
+<li>训练速度：优化器可以更快地计算每个batch的梯度，从而使模型更容易收敛。</li>
+<li>更好的泛化性能：使用batch可以减少过拟合的风险，因为训练数据的随机子集不太可能代表整个数据集，因此该方法有助于提高泛化性能。</li>
+</ul>
+<p>通常，batch的大小是可以调节的超参数，因此它可以根据具体问题的复杂性、可用的计算资源和时间限制进行调整。一般来说batch_size越大（即一个batch的数据越多）训练的会越快</p>
+<h1 id="🔥正则化"><a href="#🔥正则化" class="headerlink" title="🔥正则化"></a>🔥正则化</h1><p>正则化是机器学习领域中用于控制模型复杂度，从而避免过拟合的技术。在许多情况下，我们的模型会以过高的复杂度来拟合训练数据，从而导致模型在新数据上表现不佳。为了解决这个问题，可以采用正则化技术。</p>
+<p>正则化通过附加一些限制或惩罚项来约束模型参数的取值范围，从而使其更加趋向于简单的模型。常见的正则化方法有L1正则化和L2正则化。</p>
+<ul>
+<li>L1正则化：也称为L1范数正则化或Lasso正则化，它向损失函数中添加一个关于权重绝对值之和的惩罚项。L1正则化有助于在优化过程中将某些特征的权重归零，因此该方法还可以用于特征选择。</li>
+<li>L2正则化：也称为L2范数正则化或Ridge正则化，它向损失函数中添加一个关于权重平方和的惩罚项。L2正则化有助于平滑和缩小权重，从而避免了权重的大幅波动。</li>
+</ul>
+<p>通过引入正则化项，我们可以有效控制模型的复杂度，从而减少过拟合并提高模型的泛化能力。因此，正则化被广泛用于机器学习领域中的各种模型中，例如线性回归、逻辑回归、神经网络等。</p>
+<pre class="line-numbers language-python"><code class="language-python">optimizer <span class="token operator">=</span> optim<span class="token punctuation">.</span>Adam<span class="token punctuation">(</span>model<span class="token punctuation">.</span>parameters<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> lr<span class="token operator">=</span>lr<span class="token punctuation">,</span> weight_decay<span class="token operator">=</span><span class="token number">0.01</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><code>weight_decay</code> 即是正则化，过大可能导致收敛，过小可能没有作用</p>
+<h1 id="🔥归一化"><a href="#🔥归一化" class="headerlink" title="🔥归一化"></a>🔥归一化</h1><p>Scaler归一化是机器学习中常用的数据预处理技术，它通过对特征值进行线性变换，将特征值缩放到一个给定的范围内。具体来说，Scaler归一化的主要目的是使数据分布在相同的尺度上，从而避免特征之间的数值差异过大而导致算法性能下降。</p>
+<p>Scaler归一化方法有多种，其中较常见的有：</p>
+<ul>
+<li>Min-max Scaler: 缩放数据到指定的最小值和最大值之间（通常为0和1）。</li>
+<li>Standard Scaler: 将数据缩放到均值为0、方差为1的标准正态分布。</li>
+<li>Robust Scaler: 将数据缩放到中位数和四分位数之间的距离内，以避免异常值对数据的影响。</li>
+</ul>
+<p>反归一化则是将经过Scaler归一化后的结果还原回原始数据的过程。反归一化的目的是得到真实的数据范围和大小，以便对模型的预测结果进行实际含义的解释或可视化。</p>
+<p>Scaler归一化和反归一化应该注意以下几点：</p>
+<ul>
+<li><p>归一化和反归一化操作的顺序应该相反，即先进行Scaler归一化处理，再进行反归一化处理。</p>
+</li>
+<li><p>参数的计算范围应该是基于训练数据计算，然后在训练数据、验证数据和测试数据上进行Scaler归一化和反归一化处理。</p>
+</li>
+<li><p>一些算法（如决策树）并不需要归一化处理，因为它们对特征之间的比例关系不敏感。相反，某些算法（如KNN）则非常敏感于不同特征的范围差异，因此需要进行Scaler归一化处理。</p>
+</li>
+<li><p>归一化前要先将所有离散变量数值转换为对应的数值编码，否则这些变量会被误认为连续变量而进行归一化。</p>
+</li>
+<li><p>下面是一个简单的使用sklearn库进行Scaler归一化的代码示例，它基于Min-max Scaler方法：</p>
+</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> sklearn<span class="token punctuation">.</span>preprocessing <span class="token keyword">import</span> MinMaxScaler
+
+<span class="token comment" spellcheck="true"># 创建MinMaxScaler对象</span>
+scaler <span class="token operator">=</span> MinMaxScaler<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true"># 假设我们有一个2D数组X，我们要将每列特征都缩放到[0, 1]范围内</span>
+X <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+
+<span class="token comment" spellcheck="true"># 对数据进行Scaler归一化处理（fit并transform）</span>
+X_scaled <span class="token operator">=</span> scaler<span class="token punctuation">.</span>fit_transform<span class="token punctuation">(</span>X<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true"># 输出归一化后的结果</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>X_scaled<span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在上面的代码中，我们首先导入了<code>MinMaxScaler</code>类，然后创建了一个该类的对象<code>scaler</code>。接着，我们通过提供一个2D数组<code>X</code>来演示Scaler归一化处理过程。最后，我们使用<code>fit_transform()</code>函数直接对数据进行归一化处理，并输出归一化后的结果。</p>
+<p>需要注意的是，在实际应用中，<code>fit_transform()</code>函数的参数通常是训练集或验证集数据。然后，我们可以使用相同的Scaler对象对测试集数据进行Scaler归一化操作。这是因为Scaler对象根据训练集数据计算得出的缩放范围和参考点。</p>
+<p><code>fit()</code>函数用于从训练数据中计算出一些参数或者所需的信息，在<code>fit()</code>函数调用之后，这些参数或信息将被保存在模型对象内部，以供后续的数据转换或预测使用。</p>
+<p><code>transform()</code>函数则是对数据进行某种处理或变换，并输出相应的转换结果。transform()仅仅对数据进行转换处理，不会再次计算参数或信息并更新模型内部状态。</p>
+<p>而<code>fit_transform()</code>函数则是将<code>fit()</code>和<code>transform()</code>两个函数合起来执行。即先使用训练数据来调整模型的参数，然后用该参数对训练数据进行转换得到新的训练数据。运行<code>fit_transform()</code>相当于依次调用<code>fit()</code>和<code>transform()</code>函数。</p>
+<p>总的来说，<code>fit()</code>和<code>fit_transform()</code>适用于模型训练过程中，<code>transform()</code>则适用于模型预测和测试过程中。在使用Scikit-learn库时，通常先使用<code>fit()</code>函数计算训练集所需的参数，然后再使用<code>transform()</code>函数对训练集、验证集和测试集进行数值化处理。</p>
+<p>需要注意的是，对于测试集数据需要使用训练集（或验证集）计算得到的参数进行相同的转换处理。这样才能确保训练集、验证集和测试集之间的特征范围一致，避免因特征缩放不一致而导致模型表现不佳。</p>
+<h1 id="🔥损失函数和优化器"><a href="#🔥损失函数和优化器" class="headerlink" title="🔥损失函数和优化器"></a>🔥损失函数和优化器</h1><pre class="line-numbers language-python"><code class="language-python">    criterion <span class="token operator">=</span> nn<span class="token punctuation">.</span>MSELoss<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    optimizer <span class="token operator">=</span> torch<span class="token punctuation">.</span>optim<span class="token punctuation">.</span>Adam<span class="token punctuation">(</span>model<span class="token punctuation">.</span>parameters<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> lr<span class="token operator">=</span><span class="token number">0.01</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>这段代码是使用PyTorch构建神经网络模型时常用的两个组件，分别是误差函数（或损失函数）和优化器。</p>
+<ul>
+<li><p><code>nn.MSELoss()</code>是一个预定义的PyTorch损失函数类，它计算神经网络的MSE（均方误差），即预测值与目标值之间的平均二次差异。我们将使用此损失函数作为神经网络的误差函数来度量模型的训练效果。</p>
+</li>
+<li><p><code>torch.optim.Adam()</code>是一个预定义的PyTorch优化器类，它实现了Adam优化算法。Adam优化器是一种比较先进的随机梯度下降算法，具有自适应学习速率、加权聚合梯度等特点。我们使用该优化器来更新神经网络的参数，以最小化神经网络的误差函数。</p>
+</li>
+</ul>
+<p>在这里，我们首先定义了一个误差函数<code>criterion</code>，并使用<code>nn.MSELoss()</code>类实例化了它。然后，我们定义了一个优化器<code>optimizer</code>，并使用<code>torch.optim.Adam()</code>类对卷积神经网络<code>model</code>的所有参数进行优化。</p>
+<p>除了MSELoss（均方误差损失函数）之外，常见的神经网络损失函数还包括：</p>
+<ul>
+<li>交叉熵损失（Cross-Entropy Loss）：适用于分类问题的损失函数，通常与Softmax激活函数一起使用，可以度量模型输出概率和目标标签之间的差异。</li>
+<li>二元交叉熵损失（Binary Cross-Entropy Loss）：适用于二分类问题的损失函数，输出结果限定在[0,1]范围内。可以看作是交叉熵损失在二分类问题上的简化版。</li>
+<li>对数似然损失（Negative Log-Likelihood Loss）：也是一种适用于分类问题的损失函数，用于衡量模型预测值的概率与真实标签之间的差距。常用于多类别分类问题中，也常与Softmax神经网络结合使用。</li>
+<li>Hinge Loss：适用于支持向量机（SVM）算法的损失函数，比较适用于处理二分类问题。</li>
+<li>Kullback-Leibler散度损失（Kullback-Leibler Divergence Loss）：也称为KL散度损失或信息增益损失，用于衡量两个分布之间的差异。</li>
+</ul>
+<p>这些损失函数都有其适用的场景和特点，需要根据具体的问题和目标选择合适的损失函数进行神经网络训练。需要根据任务和数据类型选取相应的损失函数。</p>
+<p>除了Adam优化器之外，还有一些其他常用的优化器，每个优化器适用于不同的神经网络场景：</p>
+<ul>
+<li>随机梯度下降（Stochastic Gradient Descent, SGD）：是最基本和广泛使用的优化方法之一。其基本思想是根据负梯度方向更新每个参数的值。</li>
+<li>动量（Momentum）：通过增加之前梯度变化情况的动态平均来保持优化器的动量。它可以在缓解局部极小值和加速收敛两方面帮助优化。</li>
+<li>Adamax：是Adam算法的一个变种，在横向加权时间步长上进行规范化，并放弃Adam算法的RMS Prop分母项。</li>
+<li>Adagrad: 用于稀疏数据和问题，对历史梯度进行累积，可以自动调整模型中每个参数的学习率。具有Theano、Pandas 和 Numpy 这三个库</li>
+<li>Adadelta: 是Adagrad改进的一个算法，将不断累加的历史梯度平方和替换为仅保存固定长度的平方渐变和。</li>
+<li>AdaGradDelta-SGD、AdaMax和Nadam是针对特定情况和要求做出的修改和改进版本。</li>
+</ul>
+<p>需要根据具体情况和任务选择最适合的优化器。在实践中，需要通过反复实验和比较才能确定最优选择。</p>
+<h1 id="🔥模型定义（LSTM为例）"><a href="#🔥模型定义（LSTM为例）" class="headerlink" title="🔥模型定义（LSTM为例）"></a>🔥模型定义（LSTM为例）</h1><pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">class</span> <span class="token class-name">LSTMModel</span><span class="token punctuation">(</span>nn<span class="token punctuation">.</span>Module<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> input_dim<span class="token punctuation">,</span> hidden_dim<span class="token punctuation">,</span> num_layers<span class="token punctuation">,</span> output_dim<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        super<span class="token punctuation">(</span>LSTMModel<span class="token punctuation">,</span> self<span class="token punctuation">)</span><span class="token punctuation">.</span>__init__<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>hidden_dim <span class="token operator">=</span> hidden_dim
+        self<span class="token punctuation">.</span>num_layers <span class="token operator">=</span> num_layers
+        self<span class="token punctuation">.</span>lstm <span class="token operator">=</span> nn<span class="token punctuation">.</span>LSTM<span class="token punctuation">(</span>input_dim<span class="token punctuation">,</span> hidden_dim<span class="token punctuation">,</span> num_layers<span class="token punctuation">,</span> batch_first<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>fc <span class="token operator">=</span> nn<span class="token punctuation">.</span>Linear<span class="token punctuation">(</span>hidden_dim<span class="token punctuation">,</span> output_dim<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">forward</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> x<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        h0 <span class="token operator">=</span> torch<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span>self<span class="token punctuation">.</span>num_layers<span class="token punctuation">,</span> x<span class="token punctuation">.</span>size<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> self<span class="token punctuation">.</span>hidden_dim<span class="token punctuation">)</span><span class="token punctuation">.</span>requires_grad_<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>to<span class="token punctuation">(</span>device<span class="token punctuation">)</span>
+        c0 <span class="token operator">=</span> torch<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span>self<span class="token punctuation">.</span>num_layers<span class="token punctuation">,</span> x<span class="token punctuation">.</span>size<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> self<span class="token punctuation">.</span>hidden_dim<span class="token punctuation">)</span><span class="token punctuation">.</span>requires_grad_<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>to<span class="token punctuation">(</span>device<span class="token punctuation">)</span>
+        out<span class="token punctuation">,</span> <span class="token punctuation">(</span>hn<span class="token punctuation">,</span> cn<span class="token punctuation">)</span> <span class="token operator">=</span> self<span class="token punctuation">.</span>lstm<span class="token punctuation">(</span>x<span class="token punctuation">,</span> <span class="token punctuation">(</span>h0<span class="token punctuation">.</span>detach<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> c0<span class="token punctuation">.</span>detach<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>        <span class="token comment" spellcheck="true"># lstm层</span>
+        out <span class="token operator">=</span> self<span class="token punctuation">.</span>fc<span class="token punctuation">(</span>out<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">)</span>            <span class="token comment" spellcheck="true"># 全连接层</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这是一个基于LSTM（长短期记忆神经网络）的PyTorch模型。其中<code>__init__()</code>方法定义了LSTM的网络结构，<code>forward()</code>方法实现了LSTM网络的前向传播。输入特征<code>input_dim</code>映射的到lstm模块的<code>hidden_dim</code>个隐藏层神经元，中间经过<code>num_layers</code>层最后映射到<code>output_dim</code>个输出特征</p>
+<p>在<code>forward()</code>过程中，输入数据<code>x</code>首先通过LSTM层<code>self.lstm</code>进行处理，得到每个时间步骤的隐状态（hidden state）和细胞状态（cell state）。其中，<code>h0</code>和<code>c0</code>是初始隐藏状态和细胞状态，通常设置为全零张量。</p>
+<p>接着，通过取每个样本（batch）的最后一个时间步骤的隐状态，并通过全连接层<code>self.fc</code>将其映射到输出维度上，从而得到最终的输出。</p>
+<p>具体而言，<code>out[:, -1, :]</code>表示取<code>out</code>张量中的每个batch的最后一行，也就是最终时间步骤的所有隐状态，并且通过<code>self.fc</code>层进行线性映射得到模型最终的输出结果。最终输出的形状是(batch_size, output_dim)。</p>
+<p>需要注意的是，在PyTorch中的LSTM层中，默认情况下会返回所有时间步骤的输出，而不只是最后一个时间步骤的输出。因此，需要通过<code>out[:, -1, :]</code>来取出最后一个时间步骤的输出。</p>
+<h2 id="nn-LSTM"><a href="#nn-LSTM" class="headerlink" title="nn.LSTM"></a>nn.LSTM</h2><p><code>nn.LSTM</code>是PyTorch中实现长短期记忆神经网络（LSTM）的模块。它接受以下参数：</p>
+<ul>
+<li><code>input_dim</code>：输入张量的特征维度（即每个时间步骤输入的特征数量）。在应用场景中，可以理解为一个样本输入数据的维度。</li>
+<li><code>hidden_dim</code>：LSTM中隐藏状态的维度（也称作LSTM单元个数或输出大小），通常与<code>input_dim</code>的值相近或稍微大一些。</li>
+<li><code>num_layers</code>：LSTM的层数，通常选择2层（默认值）到数十层之间，其数目会影响到LSTM提取特征的复杂度和表达能力。</li>
+<li><code>batch_first</code>：布尔型变量，默认值是<code>False</code>，表示输入张量的第0维是沿着时间步的（即(batch_size, seq_length, input_dim)），如果将其设置为<code>True</code>，则第0维表示批次大小（即(seq_length,batch_size,input_dim)），在此时需要注意加改变维度。</li>
+</ul>
+<p><code>nn.LSTM()</code>方法还具有其他可选参数，例如<code>dropout</code>（控制在训练期间应用于LSTM输出的丢失率）和<code>bidirectional</code>（是否使用双向LSTM）等等。</p>
+<p>该层的输入张量的形状为<code>(seq_len, batch, input_dim)</code>（如果<code>batch_first=False</code>），或者是<code>(batch, seq_len, input_dim)</code>（如果<code>batch_first=True</code>）。该层的输出张量形状为<code>(seq_len, batch, hidden_dim)</code>（如果<code>batch_first=False</code>），或者是<code>(batch, seq_len, hidden_dim)</code>（如果<code>batch_first=True</code>）。LSTM层的输出包括最终的隐状态和细胞状态，可以通过<code>return_sequence</code>和<code>return_state</code>参数进行控制。</p>
+<h2 id="nn-Linear"><a href="#nn-Linear" class="headerlink" title="nn.Linear"></a>nn.Linear</h2><p><code>nn.Linear()</code> 是 PyTorch 中实现线性变换的模块。它接受两个参数：</p>
+<ul>
+<li><code>in_features</code>：输入张量的特征维度；在神经网络中通常是该层的输入维度。</li>
+<li><code>out_features</code>：输出张量的特征维度；在神经网络中通常是该层的输出维度或者神经元的个数。</li>
+</ul>
+<p>在这里，<code>nn.Linear(hidden_dim, output_dim)</code> 表示一个将输入张量从大小为 <code>hidden_dim</code> 的空间转换为大小为 <code>output_dim</code> 的空间的全连接 (Fully Connected) 层或线性层。可以理解为对每个样本进行一次矩阵乘法，并加上偏置项(bias)。当然，可以根据需求添加其他功能，例如批标准化(Batch Normalization)、激活函数(Activation function)等等。注意到在运行前输入张量的形状应该是 <code>(batch_size, hidden_dim)</code> ，该层的输出将是 <code>(batch_size, output_dim)</code>。</p>
+<h1 id="🔥张量"><a href="#🔥张量" class="headerlink" title="🔥张量"></a>🔥张量</h1><p>张量是多维数组的一种泛称，它是数学和计算机科学中一种十分重要的数据结构。在机器学习和深度学习中，张量是描述数据的基本结构。</p>
+<p>可以将张量看作是一个高维数组，它包含了一个或多个数据元素，这些元素可以是实数、整数、布尔值等。通常情况下，我们使用张量来存储神经网络中的输入、输出、权重、偏置等参数。在 PyTorch、TensorFlow 等深度学习框架中，张量是非常重要的基础数据类型之一。</p>
+<p>在机器学习中，张量最常见的应用就是存储和处理数据，包括训练数据、测试数据、模型参数以及计算输出结果等。以下是一些具体的例子：</p>
+<ol>
+<li>图像数据：在计算机视觉中，图像通常由 RGB 矩阵组成，可以转换成三维张量，其中第一维表示通道数（3），第二、三维分别表示图像的高和宽。</li>
+<li>自然语言处理数据：在自然语言处理中，文本数据通常会转化为单词或者字符的序列，这些序列可以被编码为二维或三维张量，其中第一维表示序列长度，第二维表示单词或字符的嵌入向量的维度。</li>
+<li>模型参数：神经网络中的权重和偏置通常被存储在张量中作为模型参数，在训练过程中不断更新，以优化模型效果。</li>
+<li>计算输出结果：每个神经网络层的输入和输出都是张量，通过逐层传递张量，可以在神经网络中完成前向传播计算，得出最终的输出结果。</li>
+</ol>
+<p>在实际机器学习应用中，涉及到的数据可能是高维度的，因此需要将其转化为多维张量来方便存储和处理。</p>
+<h1 id="🔥Yolo"><a href="#🔥Yolo" class="headerlink" title="🔥Yolo"></a>🔥Yolo</h1><h2 id="Yolov5"><a href="#Yolov5" class="headerlink" title="Yolov5"></a>Yolov5</h2><p>YoloV5（You Only Look Once Version 5）是一种目标检测算法，它可以实现快速准确地识别图像中的物体，并输出其在图像中的位置信息和类别。以下是对YoloV5算法的详细分析：</p>
+<ol>
+<li>网络结构：YoloV5采用卷积神经网络模型，整个网络由骨架网络、FPN（feature pyramid network）、head网络组成。骨架网络用于提取特征，FPN用于提取多尺度特征并加强低层次特征的表达能力，head网络用于预测每个anchor所对应的bounding box以及类别。</li>
+<li>目标检测流程：YoloV5通过预测bounding box来实现目标检测。首先将输入图像通过骨架网络得到特征图，然后将特征图传入FPN网络中获取不同分辨率的特征图，最后将这些特征图输入到head网络中进行预测。每个anchor会计算与ground truth的IOU（Intersection over Union），如果IOU大于某一阈值，则视为正样本，否则视为负样本。</li>
+<li>Anchor匹配：YoloV5引入了类似RetinaNet的anchor-free思想，但是不同之处在于YoloV5仍然采用了anchor的方式进行处理。具体来说，YoloV5通过k-means聚类的方法从训练集中选取若干个bbox作为anchor，并在网络中引入scale和aspect ratio来适应不同尺度和不同形状的物体。在推理阶段，每个anchor预测物体的类别和偏移量。</li>
+<li>Loss函数：YoloV5使用GIoU（Generalized Intersection over Union）来计算bounding box的损失值，同时也采用了多个不同权重的loss函数包括置信度、类别识别等。其中，GIoU是目前行业内最流行的bounding box loss函数之一，并能够较好地考虑bounding box之间的相似性。</li>
+<li>优化器：YoloV5使用AdaBelief来作为优化器，这是一种效果非常好的优化器，具有较强的收敛速度和通用性，并且能够抵抗梯度下降的噪声干扰。</li>
+</ol>
+<p>总之，YoloV5作为一款高精度、快速的目标检测算法，在工业界和学术界已经得到了广泛的应用和认可。其综合考虑尺度、形状和特征点信息的特点，使得它能够更加准确地检测出目标物体，并且在复杂环境下具备较好的鲁棒性。</p>
+<h2 id="YoloX"><a href="#YoloX" class="headerlink" title="YoloX"></a>YoloX</h2><p>YoloX是一种目标检测算法，由腾讯AI Lab于2021年提出，其最大的特点是采用了多层金字塔感受野设计以及SE模块结构。以下是对YoloX算法的详细分析：</p>
+<ol>
+<li><p>网络结构：YoloX采用了多层级的金字塔网络结构，每个层级都可以感受到不同大小的物体。此外，YoloX还引入了精细化特征流结构，通过较大尺寸的卷积核来实现高分辨率的感受野和更大的场景背景。</p>
+</li>
+<li><p>目标检测流程：YoloX采用anchor-free的方式进行预测。具体来说，YoloX使用FCOS（Fully Convolutional One-Stage Object Detection）作为检测器，并采用YOLOv3作为基础模型，在输出特征图之后直接预测边界框及类别概率。</p>
+</li>
+<li><p>Anchor替代：YoloX放弃了传统的Anchor形式，使用FCOS的思路直接预测中心点、宽、高三个值，并且进一步加入IOU Loss以实现最小化输出与真实框间的IOU。</p>
+</li>
+<li><p>SE模块：YoloX还引入了SE（Squeeze-and-Excitation）模块，来增强特征表达能力和适应性。SE模块可以自适应地调整特征图通道间的相互依赖和关系，提升了模型的泛化能力。</p>
+</li>
+<li><p>Loss函数：YoloX采用IoULoss，在FCOS的输出与真实框之间进行最小化。</p>
+</li>
+<li><p>优化器：YoloX使用了不同于其他目标检测算法的Ranger优化器，它是一种基于RAdam和Lookahead two-stage训练的优化器，并具有较好的收敛速度和泛化性能。</p>
+</li>
+</ol>
+<p>总体来说，YoloX在网络结构、Anchor替换、SE模块以及优化器等方面都有一些创新和改进。在COCO数据集上的测试，YoloX获得了目前最高的AP（average precision）值，表现出色。</p>
+<h1 id="🔥IoU与GIoU"><a href="#🔥IoU与GIoU" class="headerlink" title="🔥IoU与GIoU"></a>🔥IoU与GIoU</h1><p>GIoU（Generalized Intersection over Union）是一种应用于目标检测算法中bounding box回归损失函数中的算法。与传统IoU（Intersection over Union）相比，GIoU在提高预测性能的同时，还保持可导性和计算效率。以下是对GIoU算法的详细分析：</p>
+<ol>
+<li>IoU算法：IoU是指交并比，用于评估真实边界框和预测边界框之间的重叠程度，其计算方式为两个边界框的交集面积除以它们的并集面积。IoU可以用来评价目标检测算法的准确性。</li>
+<li>传统的bounding box损失函数：在目标检测算法中，最常用的bounding box损失函数是Smooth L1 Loss。然而，它存在较大的问题，如仅考虑坐标差异不够准确，特别是在小物体检测和密集布置物体的场景下更为明显。</li>
+<li>GIoU算法：GIoU作为IoU的扩展，引入了如何惩罚非对齐的框之间计算出的IoU值的概念，即比如垂直的框之间的IoU值不应该等同于水平的框之间的IoU值。GIoU将IoU的差异与边界框内外形状的重叠程度相结合，提高了对bounding box回归的准确性和稳定性。</li>
+<li>计算方式：GIoU计算时先根据IoU进行如下三项分别加权: $s_{iou}$ (IoU部分)，$s_{ub}$ (gt框与预测框最小面积并的关于最大区域的一致性测量) 和 $s_{inb}$ (预测框内部分的关于最大区域的不一致性测量)。然后依次计算$IoU, s_{ub}, s_{inb}$，最终得到GIoU为$1 - \frac{|(C_g\bigcap C_p)|}{|C_g \bigcup C_p|} + \lambda*(s_{ub} + s_{inb})$，其中$C_g$是真实框集合，$C_p$是预测框集合，$\lambda$是调整权重的超参数。</li>
+</ol>
+<p>总之，GIoU能够更好地考虑bounding box之间的相似性，并在目标检测中获得了很好的效果，被广泛应用于许多当前流行的目标检测算法中，如YoloV5、MMDetection、PaddleDetection等。</p>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://localhost:4000/2023/04/15/Pytorch%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9F%A5%E8%AF%86/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LSTM/" rel="tag">LSTM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pytorch/" rel="tag">Pytorch</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" rel="tag">神经网络</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/05/25/PSIM%E5%8F%8D%E6%BF%80%E5%8F%98%E6%8D%A2%E5%99%A8%E7%9A%84EMI%E5%88%86%E6%9E%90%E5%8F%8A%E4%BC%98%E5%8C%96/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            PSIM反激变换器的EMI分析及优化
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/04/15/%E5%9F%BA%E4%BA%8EPytorch%E7%9A%84LSTM%E7%BD%91%E7%BB%9C%E6%97%B6%E5%BA%8F%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83%E5%8F%8A%E9%A2%84%E6%B5%8B/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">基于Pytorch的LSTM网络时序模型训练及预测</div>
+      </a>
+    
+  </nav>
+
+  
+   
+  
+    
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023-2024
+        <i class="ri-heart-fill heart_icon"></i> LegendLeo Chen
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/mylogo.png" alt="LegendLeo Chen 的空间"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">🚀主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">💾归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">🧭分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">🏷️标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">🛸关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/analytics">📊统计</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/secret">🔐秘密</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=1491212&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+  <!-- 背景气泡 -->
+  <!--
+  <div class="balls-container">
+    <div class="balls-particles">
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+    </div>
+  </div>
+  <style>
+    *
+    {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .balls-container
+    { 
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+    
+    .balls-particles
+    {
+      position: fixed;
+      display: flex;
+      z-index: 3;
+      padding: 0 20px;
+    }
+    
+    .balls-particles span
+    {
+      position: relative;
+      bottom: 30px;
+      width: 30px;
+      height: 30px;
+      background-color: #4fc3dc;
+      box-shadow: 0 0 0 10px #4fc3dc44,
+      0 0 50px #4fc3dc,
+      -100px 0 #4fc3dc99,
+      100px 0 #ff2d7599;
+      margin: 0 4px;
+      border-radius: 50%;
+      animation: animate 15s ease infinite;
+      animation-delay: calc(125s / var(--i));
+      transform: translateY(120vh);
+    }
+    .balls-particles span:nth-child(even) {
+      background-color: #ff2d75;
+      box-shadow: 0 0 0 10px #ff267544,
+      0 0 50px #ff2d75,
+      -100px 0 #4fc3dc99,
+      100px 0 #4fc3dc99;
+      ;
+    }
+    
+    @keyframes animate {
+      0%
+      {
+        transform: translateY(120vh) scale(0) rotate(0deg);
+      }
+      20%
+      {
+        transform: translateY(100vh) scale(1) rotate(0deg);
+      }
+      100%
+      {
+        transform: translateY(-50vh) scale(0.5) rotate(360deg);
+      }
+    }
+  </style> -->
+  <!-- 地月系统 -->
+  <!-- <div class="earth-container" >
+    <div class="planet"></div>
+    <div class="satellite"></div>
+   </div>
+   <style>
+    *{
+      padding: 0;
+      margin: 0;
+      }
+      .earth-container {
+        width: 36.25em;
+        height: 36.25em;
+        position: absolute;
+        top:5%;
+        left: 93%;
+        transform: translate(-50%, -50%);
+        opacity: 0.3;
+      }
+      
+      .planet{
+        width: 15.62*3em;
+        height: 15.62*3em;
+        background-color: #02c0f5;
+        border-radius: 50%;
+        position: absolute;
+        margin: auto;
+        top:0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+      }
+      
+      .planet::before{
+        content: '';
+        width: 4em;
+        height: 4em;
+        background-color: #008fd6;
+        position: absolute;
+        top:10em;
+        left: 8em;
+        border-radius: 50%; 
+        box-shadow: 15em 15em 0 2em #00d68b, 5em 8em 0 3em #10ade1;
+      }
+      
+      .satellite{
+        width: 5em;
+        height: 5em;
+        background-color: #dee517;
+        border-radius: 50%;
+        position: relative;
+        left: -5em;
+        bottom: -30em;
+        animation: spin 5s infinite;
+        z-index: 1;
+      }
+      
+      @keyframes spin {
+        49%{
+          z-index: 1;
+        }
+        50%{
+          bottom: 3em;
+          left: 35em;
+          z-index: -1;
+        }
+        100%{
+          z-index: -1;
+        }
+      }
+    </style> -->
+<!-- 三角彩带背景 -->
+  <canvas id="evanyou-canvas" style="opacity: 0.3; position: fixed; top: 0px; left: 0px; z-index: -1; width: 100%; height: 100%; pointer-events: none;"></canvas>
+  <script src="https://cdn.jsdelivr.net/gh/XXXZhy/Blog_Image/js/evanyou_canvas.js"></script>
+</body>
+
+</html>

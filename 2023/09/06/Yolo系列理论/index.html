@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta name="description" content="一个秘密空间" />
+      
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>YOLO系列理论 |  LegendLeo Chen 的空间</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/mylogo.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+<!-- 封面标闪烁 -->
+<link rel="stylesheet" href="/css/zhyBlogTitle.css">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- jquery，懒加载、统计、说说需要的jquery -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Yolo系列理论"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  YOLO系列理论
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/" class="article-date">
+  <time datetime="2023-09-06T07:39:13.000Z" itemprop="datePublished">2023-09-06</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">3.1k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">11 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p><em>YOLO</em>即<em>You Only Look Once</em>，是一种流行的目标检测算法，用于在图像中实时检测和定位多个对象。YOLO的主要特点是其速度和准确性，它可以在一张图像中同时检测多个不同类别的对象，而不需要多次运行模型，即看一眼就能看出所有目标。<span id="more"></span><br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLO.png" alt="YOLO"></p>
+<h1 id="🔥YOLOv1"><a href="#🔥YOLOv1" class="headerlink" title="🔥YOLOv1"></a>🔥YOLOv1</h1><p>论文： You Only Look Once: Unified, Real-Time Object Detection<br>网址： <a target="_blank" rel="noopener" href="http://pjreddie.com/yolo/">http://pjreddie.com/yolo/</a></p>
+<h2 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h2><ol>
+<li>将一幅图分割成S×S个网格（grid cell），若某个标注框（目标）的中心在这个网格中，这个网格就负责预测该<em>object</em></li>
+<li>每个网格预测B个<em>bounding box</em>，即预测框，每个预测框除了预测位置（x，y，w，h），还要附带一个<em>confidence</em>（置信度，类似IoU，预测与实际框的交并比×预测概率），每个网格还要预测C个类别的分数（是该类目标的概率，各种独立，和不为1）。（x，y）是目标框的中心位置，是相对于负责预测的网格的，不会超过该网格<blockquote>
+<p>举个例子：对于<em>PASCAL VOC</em>数据集（20类，即C&#x3D;20），取S&#x3D;7，B&#x3D;2，那么需要预测的参数个数就是7×7×30，即7×7个网格，每个网格测20个类、2个框（每个框是x，y，w，h，confidence五个值），20+2×5&#x3D;30</p>
+</blockquote>
+</li>
+</ol>
+<p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv1%E9%A2%84%E6%B5%8B%E5%8F%82%E6%95%B0.png" alt="YOLOv1预测参数"></p>
+<h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv1%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84.png" alt="YOLOv1网络结构"></p>
+<ul>
+<li>网络结构如上，通过多个卷积层和最大池化层之后，通过展平（flatten）及全连接层（fc）得到4096大小的向量，再通过全连接变成7×7×30的参数</li>
+<li>损失函数：Loss &#x3D; bounding box损失 + confidence损失 + classes损失</li>
+</ul>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ol>
+<li>YOLOv1检测聚集的小目标时效果不好</li>
+<li>当目标出现新的尺寸时检测效果差</li>
+<li>主要的错误都来自于定位不准确</li>
+</ol>
+<h1 id="🔥YOLOv2"><a href="#🔥YOLOv2" class="headerlink" title="🔥YOLOv2"></a>🔥YOLOv2</h1><p>论文： YOLO9000: Better, Faster, Stronger<br>网址： <a target="_blank" rel="noopener" href="http://pjreddie.com/yolo9000/">http://pjreddie.com/yolo9000/</a></p>
+<ul>
+<li>性能更好，可以检测超过9000个目标，mAP最大能到78.6（544×544输入，40FPS），比YOLOv1的63.4高出不少<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv2%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84.png" alt="YOLOv2网络结构"></li>
+</ul>
+<h2 id="Better"><a href="#Better" class="headerlink" title="Better"></a>Better</h2><ol>
+<li><p>Batch Normalization：添加BN层（标准化）助于收敛，减少正则化处理，可以不用dropout来防止过拟合，上图网络结构当中，每个convolutional层都由卷积层、BN层、LeakyReLU函数组成</p>
+</li>
+<li><p>High Resolution Classifier：更高分辨率的分类器，之前是224×224，现在采用448×448</p>
+</li>
+<li><p>Convolutional With Anchor Boxes：v1定位效果不好，采用基于anchor的预测可以简化边界框预测问题，使网络更快学习收敛，提升了召回率（不漏测的概率）</p>
+</li>
+<li><p>Dimension Clusters：使用kmeans聚类获取anchor，减少人为操作对经验的要求</p>
+<blockquote>
+<p>Anchor boxes（锚框）是一组预定义的框，每个框具有固定的尺寸和长宽比。YOLO算法使用这些锚框来预测图像中的目标位置。在每个网格单元（Grid cell）上，YOLO会为每个锚框生成预测，以确定哪个锚框最适合包围图像中的目标。对于每个标注（GT,ground truth）可能会有多个不同尺寸的anchor来计算<br>这些anchor boxes允许模型在不同尺寸和长宽比的目标上进行预测，从而提高了模型的泛化能力。通过使用多个锚框，YOLO可以同时检测各种不同大小和形状的目标，而无需多个不同尺度的检测器。</p>
+</blockquote>
+</li>
+<li><p>Direct Location Prediction：将预测位置通过sigmoid函数映射到0-1，保证每个anchor只负责预测目标中心有落在区域（grid cell）内的目标。提升稳定性，使得定位不会乱跑。</p>
+</li>
+<li><p>Fine-Grained Features：观察v2的网络结构，其中有一路分支将高低层的信息通过 <em>PassThrough Layer</em>进行融合，低层的信息往往具有更多细节（未池化），利于识别小目标<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/PassThrough%E5%B1%82%E6%93%8D%E4%BD%9C%E8%BF%87%E7%A8%8B.png" alt="PassThrough层操作过程"><br>如上，通过将高分辨率的图像拆分成多个更小的矩阵，获得更高通道数的低分辨率（高层）的信息形式，这种采样即<strong>Focus</strong>操作</p>
+</li>
+<li><p>Multi-Scale Training：将图片缩放到不同尺度进行训练，提升鲁棒性。每迭代10个batch就随机地缩放图片，缩放因子是32，即尺寸是32整数倍，最小320×320，最大608×608</p>
+</li>
+</ol>
+<h2 id="Faster"><a href="#Faster" class="headerlink" title="Faster"></a>Faster</h2><p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv2%E4%B8%BB%E5%B9%B2%E7%BD%91%E7%BB%9C.png" alt="YOLOv2主干网络"><br>使用Darknet-19（19个卷积层）网络，ImageNet数据集，训练达到72.9%的top-1准确度，91.2%的top-5准确度</p>
+<blockquote>
+<p>之前提到，预测目标时会对每个类都计算概率，Top-1指的是概率最大的类别就是该目标所属的类别（即正确的类别），Top-5指的是概率前5中有正确的类别</p>
+</blockquote>
+<h1 id="🔥YOLOv3"><a href="#🔥YOLOv3" class="headerlink" title="🔥YOLOv3"></a>🔥YOLOv3</h1><p>论文： YOLOv3: An Incremental Improvement<br>使用Darknet-53网络，速度比ResNet-152快两倍多，但是top-1准确率相当。</p>
+<blockquote>
+<p>Darknet和Resnet区别，虽然都有残差层，但是前者下采样（降低分辨率）不依靠池化层，而是使用卷积层</p>
+</blockquote>
+<p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv3%E9%A2%84%E6%B5%8B%E8%BE%B9%E7%95%8C%E6%A1%86.png" alt="YOLOv3预测边界框"></p>
+<ul>
+<li>和v2的一样，通过Sigmoid函数将bx和by限制在负责该目标检测的网格内，保证预测的目标中心不超过网格。图中虚线框是anchor，蓝色代表预测框</li>
+</ul>
+<p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv3%E6%AD%A3%E6%A0%B7%E6%9C%AC.png" alt="YOLOv3正样本"></p>
+<ul>
+<li>正样本扩充：如上图，将多个尺寸不同的anchor（AT）和GT进行IoU计算预测，若大于阈值，则确认是正样本，即此时GT中心落在的这个网格所对应的AT为正样本，如果有多个AT都符合则存在多个正样本。没匹配到目标的就是负样本</li>
+<li>损失计算：Loss &#x3D; a×置信度损失 + b×分类损失 + c×定位损失，a、b、c是平衡系数</li>
+</ul>
+<h2 id="YOLOv3-SPP"><a href="#YOLOv3-SPP" class="headerlink" title="YOLOv3 SPP"></a>YOLOv3 SPP</h2><ul>
+<li><p>YOLOv3 SPP 是 YOLOv3 模型的一个变种，其中的 “SPP” 意为 “Spatial Pyramid Pooling”（空间金字塔池化），它是一种池化层的结构。这个结构的主要目的是改进 YOLOv3 的感受野，使其能够检测不同尺寸的目标。</p>
+</li>
+<li><p>Mosaic图像增强：将多张图拼接起来，增加了数据多样性、目标个数，BN也可以一次性统计多个图像的参数</p>
+</li>
+</ul>
+<p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/SPP%E6%A8%A1%E5%9D%97.png" alt="SPP模块"></p>
+<ul>
+<li><p>SPP模块如上，通过不同的池化层实现了不同尺度信息的融合</p>
+</li>
+<li><p>IoU Loss：基于IoU计算的损失，当两框完全不相交时无法计算<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/GIoU%E6%8D%9F%E5%A4%B1.png" alt="GIoU损失"></p>
+</li>
+<li><p>GIoU Loss（Generalized）：如上，A是指蓝框部分面积（能框住两框的最小矩形），u是指两框并集，这样GIoU可以计算两框完全不相交的时候的损失。但是GIoU和IoU都存在收敛慢的问题。<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/DIoU%E6%8D%9F%E5%A4%B1.png" alt="DIoU损失"></p>
+</li>
+<li><p>DIoU Loss（Distance）：通过对两框的欧氏距离的引入可以直接最小化两个boxes的间距，收敛快。<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/CIoU%E6%8D%9F%E5%A4%B1.png" alt="CIoU损失"></p>
+</li>
+<li><p>CIoU Loss（Complete）：将重叠面积、中心点距离、长宽比结合的优秀的回归定位损失。</p>
+</li>
+</ul>
+<h1 id="🔥YOLOv4"><a href="#🔥YOLOv4" class="headerlink" title="🔥YOLOv4"></a>🔥YOLOv4</h1><p>论文： YOLOv4: Optimal Speed and Accuracy of Object Detection<br>网址： <a target="_blank" rel="noopener" href="http://arxiv.org/abs/2004.10934">http://arxiv.org/abs/2004.10934</a></p>
+<h2 id="网络结构-1"><a href="#网络结构-1" class="headerlink" title="网络结构"></a>网络结构</h2><p>采用了SPP结构，和v3的类似不再赘述<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv4%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84CSP%E7%BB%93%E6%9E%84.png" alt="CSP结构"><br>CSP结构能提升网络加快网络的推理速度、减少对显存的使用、提升学习能力，这种跳跃连接的分支结构和ResNet残差结构有异曲同工之处<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv4%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84PAN%E7%BB%93%E6%9E%84.png" alt="PAN结构"><br>在图中a部分的特征金字塔FPN（从高层向底层融合）的基础上增加了b部分的从低层向高层融合的部分<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv4%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84.png" alt="YOLOv4网络结构"><br>v4的整体结构如上，对于不同尺度都有对应的输出，即PAN</p>
+<blockquote>
+<p>一个卷积层中k代表卷积核大小，s代表卷积核移动的步长，p代表外补丁padding，c代表通道数（深度）</p>
+</blockquote>
+<h2 id="优化策略"><a href="#优化策略" class="headerlink" title="优化策略"></a>优化策略</h2><p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv4%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5.png" alt="消除grid敏感度（Eliminate grid sensitivity）"></p>
+<ul>
+<li>以往，当GT（标注）的中心在网格的左上角时，我们希望bx中sigmoid函数（σ）的值为0，但是sigmoid函数只有当x接近负无穷时才能到达0。如上图，v4采用优化策略Eliminate grid sensitivity，将sigmoid的值乘以scale来扩大值域解决这个问题，通常scale取2，bx和by的范围也从(-1,1)扩充到(-0.5,1.5)。</li>
+<li>同v3，v4也采用了图像拼接Mosaic来丰富数据集，不再赘述</li>
+</ul>
+<p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv4%E8%BF%9B%E4%B8%80%E6%AD%A5%E6%89%A9%E5%85%85%E6%AD%A3%E6%A0%B7%E6%9C%AC.png" alt="YOLOv4进一步扩充正样本 "></p>
+<ul>
+<li>IoU threshold（match positive samples），v3中的正样本选取中，当一个网格有多个AT正样本时会同时分配，在v4中，由于之前提到的优化策略扩大了sigmoid的值域，使得bx和by的范围也从(-1,1)扩充到(-0.5,1.5)，负责预测的范围扩大了。所以如图，<strong>一个GT的中心可以处在三个网格的负责预测的范围之内</strong>。这就使得只有GT的中心在网格中心时，才会出现仅一个网格负责该GT的情况。</li>
+</ul>
+<h1 id="🔥YOLOv5"><a href="#🔥YOLOv5" class="headerlink" title="🔥YOLOv5"></a>🔥YOLOv5</h1><p>没有出论文<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv5%E4%BD%8E%E5%88%86%E8%BE%A8%E7%8E%87.png" alt="YOLOv5低分辨率"><br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv5%E9%AB%98%E5%88%86%E8%BE%A8%E7%8E%87.png" alt="YOLOv5高分辨率"></p>
+<ul>
+<li>第一张图是针对低分辨率（640）的图像，第二张图带6的是针对高分辨率（1280）的图像。可以看到v5的速度是比较快的</li>
+</ul>
+<h2 id="网络结构-2"><a href="#网络结构-2" class="headerlink" title="网络结构"></a>网络结构</h2><p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv5%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84.png" alt="YOLOv5网络结构"></p>
+<ul>
+<li>同样采用了CSP、PAN结构<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/SPPF%E6%A8%A1%E5%9D%97.png" alt="SPPF模块"></li>
+<li>v5中将SPP改成SPPF模块，将原本的并行输出改为串行后分别输出，两个k5最大池化和一个k9等效，3个k5和一个k13等效，上下完全等效，但是SPPF效率更高计算量下降（快了2倍以上）</li>
+</ul>
+<h2 id="数据增强"><a href="#数据增强" class="headerlink" title="数据增强"></a>数据增强</h2><ul>
+<li>图像拼接Mosaic，同v3、v4<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/Copy_paste.png" alt="Copy paste"></li>
+<li>Copy paste将图像中的目标分割出来，复制粘贴到其他图像中，需要有对目标分割的标签。</li>
+<li>Random affine，随机变换，包括旋转、缩放、平移等基本操作</li>
+<li>MixUp，将两个图片按不同透明度合成</li>
+<li>Albumentations，滤波、直方图均衡化以及改变图片质量等图像处理操作</li>
+<li>Augment HSV，调整饱和度、浓度等色彩属性</li>
+<li>Random horizontal flip，水平翻转</li>
+</ul>
+<h2 id="训练策略"><a href="#训练策略" class="headerlink" title="训练策略"></a>训练策略</h2><ul>
+<li>多尺度训练（0.5—1.5倍，且32倍数）</li>
+<li>自动为尺度变化大的目标重新聚类生成新anchor</li>
+<li>warmup，热身训练，学习率从很小的值逐渐增长到设定的值；余弦变化降低学习率（余弦退火）</li>
+<li>EMA，为学习变量增加动量，使得参数变化平滑</li>
+<li>Mixed precision，混合精度训练，减少对GPU显存占用，加快训练，需要GPU支持</li>
+<li>Evolve hyper-parameters，超参数</li>
+</ul>
+<h2 id="损失计算"><a href="#损失计算" class="headerlink" title="损失计算"></a>损失计算</h2><p>分类损失：BCE Loss，只计算正样本的损失<br>obj损失：BCE Loss，obj是预测目标边界框和GT的CIoU，计算所有样本<br>定位损失：CIoU Loss，只计算正样本的损失</p>
+<h2 id="优化策略-1"><a href="#优化策略-1" class="headerlink" title="优化策略"></a>优化策略</h2><p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv5%E9%99%90%E5%88%B6w%E5%92%8Ch.png" alt="YOLOv5限制w和h"></p>
+<ul>
+<li>v4当中，消除了grid的敏感度，但是w和h的值域不受限制，v5中更改了计算公式解决了这个问题<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOv5%E5%8C%B9%E9%85%8D%E6%AD%A3%E6%A0%B7%E6%9C%AC.png" alt="匹配正样本"></li>
+<li>v5中使用多个尺度的anchor来匹配正样本，当GT在0.25倍到4倍anchor之间时匹配为正样本</li>
+</ul>
+<h1 id="🔥YOLOX"><a href="#🔥YOLOX" class="headerlink" title="🔥YOLOX"></a>🔥YOLOX</h1><p>论文：YOLOX: Exceeding YOLO Series in 2021<br>网址：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2107.08430">https://arxiv.org/abs/2107.08430</a></p>
+<p>对标YOLOv5，有一定性能提升。选择X和v5：分辨率高时使用v5（带6的权重模型），分辨率低两者皆可。</p>
+<h2 id="网络结构-3"><a href="#网络结构-3" class="headerlink" title="网络结构"></a>网络结构</h2><p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOX%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84.png" alt="YOLOX网络结构"><br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/YOLOX%E8%A7%A3%E8%80%A6%E6%A3%80%E6%B5%8B%E5%A4%B4.png" alt="解耦检测头"></p>
+<ul>
+<li>与v5相比，使用不同的head（解耦检测头），这能加速收敛，提升AP。</li>
+<li>解耦检测头：将输出分为类别检测（Cls）、预测目标回归（Reg）、预测obj（Obj&#x2F;IoU）三个分支，网络结构图中三个检测头参数不共享</li>
+</ul>
+<h2 id="Anchor-Free"><a href="#Anchor-Free" class="headerlink" title="Anchor-Free"></a>Anchor-Free</h2><p>YOLOX借鉴FCOS网络使用了Anchor-Free。<br>之前的这些YOLO系列网络都是Anchor-Base网络，基于Anchor的网络，存在一些问题：</p>
+<ol>
+<li>首先检测器性能与Anchor大小和高宽比相关性很大；</li>
+<li>一般Anchor的大小和高宽比固定，很难处理形状变化大的目标（书本的横竖放置），迁移到其他任务还需要重新设计；</li>
+<li>为了更高的召回率，需要生成上万个anchor boxes，这使得大部分boxes都会是负样本，正样本分布极度不均；</li>
+<li>anchor也使得训练很繁琐，计算量大。</li>
+</ol>
+<p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/Anchor-Free.png" alt="Anchor-Free Regression"><br>head中可以看到，regression部分预测的4个参数，预测点与预测目标四侧的距离与预测点坐标进行运算，得到预测目标左上角和右下角的坐标。<br><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/Anchor-Free2.png" alt="Anchor-Free Centerness"><br>centerness预测的参数反映了预测点和预测目标中心的远近，centerness为0在边界，为1在中心。</p>
+<h2 id="优化策略-2"><a href="#优化策略-2" class="headerlink" title="优化策略"></a>优化策略</h2><p><img src="/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/SimOTA.png" alt="SimOTA"></p>
+<ul>
+<li>正负样本匹配SimOTA，将匹配样本的过程视为以最低成本cost将GT分配给对应样本的问题</li>
+</ul>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://localhost:4000/2023/09/06/Yolo%E7%B3%BB%E5%88%97%E7%90%86%E8%AE%BA/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BN/" rel="tag">BN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/YOLO/" rel="tag">YOLO</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/09/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%EF%BC%9AResNet%E7%BD%91%E7%BB%9C%EF%BC%8CBN%E5%8F%8A%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            机器学习：ResNet网络，BN及迁移学习
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/09/05/%E5%9B%9B%E5%A4%A7%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">四大优化算法——粒子群、蚁群、退火</div>
+      </a>
+    
+  </nav>
+
+  
+   
+  
+    
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023-2024
+        <i class="ri-heart-fill heart_icon"></i> LegendLeo Chen
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/mylogo.png" alt="LegendLeo Chen 的空间"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">🚀主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">💾归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">🧭分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">🏷️标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">🛸关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/analytics">📊统计</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/secret">🔐秘密</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=1491212&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+  <!-- 背景气泡 -->
+  <!--
+  <div class="balls-container">
+    <div class="balls-particles">
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+    </div>
+  </div>
+  <style>
+    *
+    {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .balls-container
+    { 
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+    
+    .balls-particles
+    {
+      position: fixed;
+      display: flex;
+      z-index: 3;
+      padding: 0 20px;
+    }
+    
+    .balls-particles span
+    {
+      position: relative;
+      bottom: 30px;
+      width: 30px;
+      height: 30px;
+      background-color: #4fc3dc;
+      box-shadow: 0 0 0 10px #4fc3dc44,
+      0 0 50px #4fc3dc,
+      -100px 0 #4fc3dc99,
+      100px 0 #ff2d7599;
+      margin: 0 4px;
+      border-radius: 50%;
+      animation: animate 15s ease infinite;
+      animation-delay: calc(125s / var(--i));
+      transform: translateY(120vh);
+    }
+    .balls-particles span:nth-child(even) {
+      background-color: #ff2d75;
+      box-shadow: 0 0 0 10px #ff267544,
+      0 0 50px #ff2d75,
+      -100px 0 #4fc3dc99,
+      100px 0 #4fc3dc99;
+      ;
+    }
+    
+    @keyframes animate {
+      0%
+      {
+        transform: translateY(120vh) scale(0) rotate(0deg);
+      }
+      20%
+      {
+        transform: translateY(100vh) scale(1) rotate(0deg);
+      }
+      100%
+      {
+        transform: translateY(-50vh) scale(0.5) rotate(360deg);
+      }
+    }
+  </style> -->
+  <!-- 地月系统 -->
+  <!-- <div class="earth-container" >
+    <div class="planet"></div>
+    <div class="satellite"></div>
+   </div>
+   <style>
+    *{
+      padding: 0;
+      margin: 0;
+      }
+      .earth-container {
+        width: 36.25em;
+        height: 36.25em;
+        position: absolute;
+        top:5%;
+        left: 93%;
+        transform: translate(-50%, -50%);
+        opacity: 0.3;
+      }
+      
+      .planet{
+        width: 15.62*3em;
+        height: 15.62*3em;
+        background-color: #02c0f5;
+        border-radius: 50%;
+        position: absolute;
+        margin: auto;
+        top:0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+      }
+      
+      .planet::before{
+        content: '';
+        width: 4em;
+        height: 4em;
+        background-color: #008fd6;
+        position: absolute;
+        top:10em;
+        left: 8em;
+        border-radius: 50%; 
+        box-shadow: 15em 15em 0 2em #00d68b, 5em 8em 0 3em #10ade1;
+      }
+      
+      .satellite{
+        width: 5em;
+        height: 5em;
+        background-color: #dee517;
+        border-radius: 50%;
+        position: relative;
+        left: -5em;
+        bottom: -30em;
+        animation: spin 5s infinite;
+        z-index: 1;
+      }
+      
+      @keyframes spin {
+        49%{
+          z-index: 1;
+        }
+        50%{
+          bottom: 3em;
+          left: 35em;
+          z-index: -1;
+        }
+        100%{
+          z-index: -1;
+        }
+      }
+    </style> -->
+<!-- 三角彩带背景 -->
+  <canvas id="evanyou-canvas" style="opacity: 0.3; position: fixed; top: 0px; left: 0px; z-index: -1; width: 100%; height: 100%; pointer-events: none;"></canvas>
+  <script src="https://cdn.jsdelivr.net/gh/XXXZhy/Blog_Image/js/evanyou_canvas.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta name="description" content="一个秘密空间" />
+      
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>数据结构第八章 排序 |  LegendLeo Chen 的空间</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/mylogo.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+<!-- 封面标闪烁 -->
+<link rel="stylesheet" href="/css/zhyBlogTitle.css">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- jquery，懒加载、统计、说说需要的jquery -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-数据结构第八章-排序"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  数据结构第八章 排序
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/" class="article-date">
+  <time datetime="2023-03-11T08:58:23.000Z" itemprop="datePublished">2023-03-11</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA/">计算机</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">3.3k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">13 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <table>
+<thead>
+<tr>
+<th align="center">系列链接</th>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><a href="/2023/03/04/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E4%B8%80%E7%AB%A0-%E6%A6%82%E8%BF%B0/" title="数据结构第一章 概述">第一章 概述</a></td>
+<td align="center"><a href="/2023/03/05/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E7%BA%BF%E6%80%A7%E8%A1%A8/" title="数据结构第二章 线性表">第二章 线性表</a></td>
+<td align="center"><a href="/2023/03/06/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E4%B8%89%E7%AB%A0-%E6%A0%88%E4%B8%8E%E9%98%9F%E5%88%97/" title="数据结构第三章 栈与队列">第三章 栈与队列</a></td>
+<td align="center"><a href="/2023/03/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E4%B8%B2/" title="数据结构第四章 串">第四章 串</a></td>
+</tr>
+<tr>
+<td align="center"><a href="/2023/03/07/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E4%BA%94%E7%AB%A0-%E6%A0%91%E4%B8%8E%E4%BA%8C%E5%8F%89%E6%A0%91/" title="数据结构第五章 树与二叉树">第五章 树与二叉树</a></td>
+<td align="center"><a href="/2023/03/08/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AD%E7%AB%A0-%E5%9B%BE/" title="数据结构第六章 图">第六章 图</a></td>
+<td align="center"><a href="/2023/03/10/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E4%B8%83%E7%AB%A0-%E6%9F%A5%E6%89%BE/" title="数据结构第七章 查找">第七章 查找</a></td>
+<td align="center"><a href="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/" title="数据结构第八章 排序">第八章 排序</a></td>
+</tr>
+</tbody></table>
+<h1 id="🔥基本概念"><a href="#🔥基本概念" class="headerlink" title="🔥基本概念"></a>🔥基本概念</h1><ul>
+<li>排序稳定性：序列中两个相同关键字的元素在排序之后，之前在左边的关键字还在左边，<span id="more"></span>右边的还在右边，即相对位置不变，这就是<strong>稳定的排序</strong></li>
+<li>不稳定的排序不一定比稳定的排序算法差，这取决于需求</li>
+<li>排序分为<strong>内部排序</strong>（数据都在内存中）和<strong>外部排序</strong>（数据很多无法都放在内存里）。内部排序追求时间复杂度和空间复杂度低，外部排序追求<strong>磁盘读写次数少</strong></li>
+</ul>
+<h1 id="🔥内部排序"><a href="#🔥内部排序" class="headerlink" title="🔥内部排序"></a>🔥内部排序</h1><h2 id="✍插入排序"><a href="#✍插入排序" class="headerlink" title="✍插入排序"></a>✍插入排序</h2><ul>
+<li>思路：依次将待排序的数据（记录）按关键字大小插入到之前已经排好序的子序列当中。是以类似顺序查找的方式插入<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E6%8F%92%E5%85%A5%E6%8E%92%E5%BA%8F.png" alt="插入排序"></li>
+</ul>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">//直接插入排序</span>
+<span class="token keyword">void</span> <span class="token function">InsertSort</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">int</span> i<span class="token punctuation">,</span>j<span class="token punctuation">,</span>temp<span class="token punctuation">;</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span>i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span>n<span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span>        <span class="token comment" spellcheck="true">//各元素前插到已经排好序的序列中</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>A<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">&lt;</span>A<span class="token punctuation">[</span>i<span class="token number">-1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>      <span class="token comment" spellcheck="true">//若A[i]关键字小于前驱</span>
+      temp<span class="token operator">=</span>A<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//temp暂存A[i]</span>
+      <span class="token keyword">for</span><span class="token punctuation">(</span>j<span class="token operator">=</span>i<span class="token number">-1</span><span class="token punctuation">;</span>j<span class="token operator">>=</span><span class="token number">0</span> <span class="token operator">&amp;&amp;</span> A<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token operator">></span>temp<span class="token punctuation">;</span><span class="token operator">--</span>j<span class="token punctuation">)</span>      <span class="token comment" spellcheck="true">//检查所有前面已经排好的元素，倒查保证稳定性</span>
+        A<span class="token punctuation">[</span>j<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//所有大于temp的元素向后挪</span>
+      A<span class="token punctuation">[</span>j<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">=</span>temp<span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//复制到插入的位置</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//直接插入排序（带哨兵）</span>
+<span class="token keyword">void</span> <span class="token function">InsertSort</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">int</span> i<span class="token punctuation">,</span>j<span class="token punctuation">;</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span>i<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">;</span>i<span class="token operator">&lt;=</span>n<span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span>        <span class="token comment" spellcheck="true">//依次将A[2]到A[n]前插到已经排好序的序列中</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>A<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">&lt;</span>A<span class="token punctuation">[</span>i<span class="token number">-1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>      <span class="token comment" spellcheck="true">//若A[i]关键字小于前驱，将A[i]插入有序表</span>
+      A<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//复制为哨兵，A[0]不存放元素</span>
+      <span class="token keyword">for</span><span class="token punctuation">(</span>j<span class="token operator">=</span>i<span class="token number">-1</span><span class="token punctuation">;</span>A<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">&lt;</span>A<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token operator">--</span>j<span class="token punctuation">)</span>      <span class="token comment" spellcheck="true">//向前查找待插入的位置</span>
+        A<span class="token punctuation">[</span>j<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//向后挪</span>
+      A<span class="token punctuation">[</span>j<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//复制到插入的位置</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>优化——折半插入排序，前插的时候进行类似折半查找地判断然后插入，提高效率</li>
+</ul>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token function">InsertSort</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">int</span> i<span class="token punctuation">,</span>j<span class="token punctuation">,</span>low<span class="token punctuation">,</span>high<span class="token punctuation">,</span>mid<span class="token punctuation">;</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span>i<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">;</span>i<span class="token operator">&lt;=</span>n<span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    A<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    low<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>high<span class="token operator">=</span>i<span class="token number">-1</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span>low<span class="token operator">&lt;=</span>high<span class="token punctuation">)</span><span class="token punctuation">{</span>
+      mid<span class="token operator">=</span><span class="token punctuation">(</span>low<span class="token operator">+</span>high<span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//中间点</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>A<span class="token punctuation">[</span>mid<span class="token punctuation">]</span><span class="token operator">></span>A<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>   high<span class="token operator">=</span>mid<span class="token number">-1</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">//查左半边</span>
+      <span class="token keyword">else</span> low<span class="token operator">=</span>mid<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//查右半边</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span>j<span class="token operator">=</span>i<span class="token number">-1</span><span class="token punctuation">;</span>j<span class="token operator">>=</span>high<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">;</span><span class="token operator">--</span>j<span class="token punctuation">)</span>
+      A<span class="token punctuation">[</span>j<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//后移</span>
+    A<span class="token punctuation">[</span>high<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>可以对链表进行插入排序，操作指针比较多，时间复杂度差不多</li>
+</ul>
+<h2 id="✍希尔排序"><a href="#✍希尔排序" class="headerlink" title="✍希尔排序"></a>✍希尔排序</h2><ul>
+<li>（ShellSort）思路：先实现局部的有序，再逐步逼近完全有序</li>
+<li>先将排序表分割成若干个子表L[i,i+d,i+2d,…,i+kd]（每个子表都是原序列的等间隔元素），对每个子表进行插入排序。然后缩小d，如此往复直到d&#x3D;1为止<blockquote>
+<p>举例如下（蓝色是未排序，绿色已排序）：<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%E7%AC%AC%E4%B8%80%E8%B6%9F.png" alt="希尔排序第一趟"><br>第二趟d由4变2：<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%E7%AC%AC%E4%BA%8C%E8%B6%9F.png" alt="希尔排序第二趟"><br>最后一趟就结束：<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E5%B8%8C%E5%B0%94%E6%8E%92%E5%BA%8F%E7%AC%AC%E4%B8%89%E8%B6%9F.png" alt="希尔排序第三趟"></p>
+</blockquote>
+</li>
+</ul>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">//希尔排序</span>
+<span class="token keyword">void</span> <span class="token function">ShellSort</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">int</span> d<span class="token punctuation">,</span>i<span class="token punctuation">,</span>j<span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">//A[0]是暂存单元，不是哨兵，j&lt;=0时插入位置已到</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span>d<span class="token operator">=</span>n<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">;</span>d<span class="token operator">>=</span><span class="token number">1</span><span class="token punctuation">;</span>d<span class="token operator">=</span>d<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">)</span>   <span class="token comment" spellcheck="true">//步长变化</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span>i<span class="token operator">=</span>d<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">&lt;=</span>n<span class="token punctuation">;</span><span class="token operator">++</span>i<span class="token punctuation">)</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>A<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">&lt;</span>A<span class="token punctuation">[</span>i<span class="token operator">-</span>d<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">//需要将A[i]插入有序增量子表</span>
+        A<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//暂存</span>
+        <span class="token keyword">for</span><span class="token punctuation">(</span>j<span class="token operator">=</span>i<span class="token operator">-</span>d<span class="token punctuation">;</span>j<span class="token operator">></span><span class="token number">0</span> <span class="token operator">&amp;&amp;</span> A<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">&lt;</span>A<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>j<span class="token operator">-</span><span class="token operator">=</span>d<span class="token punctuation">)</span>
+          A<span class="token punctuation">[</span>j<span class="token operator">+</span>d<span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//数据后移，查找插入位置</span>
+        A<span class="token punctuation">[</span>j<span class="token operator">+</span>d<span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//插入</span>
+      <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>希尔排序时间复杂度和d有关，但是最差也能和插入排序齐平，是一个<strong>不稳定</strong>的排序算法，仅适用<strong>顺序表</strong></li>
+</ul>
+<h2 id="✍交换排序"><a href="#✍交换排序" class="headerlink" title="✍交换排序"></a>✍交换排序</h2><ul>
+<li>基于<strong>交换</strong>的排序</li>
+</ul>
+<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><ul>
+<li>属于<strong>交换排序</strong>。思路：按顺序（从前往后或者从后往前）进行两两比较和交换（逆序时交换），直到任意两个元素都比较完（排列组合）。c语言入门的重点算法，就不用过多叙述。</li>
+</ul>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token function">BubbleSort</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">int</span> temp<span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//交换的中间变量</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span>n<span class="token number">-1</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">bool</span> flag<span class="token operator">=</span><span class="token boolean">false</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//是否发生交换</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> j<span class="token operator">=</span>n<span class="token number">-1</span><span class="token punctuation">;</span>j<span class="token operator">></span>i<span class="token punctuation">;</span>j<span class="token operator">--</span><span class="token punctuation">)</span>    <span class="token comment" spellcheck="true">//一趟冒泡</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>A<span class="token punctuation">[</span>j<span class="token number">-1</span><span class="token punctuation">]</span><span class="token operator">></span>A<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">//若逆序</span>
+        temp <span class="token operator">=</span> A<span class="token punctuation">[</span>j<span class="token number">-1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        A<span class="token punctuation">[</span>j<span class="token number">-1</span><span class="token punctuation">]</span> <span class="token operator">=</span> A<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        A<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> temp<span class="token punctuation">;</span>
+        flag <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>flag<span class="token operator">==</span><span class="token boolean">false</span><span class="token punctuation">)</span>
+      <span class="token keyword">return</span><span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//本趟遍历后没有交换，就说明已经有序，可以提早结束</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>冒泡排序是<strong>稳定的</strong>，也<strong>可以用于链表</strong></li>
+</ul>
+<h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><ul>
+<li>也属于<strong>交换排序</strong>，是一种性能很好的排序</li>
+<li>思路：进行多次划分，每次划分选择一个元素（<strong>枢轴元素</strong>，一般从头开始）将其他元素中比它大（或等）的放在一边，比它小的放在另一边，就能直接确定该元素的准确位置。</li>
+<li>举例如下：选择第一个元素，low和high两个指针放在两边，逐步向中间移动，随着元素位置划分，空位不断发生变化<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E4%B8%BE%E4%BE%8B1.png" alt="快速排序举例1"></li>
+<li>最后low和high重合，这个空位就是该元素的最终位置<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E4%B8%BE%E4%BE%8B2.png" alt="快速排序举例2"></li>
+<li>最后该枢轴元素左右各产生了一个子表，继续对两个表分别重复上述操作，最后就能实现排序</li>
+</ul>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">//用一个元素将待排序的序列分为左右两个部分</span>
+<span class="token keyword">int</span> <span class="token function">Partition</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> low<span class="token punctuation">,</span><span class="token keyword">int</span> high<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">int</span> pivot<span class="token operator">=</span>A<span class="token punctuation">[</span>low<span class="token punctuation">]</span><span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//第一个元素作为枢轴</span>
+  <span class="token keyword">while</span><span class="token punctuation">(</span>low<span class="token operator">&lt;</span>high<span class="token punctuation">)</span><span class="token punctuation">{</span>      <span class="token comment" spellcheck="true">//用low、high搜索枢轴最终位置</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span>low<span class="token operator">&lt;</span>high <span class="token operator">&amp;&amp;</span> A<span class="token punctuation">[</span>high<span class="token punctuation">]</span><span class="token operator">>=</span>pivot<span class="token punctuation">)</span> <span class="token operator">--</span>high<span class="token punctuation">;</span>
+    A<span class="token punctuation">[</span>low<span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span>high<span class="token punctuation">]</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//比枢轴小的元素移动到左端</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span>low<span class="token operator">&lt;</span>high <span class="token operator">&amp;&amp;</span> A<span class="token punctuation">[</span>low<span class="token punctuation">]</span><span class="token operator">&lt;=</span>pivot<span class="token punctuation">)</span>  <span class="token operator">++</span>low<span class="token punctuation">;</span>
+    A<span class="token punctuation">[</span>high<span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span>low<span class="token punctuation">]</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//比枢轴大的元素移到右端</span>
+  <span class="token punctuation">}</span>
+  A<span class="token punctuation">[</span>low<span class="token punctuation">]</span><span class="token operator">=</span>pivot<span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//枢轴元素存放的最终位置</span>
+  <span class="token keyword">return</span> low<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//快速排序</span>
+<span class="token keyword">void</span> <span class="token function">QuickSort</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> low<span class="token punctuation">,</span><span class="token keyword">int</span> high<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span>low<span class="token operator">&lt;</span>high<span class="token punctuation">)</span><span class="token punctuation">{</span>   <span class="token comment" spellcheck="true">//递归跳出的条件</span>
+    <span class="token keyword">int</span> pivotpos<span class="token operator">=</span><span class="token function">Partition</span><span class="token punctuation">(</span>A<span class="token punctuation">,</span>low<span class="token punctuation">,</span>high<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">//划分</span>
+    <span class="token function">QuickSort</span><span class="token punctuation">(</span>A<span class="token punctuation">,</span>low<span class="token punctuation">,</span>pivotpos<span class="token number">-1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//划分左子表</span>
+    <span class="token function">QuickSort</span><span class="token punctuation">(</span>A<span class="token punctuation">,</span>pivotpos<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">,</span>high<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">//划分右子表</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>快速排序如果没次划分都能分出很均匀的左右子表，那么效率将最高，原本就已经排好序的序列反而是最费时的情况</li>
+<li>因此想要优化算法，就可以在头中尾选出三个数，取其中中间值作为枢轴，很大程度地避免选到极端的值</li>
+<li>快速排序是<strong>不稳定</strong>的</li>
+</ul>
+<h2 id="✍选择排序"><a href="#✍选择排序" class="headerlink" title="✍选择排序"></a>✍选择排序</h2><ul>
+<li>每步都找到未排序序列中的最值进行排序。</li>
+</ul>
+<h3 id="简单选择排序"><a href="#简单选择排序" class="headerlink" title="简单选择排序"></a>简单选择排序</h3><ul>
+<li>属于<strong>选择排序</strong>，思路：在每趟排序中选择最小的值放到前面的有序序列。方法很简单清晰</li>
+</ul>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token function">SelectSort</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span>n<span class="token number">-1</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>   <span class="token comment" spellcheck="true">//一共n-1趟</span>
+    <span class="token keyword">int</span> min<span class="token operator">=</span>i<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//记录最小元素位置</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> j<span class="token operator">=</span>i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">;</span>j<span class="token operator">&lt;</span>n<span class="token punctuation">;</span>j<span class="token operator">++</span><span class="token punctuation">)</span>      <span class="token comment" spellcheck="true">//在后面未排序的元素选择最小的</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>A<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token operator">&lt;</span>A<span class="token punctuation">[</span>min<span class="token punctuation">]</span><span class="token punctuation">)</span>   min<span class="token operator">=</span>j<span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//更新最小元素的索引</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>min<span class="token operator">!=</span>i<span class="token punctuation">)</span>   <span class="token function">swap</span><span class="token punctuation">(</span>A<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span>A<span class="token punctuation">[</span>min<span class="token punctuation">]</span><span class="token punctuation">)</span>；    <span class="token comment" spellcheck="true">//交换函数</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>简单选择排序适用于顺序表和链表，是<strong>不稳定</strong>的</li>
+</ul>
+<h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><ul>
+<li>也属于<strong>选择排序</strong></li>
+<li>堆（heap）：</li>
+</ul>
+<ol>
+<li>大根堆：完全二叉树中所有子树的根结点都大于其左右孩子</li>
+<li>小根堆：完全二叉树中所有子树的根结点都小于其左右孩子</li>
+</ol>
+<ul>
+<li>显然排成堆的形式就很容易排序。所以堆排序的思想就是把序列先变成堆，然后进行排序。</li>
+<li>基于大根堆进行排序的步骤：</li>
+</ul>
+<ol>
+<li>将序列排成完全二叉树，对其中索引小于n&#x2F;2的元素（非终端结点）进行判断，若有不符合大根堆条件的根结点，则将其与更大的那个孩子对换位置。如此往复</li>
+<li>上面的小元素下沉之后可能破坏下面的大根堆结构，只要再多次重复，让小元素<strong>下沉</strong>到应该的位置。最终获取到大根堆</li>
+<li>接着，每趟将堆顶元素放到排好的有序子序列，并将<strong>待排序元素序列</strong>再进行1、2操作形成大根堆。如此往复，大根堆缩小，直到全部完成</li>
+</ol>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">//建立大根堆</span>
+<span class="token keyword">void</span> <span class="token function">BuildMaxHeap</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> len<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span>len<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">;</span>i<span class="token operator">></span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">--</span><span class="token punctuation">)</span>      <span class="token comment" spellcheck="true">//从后往前调整所有非终端结点</span>
+    <span class="token function">HeadAdjust</span><span class="token punctuation">(</span>A<span class="token punctuation">,</span>i<span class="token punctuation">,</span>len<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//将以k为根的子树调整成大根堆</span>
+<span class="token keyword">void</span> <span class="token function">HeadAdjust</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> k<span class="token punctuation">,</span><span class="token keyword">int</span> len<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  A<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//A[0]暂存子树根结点</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span><span class="token number">2</span><span class="token operator">*</span>k<span class="token punctuation">;</span>i<span class="token operator">&lt;=</span>len<span class="token punctuation">;</span>i<span class="token operator">*</span><span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">{</span>   <span class="token comment" spellcheck="true">//沿key较大的子结点向下筛选</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>i<span class="token operator">&lt;</span>len <span class="token operator">&amp;&amp;</span> A<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">&lt;</span>A<span class="token punctuation">[</span>i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+      i<span class="token operator">++</span><span class="token punctuation">;</span>                    <span class="token comment" spellcheck="true">//取key大的子结点下标</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>A<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">>=</span>A<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span>  <span class="token keyword">break</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//筛选接束</span>
+    <span class="token keyword">else</span><span class="token punctuation">{</span>
+      A<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//A[i]调整到父结点</span>
+      k<span class="token operator">=</span>i<span class="token punctuation">;</span>            <span class="token comment" spellcheck="true">//修改k值，以便继续向下筛选</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  A<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//筛选的结点值放入最终位置</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//堆排序</span>
+<span class="token keyword">void</span> <span class="token function">HeapSort</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> len<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token function">BuildMaxHeap</span><span class="token punctuation">(</span>A<span class="token punctuation">,</span>len<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//初始化堆</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span>len<span class="token punctuation">;</span>i<span class="token operator">></span><span class="token number">1</span><span class="token punctuation">;</span>i<span class="token operator">--</span><span class="token punctuation">)</span><span class="token punctuation">{</span>   <span class="token comment" spellcheck="true">//n-1趟的交换和建堆过程</span>
+    <span class="token function">swap</span><span class="token punctuation">(</span>A<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span>A<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//堆顶元素和堆底互换</span>
+    <span class="token function">HeadAdjust</span><span class="token punctuation">(</span>A<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span>i<span class="token number">-1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//剩余待排序元素整理成堆</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>堆排序看似操作繁琐复杂，但是时间复杂度很低，空间复杂度只有常数级。</li>
+<li>堆排序是<strong>不稳定</strong>的</li>
+</ul>
+<h2 id="✍归并排序"><a href="#✍归并排序" class="headerlink" title="✍归并排序"></a>✍归并排序</h2><ul>
+<li>归并：把两个有序序列合并成一个</li>
+<li>思路（以2个序列为例）：对于两个有序序列，对比最小值的大小，将小的放入最终序列。继续对比新的两个最小值，如此往复即可。当其中一个序列空了，可以将剩下的序列整个丢进最终序列。完成排序<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/2%E8%B7%AF%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F.png" alt="2路归并排序"></li>
+<li>上述方法称为2路归并，即将两个序列归并。多路归并需要比较多个关键字</li>
+<li>对于一个初始序列，可以一次将元素两两归并，对新的子序列再两两归并，直到全部归并。如下：<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E5%BD%92%E5%B9%B6%E6%8E%92%E5%BA%8F%E6%A8%A1%E6%8B%9F.png" alt="归并排序模拟"></li>
+</ul>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">int</span> <span class="token operator">*</span>B<span class="token operator">=</span><span class="token punctuation">(</span><span class="token keyword">int</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span>n<span class="token operator">*</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//辅助数组B</span>
+<span class="token comment" spellcheck="true">//A[low...high]和A[mid+1...high]各自有序，将其归并</span>
+<span class="token keyword">void</span> <span class="token function">Merge</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> low<span class="token punctuation">,</span><span class="token keyword">int</span> mid<span class="token punctuation">,</span><span class="token keyword">int</span> high<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">int</span> i<span class="token punctuation">,</span>j<span class="token punctuation">,</span>k<span class="token punctuation">;</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span>k<span class="token operator">=</span>low<span class="token punctuation">;</span>k<span class="token operator">&lt;=</span>high<span class="token punctuation">;</span>k<span class="token operator">++</span><span class="token punctuation">)</span>
+    B<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token operator">=</span>A<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//将A中所有元素复制到B</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span>i<span class="token operator">=</span>low<span class="token punctuation">,</span>j<span class="token operator">=</span>mid<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">,</span>k<span class="token operator">=</span>i<span class="token punctuation">;</span>i<span class="token operator">&lt;=</span>mid <span class="token operator">&amp;&amp;</span> j<span class="token operator">&lt;=</span>high<span class="token punctuation">;</span>k<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>B<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token operator">&lt;=</span>B<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">)</span>
+      A<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token operator">=</span>B<span class="token punctuation">[</span>i<span class="token operator">++</span><span class="token punctuation">]</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//将较小值复制到A</span>
+    <span class="token keyword">else</span>
+      A<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token operator">=</span>B<span class="token punctuation">[</span>j<span class="token operator">++</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">while</span><span class="token punctuation">(</span>i<span class="token operator">&lt;=</span>mid<span class="token punctuation">)</span>     A<span class="token punctuation">[</span>k<span class="token operator">++</span><span class="token punctuation">]</span><span class="token operator">=</span>B<span class="token punctuation">[</span>i<span class="token operator">++</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token keyword">while</span><span class="token punctuation">(</span>j<span class="token operator">&lt;=</span>high<span class="token punctuation">)</span>    A<span class="token punctuation">[</span>k<span class="token operator">++</span><span class="token punctuation">]</span><span class="token operator">=</span>B<span class="token punctuation">[</span>j<span class="token operator">++</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">//递归思想归并排序</span>
+<span class="token keyword">void</span> <span class="token function">MergeSort</span><span class="token punctuation">(</span><span class="token keyword">int</span> A<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span><span class="token keyword">int</span> low<span class="token punctuation">,</span><span class="token keyword">int</span> high<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span>low<span class="token operator">&lt;</span>high<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">int</span> mid<span class="token operator">=</span><span class="token punctuation">(</span>low<span class="token operator">+</span>high<span class="token punctuation">)</span><span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">//从中间划分</span>
+    <span class="token function">MergeSort</span><span class="token punctuation">(</span>A<span class="token punctuation">,</span>low<span class="token punctuation">,</span>mid<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">//从左半部分归并排序</span>
+    <span class="token function">MergeSort</span><span class="token punctuation">(</span>B<span class="token punctuation">,</span>mid<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">,</span>high<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">//从右半部分归并排序</span>
+    <span class="token function">Merge</span><span class="token punctuation">(</span>A<span class="token punctuation">,</span>low<span class="token punctuation">,</span>mid<span class="token punctuation">,</span>high<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//归并</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>归并排序的时间复杂度恒定，和堆排序、快速排序相同，是<strong>稳定的</strong></li>
+</ul>
+<h2 id="✍基数排序"><a href="#✍基数排序" class="headerlink" title="✍基数排序"></a>✍基数排序</h2><ul>
+<li>步骤（递减）：</li>
+</ul>
+<ol>
+<li>将每个元素关键字的个位先<strong>分配</strong>到0-9共10个位置，形成10个队列（链式）<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%E7%AC%AC%E4%B8%80%E8%B6%9F%E5%88%86%E9%85%8D.png" alt="基数排序第一趟分配"></li>
+<li>从9-0把队列依次<strong>收集</strong>存入一个队列，每个队列<strong>靠近队头（上面）的靠前</strong><br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E5%9F%BA%E6%95%B0%E6%8E%92%E5%BA%8F%E7%AC%AC%E4%B8%80%E8%B6%9F%E6%94%B6%E9%9B%86.png" alt="基数排序第一趟收集"></li>
+<li>接着按十位重复上述操作，再按百位重复上述操作，完成排序</li>
+</ol>
+<ul>
+<li>基数排序是<strong>稳定的</strong></li>
+<li>基数排序可以用于日期排序，按日月年顺序分配收集。擅长解决如下问题：</li>
+</ul>
+<ol>
+<li>数据元素关键字易拆分为d组，且d较小</li>
+<li>每组关键字取值范围不大</li>
+<li>数据元素个数n较大</li>
+</ol>
+<h1 id="🔥外部排序"><a href="#🔥外部排序" class="headerlink" title="🔥外部排序"></a>🔥外部排序</h1><p><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E5%A4%96%E9%83%A8%E5%BD%92%E5%B9%B6.png" alt="外部归并"></p>
+<ul>
+<li>每个格子都是一个数据<strong>块</strong>，存放的是归并排序的归并段，归并排序时，每次都去其中两个放到申请的缓存中进行<strong>内部归并</strong>，再输出。<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/2%E8%B7%AF%E5%BD%92%E5%B9%B6%E6%95%88%E7%8E%87.png" alt="2路归并效率"></li>
+<li>但这样读写次数很多，可以优化<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E5%A4%9A%E8%B7%AF%E5%BD%92%E5%B9%B6.png" alt="多路归并"></li>
+<li>进行多路归并可以优化效果，减少读取磁盘次数<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E5%A4%9A%E8%B7%AF%E5%BD%92%E5%B9%B6%E6%95%88%E7%8E%87.png" alt="多路归并效率"></li>
+<li>多路归并负面影响：</li>
+</ul>
+<ol>
+<li>k路归并时，需要开辟k个输入缓冲区</li>
+<li>每挑选一个关键字都要对比k-1次，内部归并所需时间增加，这可以通过<strong>败者树</strong>进行优化</li>
+</ol>
+<h2 id="✍败者树"><a href="#✍败者树" class="headerlink" title="✍败者树"></a>✍败者树</h2><p><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E8%B4%A5%E8%80%85%E6%A0%91.png" alt="败者树"></p>
+<ul>
+<li>如图，实现类似淘汰赛制度的层层晋级，每轮晋级者但下轮失败的形成败者树。若树顶的冠军被替换，新元素只需要再重复前一个冠军的路程找到属于他的位置即可<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E8%B4%A5%E8%80%85%E6%A0%91%E5%BA%94%E7%94%A8.png" alt="败者树应用（递增）"></li>
+<li>如图，不用记录关键字，只需要在树上记录关键字来自的归并段即可，每次选出的最值（树顶3对应叶子1）进入有序序列排序，空的位置由同一个归并段的下一个元素（6）顶替<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E8%B4%A5%E8%80%85%E6%A0%91%E5%BA%94%E7%94%A82.png" alt="败者树应用"></li>
+<li>6进入后重复1的对比过程，刷新左半边的树即可，最后（树顶5对应）2胜出，接在1之后</li>
+<li>k路归并，第一次构造败者树要 k-1 次对比关键字，有了败者树，每次更迭只需要对比 log<sub>2</sub>k 次，归并段增多，次数<strong>对数级别</strong>地大大减少</li>
+</ul>
+<h2 id="✍置换-选择排序"><a href="#✍置换-选择排序" class="headerlink" title="✍置换-选择排序"></a>✍置换-选择排序</h2><ul>
+<li>进一步减少归并段数量<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E7%BD%AE%E6%8D%A2-%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F.png" alt="置换-选择排序"></li>
+<li>如上，短的归并段生成长归并段，每次都将最大值存入长归并段之后，更新最大值，当最大值大于缓存中3个数时就完成第一个长归并段<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E7%BD%AE%E6%8D%A2-%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F2.png" alt="置换-选择排序完成"></li>
+<li>最后完成如上的三个归并段。</li>
+</ul>
+<h2 id="✍最佳归并树"><a href="#✍最佳归并树" class="headerlink" title="✍最佳归并树"></a>✍最佳归并树</h2><p><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E5%BD%92%E5%B9%B6%E6%A0%91.png" alt="归并树"></p>
+<ul>
+<li>如上每个元素数值代表归并段长度，按照<strong>哈夫曼树</strong>的思维，可以最小化磁盘读写次数，如下：<br><img src="/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/%E4%BA%8C%E8%B7%AF%E5%BD%92%E5%B9%B6%E6%9C%80%E4%BD%B3%E5%BD%92%E5%B9%B6%E6%A0%91.png" alt="二路归并最佳归并树"></li>
+</ul>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://localhost:4000/2023/03/11/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E5%85%AB%E7%AB%A0-%E6%8E%92%E5%BA%8F/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag">数据结构</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            微信小程序云托管数据传输（Python restful）
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/03/10/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AC%AC%E4%B8%83%E7%AB%A0-%E6%9F%A5%E6%89%BE/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">数据结构第七章 查找</div>
+      </a>
+    
+  </nav>
+
+  
+   
+  
+    
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023-2024
+        <i class="ri-heart-fill heart_icon"></i> LegendLeo Chen
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/mylogo.png" alt="LegendLeo Chen 的空间"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">🚀主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">💾归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">🧭分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">🏷️标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">🛸关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/analytics">📊统计</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/secret">🔐秘密</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=1491212&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+  <!-- 背景气泡 -->
+  <!--
+  <div class="balls-container">
+    <div class="balls-particles">
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+    </div>
+  </div>
+  <style>
+    *
+    {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .balls-container
+    { 
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+    
+    .balls-particles
+    {
+      position: fixed;
+      display: flex;
+      z-index: 3;
+      padding: 0 20px;
+    }
+    
+    .balls-particles span
+    {
+      position: relative;
+      bottom: 30px;
+      width: 30px;
+      height: 30px;
+      background-color: #4fc3dc;
+      box-shadow: 0 0 0 10px #4fc3dc44,
+      0 0 50px #4fc3dc,
+      -100px 0 #4fc3dc99,
+      100px 0 #ff2d7599;
+      margin: 0 4px;
+      border-radius: 50%;
+      animation: animate 15s ease infinite;
+      animation-delay: calc(125s / var(--i));
+      transform: translateY(120vh);
+    }
+    .balls-particles span:nth-child(even) {
+      background-color: #ff2d75;
+      box-shadow: 0 0 0 10px #ff267544,
+      0 0 50px #ff2d75,
+      -100px 0 #4fc3dc99,
+      100px 0 #4fc3dc99;
+      ;
+    }
+    
+    @keyframes animate {
+      0%
+      {
+        transform: translateY(120vh) scale(0) rotate(0deg);
+      }
+      20%
+      {
+        transform: translateY(100vh) scale(1) rotate(0deg);
+      }
+      100%
+      {
+        transform: translateY(-50vh) scale(0.5) rotate(360deg);
+      }
+    }
+  </style> -->
+  <!-- 地月系统 -->
+  <!-- <div class="earth-container" >
+    <div class="planet"></div>
+    <div class="satellite"></div>
+   </div>
+   <style>
+    *{
+      padding: 0;
+      margin: 0;
+      }
+      .earth-container {
+        width: 36.25em;
+        height: 36.25em;
+        position: absolute;
+        top:5%;
+        left: 93%;
+        transform: translate(-50%, -50%);
+        opacity: 0.3;
+      }
+      
+      .planet{
+        width: 15.62*3em;
+        height: 15.62*3em;
+        background-color: #02c0f5;
+        border-radius: 50%;
+        position: absolute;
+        margin: auto;
+        top:0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+      }
+      
+      .planet::before{
+        content: '';
+        width: 4em;
+        height: 4em;
+        background-color: #008fd6;
+        position: absolute;
+        top:10em;
+        left: 8em;
+        border-radius: 50%; 
+        box-shadow: 15em 15em 0 2em #00d68b, 5em 8em 0 3em #10ade1;
+      }
+      
+      .satellite{
+        width: 5em;
+        height: 5em;
+        background-color: #dee517;
+        border-radius: 50%;
+        position: relative;
+        left: -5em;
+        bottom: -30em;
+        animation: spin 5s infinite;
+        z-index: 1;
+      }
+      
+      @keyframes spin {
+        49%{
+          z-index: 1;
+        }
+        50%{
+          bottom: 3em;
+          left: 35em;
+          z-index: -1;
+        }
+        100%{
+          z-index: -1;
+        }
+      }
+    </style> -->
+<!-- 三角彩带背景 -->
+  <canvas id="evanyou-canvas" style="opacity: 0.3; position: fixed; top: 0px; left: 0px; z-index: -1; width: 100%; height: 100%; pointer-events: none;"></canvas>
+  <script src="https://cdn.jsdelivr.net/gh/XXXZhy/Blog_Image/js/evanyou_canvas.js"></script>
+</body>
+
+</html>

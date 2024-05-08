@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta name="description" content="一个秘密空间" />
+      
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>LeoCar：树莓派智能车——电控篇 |  LegendLeo Chen 的空间</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/mylogo.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+<!-- 封面标闪烁 -->
+<link rel="stylesheet" href="/css/zhyBlogTitle.css">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- jquery，懒加载、统计、说说需要的jquery -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-LeoCar：树莓派智能车——电控篇"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  LeoCar：树莓派智能车——电控篇
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/" class="article-date">
+  <time datetime="2023-12-21T04:00:04.000Z" itemprop="datePublished">2023-12-21</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a> / <a class="article-category-link" href="/categories/%E7%A1%AC%E4%BB%B6/">硬件</a> / <a class="article-category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a> / <a class="article-category-link" href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">9 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <ul>
+<li>文章链接：<a href="/2023/12/10/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BD%91%E7%BB%9C%E7%AF%87/" title="LeoCar：树莓派智能车——网络篇">网络篇</a>——&gt;<a href="/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/" title="LeoCar：树莓派智能车——电控篇">电控篇</a>——&gt;<a href="/2023/12/29/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BB%BC%E5%90%88%E7%AF%87/" title="LeoCar：树莓派智能车——综合篇">综合篇</a></li>
+<li>项目链接：<a target="_blank" rel="noopener" href="https://github.com/LegendLeoChen/LeoCar">https://github.com/LegendLeoChen/LeoCar</a></li>
+<li>上次完成了小车树莓派网络摄像头及基于Python Flask的服务器部署。</li>
+<li>本次实现小车结构和电路搭建，先使用ESP32实现对小车的控制，以及电源方案的验证。<span id="more"></span></li>
+</ul>
+<h1 id="⚡电控方案"><a href="#⚡电控方案" class="headerlink" title="⚡电控方案"></a>⚡电控方案</h1><h2 id="运动模块"><a href="#运动模块" class="headerlink" title="运动模块"></a>运动模块</h2><p>小车采用便宜的TT电机进行运动，通过TB6612FNG可以使得ESP32通过PWM控制电机进行调速。<br><img src="/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/TB6612FNG%E8%83%8C%E9%9D%A2.jpg" alt="TB6612FNG背面"> </p>
+<ul>
+<li><strong>TB6612FNG电机驱动模块</strong>的引脚如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">引脚</th>
+<th align="center">连接</th>
+<th align="center">引脚</th>
+<th align="center">连接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">PWMA</td>
+<td align="center">电机1的PWM输入</td>
+<td align="center">VM</td>
+<td align="center">电机的驱动电源（小于12V）</td>
+</tr>
+<tr>
+<td align="center">AIN2</td>
+<td align="center">电机1的逻辑2输入</td>
+<td align="center">VCC</td>
+<td align="center">该模块的供电（3.3V）</td>
+</tr>
+<tr>
+<td align="center">AIN1</td>
+<td align="center">电机1的逻辑1输入</td>
+<td align="center">GND</td>
+<td align="center">地</td>
+</tr>
+<tr>
+<td align="center">STBY</td>
+<td align="center">电机工作状态，1为工作，0为待机</td>
+<td align="center">AO1</td>
+<td align="center">电机1的输出，接电机正极</td>
+</tr>
+<tr>
+<td align="center">BIN1</td>
+<td align="center">电机2的逻辑1输入</td>
+<td align="center">AO2</td>
+<td align="center">电机1的输出，接电机负极</td>
+</tr>
+<tr>
+<td align="center">BIN2</td>
+<td align="center">电机2的逻辑2输入</td>
+<td align="center">BO2</td>
+<td align="center">电机2的输出，接电机负极</td>
+</tr>
+<tr>
+<td align="center">PWMB</td>
+<td align="center">电机2的PWM输入</td>
+<td align="center">BO1</td>
+<td align="center">电机2的输出，接电机正极</td>
+</tr>
+<tr>
+<td align="center">GND</td>
+<td align="center">地</td>
+<td align="center">GND</td>
+<td align="center">地</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>当IN1和IN2为00时电机不转，为01时电机正转，为10时电机反转</strong></li>
+</ul>
+<h2 id="供电方案"><a href="#供电方案" class="headerlink" title="供电方案"></a>供电方案</h2><p>我们采用<strong>18650锂电池（3.7V）</strong>两节<strong>串联</strong>的方案，提供<strong>7.4V</strong>的电压直接供给TB6612FNG的VM。再通过<strong>DC-DC降压模块</strong>进行降压后输出3.3V或者5V输出给ESP32或单片机等嵌入式设备。</p>
+<ul>
+<li>如图，输入端接电池正负极（电池盒子自带正负极的线），输出端接一个转接口将正负极双线转到MICRO-B口，以输出到嵌入式设备。我用的这个DC-DC四个口都有两个短接的焊盘方便扩展。输入端作为结点另外接到TB6612FNG的VM和GND，输出端的正极接给VCC。输出端电压可以通过拧动电位器调节。<br><img src="/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/DC-DC%E9%99%8D%E5%8E%8B%E6%A8%A1%E5%9D%97.jpg" alt="DC-DC降压模块"><br><img src="/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/%E5%8F%8C%E7%BA%BF%E8%BD%ACMICRO-B%E5%8F%A3.jpg" alt="双线转MICRO-B口"></li>
+</ul>
+<h2 id="避障"><a href="#避障" class="headerlink" title="避障"></a>避障</h2><p>添加一个超声波模块可以通过测距判断小车前部离障碍物的距离，当距离小于指定值时小车会停止。<br><img src="/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/%E8%B6%85%E5%A3%B0%E6%B3%A2%E6%A8%A1%E5%9D%97SRF05.jpg" alt="超声波模块SRF05"> </p>
+<ul>
+<li>引脚功能：</li>
+</ul>
+<ol>
+<li>VCC和GND:接电源的正负极，也可接单片机的5V或3.3V，注意与单片机共地</li>
+<li>Trig：触发控制信号输入。通过这个引脚输入10us以上的高电平触发信号，然后模块自动发送8个40KHz的方波进行一次测距。</li>
+<li>Echo：回响信号接收。该引脚可以在接收到回响信号后输出一个高电平，高电平持续的时间就是超声波从发射到返回的时间。</li>
+<li>OUT：该引脚在手册中提到为开关量输出，可以做报警模块使用，应该是一个模块状态口，通过判断OUT的高低电平来判断模块是否上电，基本不用。</li>
+</ol>
+<h1 id="⚡ESP32"><a href="#⚡ESP32" class="headerlink" title="⚡ESP32"></a>⚡ESP32</h1><p>基于arduino开发平台实现用ESP32控制小车，同时我们可以通过BLE低功耗蓝牙在手机端控制。</p>
+<h2 id="总接线图"><a href="#总接线图" class="headerlink" title="总接线图"></a>总接线图</h2><ul>
+<li>先进行连线，结合之前的供电方案，完整接线如下，其中ESP32的接线可以根据代码自行更改，ESP32大部分引脚都可以输出PWM，可以很自由地更改引脚，图中接线和之后的代码是对应的。</li>
+</ul>
+<p><img src="/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/%E6%80%BB%E6%8E%A5%E7%BA%BF.png" alt="总接线"> </p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><ul>
+<li>代码如下，使用Arduino平台进行开发，主体结构分为蓝牙部分、电机控制部分，最后是Setup和loop函数。</li>
+<li>主函数流程也很简单：</li>
+</ul>
+<ol>
+<li>setup：初始化引脚输入输出状态，设置PWM引脚，初始化BLE；</li>
+<li>loop：通过蓝牙发送数据（如果需要的话），控制电机（输入命令和速度）</li>
+<li>BLE接收回调函数：解析信息，如果是小写字母就是控制命令，完成转向进退等操作；如果是数字就设置速度，1024最大，占空比是<code>car_speed / 1024 × 100% ≈ car_speed / 1000 × 100%</code>。</li>
+<li>ultrasound：超声波部分，ESP32引脚向TRIG发送一个高电平，然后ECHO在接受超声波后会向ESP32发送一个与距离成正比的高电平，我们只需要获得这个高电平时长，即可通过公式<code>距离 = 时长 * 0.034 / 2</code>获得实际距离（cm）。由于倒车和转圈时不需要进行避障所以不会急停。</li>
+</ol>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;Arduino.h></span></span>
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;BLEDevice.h></span></span>
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;BLEServer.h></span></span>
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;BLEUtils.h></span></span>
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;BLE2902.h></span></span>
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;String.h></span></span>
+
+<span class="token comment" spellcheck="true">//TB6612FNG驱动模块控制信号 共6个</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> IN1 26  </span><span class="token comment" spellcheck="true">//控制电机1的方向A，01为正转，10为反转 </span>
+<span class="token macro property">#<span class="token directive keyword">define</span> IN2 25  </span><span class="token comment" spellcheck="true">//控制电机1的方向B，01为正转，10为反转 </span>
+<span class="token macro property">#<span class="token directive keyword">define</span> IN3 14  </span><span class="token comment" spellcheck="true">//控制电机2的方向A，01为正转，10为反转 </span>
+<span class="token macro property">#<span class="token directive keyword">define</span> IN4 12  </span><span class="token comment" spellcheck="true">//控制电机2的方向B，01为正转，10为反转 </span>
+
+<span class="token macro property">#<span class="token directive keyword">define</span> PWMA 33  </span><span class="token comment" spellcheck="true">//控制电机1 PWM控制引脚</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> PWMB 13 </span><span class="token comment" spellcheck="true">//控制电机2 PWM控制引脚</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> STBY 27 </span><span class="token comment" spellcheck="true">//工作与待机</span>
+
+<span class="token macro property">#<span class="token directive keyword">define</span> freq 20000     </span><span class="token comment" spellcheck="true">//PWM波形频率5KHZ</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> pwm_Channel_1  0 </span><span class="token comment" spellcheck="true">//使用PWM的通道0</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> pwm_Channel_2  1 </span><span class="token comment" spellcheck="true">//使用PWM的通道1</span>
+
+<span class="token macro property">#<span class="token directive keyword">define</span> resolution  10    </span><span class="token comment" spellcheck="true">//使用PWM占空比的分辨率，占空比最大可写2^10-1=1023</span>
+
+<span class="token macro property">#<span class="token directive keyword">define</span> trigPin  22</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> echoPin  23</span>
+
+<span class="token keyword">int</span> car_speed <span class="token operator">=</span> <span class="token number">100</span><span class="token punctuation">;</span>
+<span class="token keyword">char</span> state <span class="token operator">=</span> <span class="token string">'e'</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">/**************************************************************************
+蓝牙BLE部分
+**************************************************************************/</span>
+BLECharacteristic <span class="token operator">*</span>pCharacteristic<span class="token punctuation">;</span>
+<span class="token keyword">bool</span> deviceConnected <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+uint8_t txValue <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token keyword">long</span> lastMsg <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//存放时间的变量 </span>
+String rxload<span class="token punctuation">;</span>
+String receive_msg<span class="token punctuation">;</span>
+<span class="token keyword">float</span> x<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span>y<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+
+<span class="token macro property">#<span class="token directive keyword">define</span> SERVICE_UUID           "6E400001-B5A3-F393-E0A9-E50E24DCCA9E" </span><span class="token comment" spellcheck="true">// UART service UUID</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> CHARACTERISTIC_UUID_RX "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> CHARACTERISTIC_UUID_TX "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"</span>
+
+<span class="token keyword">class</span> <span class="token class-name">MyServerCallbacks</span><span class="token operator">:</span> <span class="token keyword">public</span> BLEServerCallbacks <span class="token punctuation">{</span>
+    <span class="token keyword">void</span> <span class="token function">onConnect</span><span class="token punctuation">(</span>BLEServer<span class="token operator">*</span> pServer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      deviceConnected <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token keyword">void</span> <span class="token function">onDisconnect</span><span class="token punctuation">(</span>BLEServer<span class="token operator">*</span> pServer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      deviceConnected <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+ 
+<span class="token keyword">class</span> <span class="token class-name">MyCallbacks</span><span class="token operator">:</span> <span class="token keyword">public</span> BLECharacteristicCallbacks <span class="token punctuation">{</span>
+    <span class="token keyword">void</span> <span class="token function">onWrite</span><span class="token punctuation">(</span>BLECharacteristic <span class="token operator">*</span>pCharacteristic<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      std<span class="token operator">::</span>string rxValue <span class="token operator">=</span> pCharacteristic<span class="token operator">-</span><span class="token operator">></span><span class="token function">getValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>rxValue<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        receive_msg <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> rxValue<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+         <span class="token punctuation">{</span>
+          receive_msg <span class="token operator">+</span><span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">char</span><span class="token punctuation">)</span>rxValue<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+          Serial<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span>rxValue<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token punctuation">}</span>
+         Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">islower</span><span class="token punctuation">(</span>receive_msg<span class="token punctuation">.</span><span class="token function">charAt</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>          <span class="token comment" spellcheck="true">//是小写字母</span>
+        state <span class="token operator">=</span> receive_msg<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>                      <span class="token comment" spellcheck="true">//控制</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">else</span><span class="token punctuation">{</span>
+        car_speed <span class="token operator">=</span> receive_msg<span class="token punctuation">.</span><span class="token function">toInt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//转数字，修改速度</span>
+      <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+ 
+<span class="token keyword">void</span> <span class="token function">setupBLE</span><span class="token punctuation">(</span>String BLEName<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>ble_name<span class="token operator">=</span>BLEName<span class="token punctuation">.</span><span class="token function">c_str</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  BLEDevice<span class="token operator">::</span><span class="token function">init</span><span class="token punctuation">(</span>ble_name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  BLEServer <span class="token operator">*</span>pServer <span class="token operator">=</span> BLEDevice<span class="token operator">::</span><span class="token function">createServer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  pServer<span class="token operator">-</span><span class="token operator">></span><span class="token function">setCallbacks</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token function">MyServerCallbacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  BLEService <span class="token operator">*</span>pService <span class="token operator">=</span> pServer<span class="token operator">-</span><span class="token operator">></span><span class="token function">createService</span><span class="token punctuation">(</span>SERVICE_UUID<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  pCharacteristic <span class="token operator">=</span> pService<span class="token operator">-</span><span class="token operator">></span><span class="token function">createCharacteristic</span><span class="token punctuation">(</span>CHARACTERISTIC_UUID_TX<span class="token punctuation">,</span>BLECharacteristic<span class="token operator">::</span>PROPERTY_NOTIFY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  pCharacteristic<span class="token operator">-</span><span class="token operator">></span><span class="token function">addDescriptor</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token function">BLE2902</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  BLECharacteristic <span class="token operator">*</span>pCharacteristic <span class="token operator">=</span> pService<span class="token operator">-</span><span class="token operator">></span><span class="token function">createCharacteristic</span><span class="token punctuation">(</span>CHARACTERISTIC_UUID_RX<span class="token punctuation">,</span>BLECharacteristic<span class="token operator">::</span>PROPERTY_WRITE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  pCharacteristic<span class="token operator">-</span><span class="token operator">></span><span class="token function">setCallbacks</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token function">MyCallbacks</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  pService<span class="token operator">-</span><span class="token operator">></span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  pServer<span class="token operator">-</span><span class="token operator">></span><span class="token function">getAdvertising</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Waiting a client connection to notify..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">/**************************************************************************
+函数功能：赋值给PWM寄存器 
+入口参数：左轮PWM、右轮PWM
+返回  值：无
+**************************************************************************/</span>
+<span class="token keyword">void</span> <span class="token function">Set_Pwm</span><span class="token punctuation">(</span><span class="token keyword">int</span> moto1<span class="token punctuation">,</span> <span class="token keyword">int</span> moto2<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+  <span class="token keyword">int</span> Amplitude <span class="token operator">=</span> <span class="token number">1000</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">//===PWM满幅是1024 限制在950</span>
+  
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>moto1 <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>IN1<span class="token punctuation">,</span> HIGH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>IN2<span class="token punctuation">,</span> LOW<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>IN1<span class="token punctuation">,</span> LOW<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>IN2<span class="token punctuation">,</span> HIGH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>moto2 <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>IN3<span class="token punctuation">,</span> LOW<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>IN4<span class="token punctuation">,</span> HIGH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>IN3<span class="token punctuation">,</span> HIGH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>IN4<span class="token punctuation">,</span> LOW<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  
+  <span class="token comment" spellcheck="true">//功能：限制PWM赋值 </span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>moto1 <span class="token operator">&lt;</span> <span class="token operator">-</span>Amplitude<span class="token punctuation">)</span>  moto1 <span class="token operator">=</span> <span class="token operator">-</span>Amplitude<span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>moto1 <span class="token operator">></span>  Amplitude<span class="token punctuation">)</span>  moto1 <span class="token operator">=</span>  Amplitude<span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>moto2 <span class="token operator">&lt;</span> <span class="token operator">-</span>Amplitude<span class="token punctuation">)</span>  moto2 <span class="token operator">=</span> <span class="token operator">-</span>Amplitude<span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>moto2 <span class="token operator">></span>  Amplitude<span class="token punctuation">)</span>  moto2 <span class="token operator">=</span>  Amplitude<span class="token punctuation">;</span>
+  
+  <span class="token comment" spellcheck="true">//赋值给PWM寄存器 </span>
+  <span class="token function">ledcWrite</span><span class="token punctuation">(</span>pwm_Channel_1<span class="token punctuation">,</span> <span class="token function">abs</span><span class="token punctuation">(</span>moto1<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">ledcWrite</span><span class="token punctuation">(</span>pwm_Channel_2<span class="token punctuation">,</span> <span class="token function">abs</span><span class="token punctuation">(</span>moto2<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">void</span> <span class="token function">control</span><span class="token punctuation">(</span><span class="token keyword">char</span> command<span class="token punctuation">,</span> <span class="token keyword">int</span> carspeed<span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span>command<span class="token operator">==</span><span class="token string">'a'</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token function">Set_Pwm</span><span class="token punctuation">(</span>carspeed<span class="token punctuation">,</span> carspeed<span class="token punctuation">)</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//前</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>command<span class="token operator">==</span><span class="token string">'b'</span><span class="token punctuation">)</span>
+    <span class="token function">Set_Pwm</span><span class="token punctuation">(</span><span class="token operator">-</span>carspeed<span class="token punctuation">,</span> <span class="token operator">-</span>carspeed<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//后</span>
+  <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>command<span class="token operator">==</span><span class="token string">'c'</span><span class="token punctuation">)</span>
+    <span class="token function">Set_Pwm</span><span class="token punctuation">(</span>carspeed<span class="token operator">*</span><span class="token number">0.8</span><span class="token punctuation">,</span> carspeed<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">//左</span>
+  <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>command<span class="token operator">==</span><span class="token string">'d'</span><span class="token punctuation">)</span>
+    <span class="token function">Set_Pwm</span><span class="token punctuation">(</span>carspeed<span class="token punctuation">,</span> carspeed<span class="token operator">*</span><span class="token number">0.8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">//右</span>
+  <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>command<span class="token operator">==</span><span class="token string">'e'</span><span class="token punctuation">)</span>
+    <span class="token function">Set_Pwm</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                      <span class="token comment" spellcheck="true">//停</span>
+  <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>command<span class="token operator">==</span><span class="token string">'f'</span><span class="token punctuation">)</span>
+    <span class="token function">Set_Pwm</span><span class="token punctuation">(</span>carspeed<span class="token operator">/</span><span class="token number">2.0</span><span class="token punctuation">,</span> <span class="token operator">-</span>carspeed<span class="token operator">/</span><span class="token number">2.0</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//原地转</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">void</span> <span class="token function">ultrasound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>      <span class="token comment" spellcheck="true">//超声波</span>
+  <span class="token function">digitalWrite</span><span class="token punctuation">(</span>trigPin<span class="token punctuation">,</span> LOW<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">delayMicroseconds</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">digitalWrite</span><span class="token punctuation">(</span>trigPin<span class="token punctuation">,</span> HIGH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">delayMicroseconds</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">digitalWrite</span><span class="token punctuation">(</span>trigPin<span class="token punctuation">,</span> LOW<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment" spellcheck="true">//计算超声波回波的时间</span>
+  <span class="token keyword">long</span> duration <span class="token operator">=</span> <span class="token function">pulseIn</span><span class="token punctuation">(</span>echoPin<span class="token punctuation">,</span> HIGH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+  <span class="token comment" spellcheck="true">//计算物体的距离(cm)</span>
+  <span class="token keyword">float</span> distance <span class="token operator">=</span> duration <span class="token operator">*</span> <span class="token number">0.034</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span>distance <span class="token operator">&lt;</span> <span class="token number">20</span> <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>state <span class="token operator">!=</span> <span class="token string">'f'</span> <span class="token operator">&amp;&amp;</span> state <span class="token operator">!=</span> <span class="token string">'b'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    state <span class="token operator">=</span> <span class="token string">'e'</span><span class="token punctuation">;</span>         <span class="token comment" spellcheck="true">//除了倒车、转圈都停止</span>
+  <span class="token comment" spellcheck="true">//输出物体的距离</span>
+  Serial<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"distance:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>distance<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">delay</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">/*********************************setup**********************************/</span>
+<span class="token keyword">void</span> <span class="token function">setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">pinMode</span><span class="token punctuation">(</span>IN1<span class="token punctuation">,</span> OUTPUT<span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment" spellcheck="true">//TB6612控制引脚，控制电机1的方向，01为正转，10为反转</span>
+    <span class="token function">pinMode</span><span class="token punctuation">(</span>IN2<span class="token punctuation">,</span> OUTPUT<span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment" spellcheck="true">//TB6612控制引脚，</span>
+    <span class="token function">pinMode</span><span class="token punctuation">(</span>IN3<span class="token punctuation">,</span> OUTPUT<span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment" spellcheck="true">//TB6612控制引脚，控制电机2的方向，01为正转，10为反转</span>
+    <span class="token function">pinMode</span><span class="token punctuation">(</span>IN4<span class="token punctuation">,</span> OUTPUT<span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment" spellcheck="true">//TB6612控制引脚，</span>
+    <span class="token function">pinMode</span><span class="token punctuation">(</span>PWMA<span class="token punctuation">,</span> OUTPUT<span class="token punctuation">)</span><span class="token punctuation">;</span>         <span class="token comment" spellcheck="true">//TB6612控制引脚，电机PWM</span>
+    <span class="token function">pinMode</span><span class="token punctuation">(</span>PWMB<span class="token punctuation">,</span> OUTPUT<span class="token punctuation">)</span><span class="token punctuation">;</span>         <span class="token comment" spellcheck="true">//TB6612控制引脚，电机PWM</span>
+    <span class="token function">pinMode</span><span class="token punctuation">(</span>STBY<span class="token punctuation">,</span> OUTPUT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">pinMode</span><span class="token punctuation">(</span>trigPin<span class="token punctuation">,</span> OUTPUT<span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//超声波</span>
+    <span class="token function">pinMode</span><span class="token punctuation">(</span>echoPin<span class="token punctuation">,</span> INPUT<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>IN1<span class="token punctuation">,</span> LOW<span class="token punctuation">)</span><span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//TB6612控制引脚拉低</span>
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>IN2<span class="token punctuation">,</span> LOW<span class="token punctuation">)</span><span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//TB6612控制引脚拉低</span>
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>IN3<span class="token punctuation">,</span> LOW<span class="token punctuation">)</span><span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//TB6612控制引脚拉低</span>
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>IN4<span class="token punctuation">,</span> LOW<span class="token punctuation">)</span><span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//TB6612控制引脚拉低</span>
+    <span class="token function">digitalWrite</span><span class="token punctuation">(</span>STBY<span class="token punctuation">,</span> HIGH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+    <span class="token function">ledcSetup</span><span class="token punctuation">(</span>pwm_Channel_1<span class="token punctuation">,</span> freq<span class="token punctuation">,</span> resolution<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//PWM通道一开启设置</span>
+    <span class="token function">ledcAttachPin</span><span class="token punctuation">(</span>PWMA<span class="token punctuation">,</span> pwm_Channel_1<span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//PWM通道一和引脚PWMA关联</span>
+    <span class="token function">ledcWrite</span><span class="token punctuation">(</span>pwm_Channel_1<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//PWM通道一占空比设置为零</span>
+    
+    <span class="token function">ledcSetup</span><span class="token punctuation">(</span>pwm_Channel_2<span class="token punctuation">,</span> freq<span class="token punctuation">,</span> resolution<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//PWM通道二开启设置</span>
+    <span class="token function">ledcAttachPin</span><span class="token punctuation">(</span>PWMB<span class="token punctuation">,</span> pwm_Channel_2<span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//PWM通道二和引脚PWMB关联</span>
+    <span class="token function">ledcWrite</span><span class="token punctuation">(</span>pwm_Channel_2<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//PWM通道二占空比设置为零</span>
+    
+    Serial<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token number">115200</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">setupBLE</span><span class="token punctuation">(</span><span class="token string">"LEO_BLE"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//设置蓝牙名称</span>
+
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">/************************************loop************************************/</span>
+<span class="token keyword">void</span> <span class="token function">loop</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">long</span> now <span class="token operator">=</span> <span class="token function">millis</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//记录当前时间</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>now <span class="token operator">-</span> lastMsg <span class="token operator">></span> <span class="token number">500</span><span class="token punctuation">)</span> 
+    <span class="token punctuation">{</span><span class="token comment" spellcheck="true">//每隔1秒发一次信号  </span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>deviceConnected<span class="token operator">&amp;&amp;</span>rxload<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">></span><span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            String str<span class="token operator">=</span>rxload<span class="token punctuation">;</span>
+          <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>newValue<span class="token operator">=</span>str<span class="token punctuation">.</span><span class="token function">c_str</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          pCharacteristic<span class="token operator">-</span><span class="token operator">></span><span class="token function">setValue</span><span class="token punctuation">(</span>newValue<span class="token punctuation">)</span><span class="token punctuation">;</span>
+          pCharacteristic<span class="token operator">-</span><span class="token operator">></span><span class="token function">notify</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+      lastMsg <span class="token operator">=</span> now<span class="token punctuation">;</span><span class="token comment" spellcheck="true">//刷新上一次发送数据的时间</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">ultrasound</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">control</span><span class="token punctuation">(</span>state<span class="token punctuation">,</span> car_speed<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="⚡结果展示"><a href="#⚡结果展示" class="headerlink" title="⚡结果展示"></a>⚡结果展示</h1><ul>
+<li>完成小车结构和电路搭建后，烧录ESP32代码，小车启动；<br><img src="/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/%E5%B0%8F%E8%BD%A6%EF%BC%88ESP32%E7%89%88%EF%BC%89.jpg" alt="小车"> </li>
+<li>在手机上使用蓝牙软件（要支持BLE而非经典蓝牙）连接BLE，发送数字设置速度，发送字母控制小车动作（这里用快捷按钮设置发送的字母），结果如下。<br><img src="/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/%E8%93%9D%E7%89%99%E6%8E%A7%E5%88%B6%E5%B0%8F%E8%BD%A6.gif" alt="蓝牙控制小车"> <figure>
+  <img src="/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/小车避障急停.gif" width="250" height="auto">
+  <span class="caption">小车避障急停</span>
+</figure></li>
+<li>至此我们使用ESP32完成了对供电方案和结构的验证，使得小车能够正常跑起来，后续我们将用之前的树莓派及摄像头替换ESP32实现相同的控制的基础上增加视频流的使用。</li>
+</ul>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://localhost:4000/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/BLE/" rel="tag">BLE</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ESP32/" rel="tag">ESP32</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TB6612FNG/" rel="tag">TB6612FNG</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/12/29/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BB%BC%E5%90%88%E7%AF%87/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            LeoCar：树莓派智能车——综合篇
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/12/10/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BD%91%E7%BB%9C%E7%AF%87/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">LeoCar：树莓派智能车——网络篇</div>
+      </a>
+    
+  </nav>
+
+  
+   
+  
+    
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023-2024
+        <i class="ri-heart-fill heart_icon"></i> LegendLeo Chen
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/mylogo.png" alt="LegendLeo Chen 的空间"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">🚀主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">💾归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">🧭分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">🏷️标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">🛸关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/analytics">📊统计</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/secret">🔐秘密</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=1491212&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+  <!-- 背景气泡 -->
+  <!--
+  <div class="balls-container">
+    <div class="balls-particles">
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+    </div>
+  </div>
+  <style>
+    *
+    {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .balls-container
+    { 
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+    
+    .balls-particles
+    {
+      position: fixed;
+      display: flex;
+      z-index: 3;
+      padding: 0 20px;
+    }
+    
+    .balls-particles span
+    {
+      position: relative;
+      bottom: 30px;
+      width: 30px;
+      height: 30px;
+      background-color: #4fc3dc;
+      box-shadow: 0 0 0 10px #4fc3dc44,
+      0 0 50px #4fc3dc,
+      -100px 0 #4fc3dc99,
+      100px 0 #ff2d7599;
+      margin: 0 4px;
+      border-radius: 50%;
+      animation: animate 15s ease infinite;
+      animation-delay: calc(125s / var(--i));
+      transform: translateY(120vh);
+    }
+    .balls-particles span:nth-child(even) {
+      background-color: #ff2d75;
+      box-shadow: 0 0 0 10px #ff267544,
+      0 0 50px #ff2d75,
+      -100px 0 #4fc3dc99,
+      100px 0 #4fc3dc99;
+      ;
+    }
+    
+    @keyframes animate {
+      0%
+      {
+        transform: translateY(120vh) scale(0) rotate(0deg);
+      }
+      20%
+      {
+        transform: translateY(100vh) scale(1) rotate(0deg);
+      }
+      100%
+      {
+        transform: translateY(-50vh) scale(0.5) rotate(360deg);
+      }
+    }
+  </style> -->
+  <!-- 地月系统 -->
+  <!-- <div class="earth-container" >
+    <div class="planet"></div>
+    <div class="satellite"></div>
+   </div>
+   <style>
+    *{
+      padding: 0;
+      margin: 0;
+      }
+      .earth-container {
+        width: 36.25em;
+        height: 36.25em;
+        position: absolute;
+        top:5%;
+        left: 93%;
+        transform: translate(-50%, -50%);
+        opacity: 0.3;
+      }
+      
+      .planet{
+        width: 15.62*3em;
+        height: 15.62*3em;
+        background-color: #02c0f5;
+        border-radius: 50%;
+        position: absolute;
+        margin: auto;
+        top:0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+      }
+      
+      .planet::before{
+        content: '';
+        width: 4em;
+        height: 4em;
+        background-color: #008fd6;
+        position: absolute;
+        top:10em;
+        left: 8em;
+        border-radius: 50%; 
+        box-shadow: 15em 15em 0 2em #00d68b, 5em 8em 0 3em #10ade1;
+      }
+      
+      .satellite{
+        width: 5em;
+        height: 5em;
+        background-color: #dee517;
+        border-radius: 50%;
+        position: relative;
+        left: -5em;
+        bottom: -30em;
+        animation: spin 5s infinite;
+        z-index: 1;
+      }
+      
+      @keyframes spin {
+        49%{
+          z-index: 1;
+        }
+        50%{
+          bottom: 3em;
+          left: 35em;
+          z-index: -1;
+        }
+        100%{
+          z-index: -1;
+        }
+      }
+    </style> -->
+<!-- 三角彩带背景 -->
+  <canvas id="evanyou-canvas" style="opacity: 0.3; position: fixed; top: 0px; left: 0px; z-index: -1; width: 100%; height: 100%; pointer-events: none;"></canvas>
+  <script src="https://cdn.jsdelivr.net/gh/XXXZhy/Blog_Image/js/evanyou_canvas.js"></script>
+</body>
+
+</html>

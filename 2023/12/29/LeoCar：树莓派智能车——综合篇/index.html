@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta name="description" content="一个秘密空间" />
+      
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>LeoCar：树莓派智能车——综合篇 |  LegendLeo Chen 的空间</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/mylogo.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+<!-- 封面标闪烁 -->
+<link rel="stylesheet" href="/css/zhyBlogTitle.css">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- jquery，懒加载、统计、说说需要的jquery -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-LeoCar：树莓派智能车——综合篇"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  LeoCar：树莓派智能车——综合篇
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/12/29/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BB%BC%E5%90%88%E7%AF%87/" class="article-date">
+  <time datetime="2023-12-29T07:33:17.000Z" itemprop="datePublished">2023-12-29</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a> / <a class="article-category-link" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a> / <a class="article-category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a> / <a class="article-category-link" href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.1k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">9 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <ul>
+<li>文章链接：<a href="/2023/12/10/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BD%91%E7%BB%9C%E7%AF%87/" title="LeoCar：树莓派智能车——网络篇">网络篇</a>——&gt;<a href="/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/" title="LeoCar：树莓派智能车——电控篇">电控篇</a>——&gt;<a href="/2023/12/29/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BB%BC%E5%90%88%E7%AF%87/" title="LeoCar：树莓派智能车——综合篇">综合篇</a></li>
+<li>项目链接：<a target="_blank" rel="noopener" href="https://github.com/LegendLeoChen/LeoCar">https://github.com/LegendLeoChen/LeoCar</a></li>
+<li>上次实现小车结构和电路搭建，先使用ESP32实现对小车的控制，以及电源方案的验证。</li>
+<li>本次使用树莓派完成对小车的控制，以及视觉算法的加入。<span id="more"></span></li>
+</ul>
+<h1 id="📡接线图"><a href="#📡接线图" class="headerlink" title="📡接线图"></a>📡接线图</h1><ul>
+<li>接线变化不大，这里就不测试超声波避障了，其他就是将ESP32控制TB6612FNG的引脚改为接在树莓派的对应引脚。<br><img src="/2023/12/29/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BB%BC%E5%90%88%E7%AF%87/%E6%80%BB%E6%8E%A5%E7%BA%BF%EF%BC%88%E6%A0%91%E8%8E%93%E6%B4%BE%E7%89%88%EF%BC%89.png" alt="总接线"></li>
+</ul>
+<h1 id="📡小车运动"><a href="#📡小车运动" class="headerlink" title="📡小车运动"></a>📡小车运动</h1><ul>
+<li>我们先将ESP32对小车的基本控制改为对树莓派对小车的控制，这里用到RPi.GPIO库可以方便地用Python做到像控制单片机一样简单地控制树莓派的引脚。这里用类封装引脚初始化、PWM设置、占空比控制等操作方便调用，主函数测试用，运行程序小车会循环展示所有动作。与之前ESP32代码不同的是，<strong>占空比范围是0-100</strong>。</li>
+<li>该文件命名为device（后续调用）</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> RPi<span class="token punctuation">.</span>GPIO <span class="token keyword">as</span> GPIO
+<span class="token keyword">import</span> time
+
+<span class="token keyword">class</span> <span class="token class-name">MotorControl</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> pwm_channel_1<span class="token punctuation">,</span> pwm_channel_2<span class="token punctuation">,</span> in1<span class="token punctuation">,</span> in2<span class="token punctuation">,</span> in3<span class="token punctuation">,</span> in4<span class="token punctuation">,</span> standby<span class="token operator">=</span><span class="token number">22</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment" spellcheck="true"># Initialize GPIO</span>
+        GPIO<span class="token punctuation">.</span>setmode<span class="token punctuation">(</span>GPIO<span class="token punctuation">.</span>BCM<span class="token punctuation">)</span>
+        GPIO<span class="token punctuation">.</span>setwarnings<span class="token punctuation">(</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+
+        <span class="token comment" spellcheck="true"># Setup pins</span>
+        self<span class="token punctuation">.</span>in1 <span class="token operator">=</span> in1
+        self<span class="token punctuation">.</span>in2 <span class="token operator">=</span> in2
+        self<span class="token punctuation">.</span>in3 <span class="token operator">=</span> in3
+        self<span class="token punctuation">.</span>in4 <span class="token operator">=</span> in4
+        self<span class="token punctuation">.</span>standby <span class="token operator">=</span> standby
+
+        GPIO<span class="token punctuation">.</span>setup<span class="token punctuation">(</span>self<span class="token punctuation">.</span>in1<span class="token punctuation">,</span> GPIO<span class="token punctuation">.</span>OUT<span class="token punctuation">)</span>
+        GPIO<span class="token punctuation">.</span>setup<span class="token punctuation">(</span>self<span class="token punctuation">.</span>in2<span class="token punctuation">,</span> GPIO<span class="token punctuation">.</span>OUT<span class="token punctuation">)</span>
+        GPIO<span class="token punctuation">.</span>setup<span class="token punctuation">(</span>self<span class="token punctuation">.</span>in3<span class="token punctuation">,</span> GPIO<span class="token punctuation">.</span>OUT<span class="token punctuation">)</span>
+        GPIO<span class="token punctuation">.</span>setup<span class="token punctuation">(</span>self<span class="token punctuation">.</span>in4<span class="token punctuation">,</span> GPIO<span class="token punctuation">.</span>OUT<span class="token punctuation">)</span>
+        GPIO<span class="token punctuation">.</span>setup<span class="token punctuation">(</span>self<span class="token punctuation">.</span>standby<span class="token punctuation">,</span> GPIO<span class="token punctuation">.</span>OUT<span class="token punctuation">)</span>
+
+        <span class="token comment" spellcheck="true"># Initialize PWM</span>
+        GPIO<span class="token punctuation">.</span>setup<span class="token punctuation">(</span>pwm_channel_1<span class="token punctuation">,</span> GPIO<span class="token punctuation">.</span>OUT<span class="token punctuation">)</span>
+        GPIO<span class="token punctuation">.</span>setup<span class="token punctuation">(</span>pwm_channel_2<span class="token punctuation">,</span> GPIO<span class="token punctuation">.</span>OUT<span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>pwm_channel_1 <span class="token operator">=</span> GPIO<span class="token punctuation">.</span>PWM<span class="token punctuation">(</span>pwm_channel_1<span class="token punctuation">,</span> <span class="token number">5000</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>pwm_channel_2 <span class="token operator">=</span> GPIO<span class="token punctuation">.</span>PWM<span class="token punctuation">(</span>pwm_channel_2<span class="token punctuation">,</span> <span class="token number">5000</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>pwm_channel_1<span class="token punctuation">.</span>start<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>pwm_channel_2<span class="token punctuation">.</span>start<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token comment" spellcheck="true"># WORK</span>
+        GPIO<span class="token punctuation">.</span>output<span class="token punctuation">(</span>self<span class="token punctuation">.</span>standby<span class="token punctuation">,</span> GPIO<span class="token punctuation">.</span>HIGH<span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">set_pwm</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> moto1<span class="token punctuation">,</span> moto2<span class="token punctuation">,</span> amplitude<span class="token operator">=</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment" spellcheck="true"># Motor 1</span>
+        GPIO<span class="token punctuation">.</span>output<span class="token punctuation">(</span>self<span class="token punctuation">.</span>in1<span class="token punctuation">,</span> GPIO<span class="token punctuation">.</span>HIGH <span class="token keyword">if</span> moto1 <span class="token operator">></span> <span class="token number">0</span> <span class="token keyword">else</span> GPIO<span class="token punctuation">.</span>LOW<span class="token punctuation">)</span>
+        GPIO<span class="token punctuation">.</span>output<span class="token punctuation">(</span>self<span class="token punctuation">.</span>in2<span class="token punctuation">,</span> GPIO<span class="token punctuation">.</span>LOW <span class="token keyword">if</span> moto1 <span class="token operator">></span> <span class="token number">0</span> <span class="token keyword">else</span> GPIO<span class="token punctuation">.</span>HIGH<span class="token punctuation">)</span>
+        <span class="token comment" spellcheck="true"># Motor 2</span>
+        GPIO<span class="token punctuation">.</span>output<span class="token punctuation">(</span>self<span class="token punctuation">.</span>in3<span class="token punctuation">,</span> GPIO<span class="token punctuation">.</span>LOW <span class="token keyword">if</span> moto2 <span class="token operator">></span> <span class="token number">0</span> <span class="token keyword">else</span> GPIO<span class="token punctuation">.</span>HIGH<span class="token punctuation">)</span>
+        GPIO<span class="token punctuation">.</span>output<span class="token punctuation">(</span>self<span class="token punctuation">.</span>in4<span class="token punctuation">,</span> GPIO<span class="token punctuation">.</span>HIGH <span class="token keyword">if</span> moto2 <span class="token operator">></span> <span class="token number">0</span> <span class="token keyword">else</span> GPIO<span class="token punctuation">.</span>LOW<span class="token punctuation">)</span>
+        <span class="token comment" spellcheck="true"># Limit PWM values</span>
+        moto1 <span class="token operator">=</span> max<span class="token punctuation">(</span><span class="token operator">-</span>amplitude<span class="token punctuation">,</span> min<span class="token punctuation">(</span>amplitude<span class="token punctuation">,</span> moto1<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        moto2 <span class="token operator">=</span> max<span class="token punctuation">(</span><span class="token operator">-</span>amplitude<span class="token punctuation">,</span> min<span class="token punctuation">(</span>amplitude<span class="token punctuation">,</span> moto2<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token comment" spellcheck="true"># Set PWM values</span>
+        self<span class="token punctuation">.</span>pwm_channel_1<span class="token punctuation">.</span>ChangeDutyCycle<span class="token punctuation">(</span>abs<span class="token punctuation">(</span>moto1<span class="token punctuation">)</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>pwm_channel_2<span class="token punctuation">.</span>ChangeDutyCycle<span class="token punctuation">(</span>abs<span class="token punctuation">(</span>moto2<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">stop_motors</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>pwm_channel_1<span class="token punctuation">.</span>ChangeDutyCycle<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>pwm_channel_2<span class="token punctuation">.</span>ChangeDutyCycle<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">def</span> <span class="token function">cleanup</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        GPIO<span class="token punctuation">.</span>cleanup<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    <span class="token comment" spellcheck="true"># Define GPIO pins for left and right motors (change these pins according to your setup)</span>
+    left_motor_pins <span class="token operator">=</span> <span class="token punctuation">{</span>
+        <span class="token string">'pwm_channel_1'</span><span class="token punctuation">:</span> <span class="token number">12</span><span class="token punctuation">,</span>
+        <span class="token string">'in1'</span><span class="token punctuation">:</span> <span class="token number">17</span><span class="token punctuation">,</span>
+        <span class="token string">'in2'</span><span class="token punctuation">:</span> <span class="token number">27</span>
+    <span class="token punctuation">}</span>
+    right_motor_pins <span class="token operator">=</span> <span class="token punctuation">{</span>
+        <span class="token string">'pwm_channel_2'</span><span class="token punctuation">:</span> <span class="token number">13</span><span class="token punctuation">,</span>
+        <span class="token string">'in3'</span><span class="token punctuation">:</span> <span class="token number">19</span><span class="token punctuation">,</span>
+        <span class="token string">'in4'</span><span class="token punctuation">:</span> <span class="token number">26</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true"># Create an instance of MotorControl</span>
+    motor_control <span class="token operator">=</span> MotorControl<span class="token punctuation">(</span><span class="token operator">**</span>left_motor_pins<span class="token punctuation">,</span> <span class="token operator">**</span>right_motor_pins<span class="token punctuation">,</span> standby<span class="token operator">=</span><span class="token number">22</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true"># Run the robot in different directions</span>
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        <span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+            motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">,</span> <span class="token number">50</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true"># Forward</span>
+            time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+            motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">50</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">50</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true"># Backward</span>
+            time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+            motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">50</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true"># Left</span>
+            time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+            motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token number">50</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true"># Right</span>
+            time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+            motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true"># Stop</span>
+            time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+            motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token number">25</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">25</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true"># Pivot Turn</span>
+            time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span>
+            motor_control<span class="token punctuation">.</span>stop_motors<span class="token punctuation">(</span><span class="token punctuation">)</span>
+            time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">except</span> KeyboardInterrupt<span class="token punctuation">:</span>
+        motor_control<span class="token punctuation">.</span>cleanup<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="📡远程控制"><a href="#📡远程控制" class="headerlink" title="📡远程控制"></a>📡远程控制</h1><ul>
+<li>使用之前的web程序控制小车，通过交互遥杆组件使小车原地旋转（其他动作这里就不实现了，就是多设计一些按钮，传递专门的指令）</li>
+<li>首先我们先把之前网络篇的前端代码（index.html）进行简单的如下修改（<strong>找到触控部分的 touchmove 和 touchend 回调函数覆盖并添加url变量即可</strong>），把传递的角度值改为<strong>角度变化量的正弦值</strong>，同时在拖拽结束后发送0，意思是停止转动</li>
+<li>url是运行flask服务器的树莓派IP地址</li>
+</ul>
+<pre class="line-numbers language-js"><code class="language-js">    canvas<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'touchmove'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+      e<span class="token punctuation">.</span><span class="token function">preventDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>isDragging<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> x <span class="token operator">=</span> e<span class="token punctuation">.</span>touches<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>clientX<span class="token punctuation">;</span>
+        <span class="token keyword">const</span> y <span class="token operator">=</span> e<span class="token punctuation">.</span>touches<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>clientY<span class="token punctuation">;</span>
+        <span class="token keyword">const</span> rect <span class="token operator">=</span> canvas<span class="token punctuation">.</span><span class="token function">getBoundingClientRect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">const</span> mouseX <span class="token operator">=</span> x <span class="token operator">-</span> rect<span class="token punctuation">.</span>left<span class="token punctuation">;</span>
+        <span class="token keyword">const</span> mouseY <span class="token operator">=</span> y <span class="token operator">-</span> rect<span class="token punctuation">.</span>top<span class="token punctuation">;</span>
+        angle <span class="token operator">=</span> <span class="token function">updateSmallCircle</span><span class="token punctuation">(</span>mouseX<span class="token punctuation">,</span> mouseY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>Math<span class="token punctuation">.</span><span class="token function">abs</span><span class="token punctuation">(</span>last_angle <span class="token operator">-</span> angle<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+          <span class="token comment" spellcheck="true">// 发送 AJAX 请求</span>
+          $<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+            url<span class="token punctuation">:</span> url<span class="token punctuation">,</span>
+            type<span class="token punctuation">:</span> <span class="token string">"POST"</span><span class="token punctuation">,</span>
+            data<span class="token punctuation">:</span> JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">{</span> angle<span class="token punctuation">:</span> Math<span class="token punctuation">.</span><span class="token function">sin</span><span class="token punctuation">(</span><span class="token punctuation">(</span>angle <span class="token operator">-</span> last_angle<span class="token punctuation">)</span> <span class="token operator">*</span> Math<span class="token punctuation">.</span>PI <span class="token operator">/</span> <span class="token number">180</span><span class="token punctuation">)</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            contentType<span class="token punctuation">:</span> <span class="token string">"application/json"</span><span class="token punctuation">,</span>
+            dataType<span class="token punctuation">:</span> <span class="token string">'json'</span><span class="token punctuation">,</span>
+            success<span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          last_angle <span class="token operator">=</span> angle<span class="token punctuation">;</span>
+          label<span class="token punctuation">.</span>textContent <span class="token operator">=</span> <span class="token template-string"><span class="token string">`Angle: </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>angle<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">°`</span></span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    canvas<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'touchend'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+      isDragging <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+      $<span class="token punctuation">.</span><span class="token function">ajax</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        url<span class="token punctuation">:</span> url<span class="token punctuation">,</span>
+        type<span class="token punctuation">:</span> <span class="token string">"POST"</span><span class="token punctuation">,</span>
+        data<span class="token punctuation">:</span> JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span><span class="token punctuation">{</span> angle<span class="token punctuation">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        contentType<span class="token punctuation">:</span> <span class="token string">"application/json"</span><span class="token punctuation">,</span>
+        dataType<span class="token punctuation">:</span> <span class="token string">'json'</span><span class="token punctuation">,</span>
+        success<span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>树莓派上运行如下程序，device是上面的电机控制代码，代码很简单，就是把之前flask程序结合电机控制，当接受的sin值为正就左转，为负右转。</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask<span class="token punctuation">,</span> jsonify<span class="token punctuation">,</span> request<span class="token punctuation">,</span> make_response
+<span class="token keyword">import</span> time
+<span class="token keyword">from</span> flask_cors <span class="token keyword">import</span> CORS
+
+<span class="token keyword">from</span> device <span class="token keyword">import</span> MotorControl
+
+app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">,</span> static_url_path<span class="token operator">=</span><span class="token string">""</span><span class="token punctuation">)</span>
+CORS<span class="token punctuation">(</span>app<span class="token punctuation">,</span> resources<span class="token operator">=</span><span class="token punctuation">{</span>r<span class="token string">"/position/*"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token string">"origins"</span><span class="token punctuation">:</span> <span class="token string">"*"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+angle <span class="token operator">=</span> <span class="token number">0</span>  <span class="token comment" spellcheck="true"># 角度变化量的sin值（为正向左，为负向右）</span>
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">index</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> app<span class="token punctuation">.</span>send_static_file<span class="token punctuation">(</span><span class="token string">"index.html"</span><span class="token punctuation">)</span>
+
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/position'</span><span class="token punctuation">,</span> methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">send_button_position</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment" spellcheck="true"># put application's code here</span>
+    <span class="token keyword">global</span> angle
+    args <span class="token operator">=</span> request<span class="token punctuation">.</span>json
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        angle <span class="token operator">=</span> round<span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token string">"angle"</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>f<span class="token string">'angle = {angle:.2f}'</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> angle <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">:</span>
+            motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">15</span><span class="token punctuation">,</span> <span class="token number">15</span><span class="token punctuation">)</span>
+        <span class="token keyword">elif</span> angle <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">:</span>
+            motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token number">15</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">15</span><span class="token punctuation">)</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">0.01</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">True</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"成功发送位置"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> f<span class="token string">'angle={args["angle"]}'</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token keyword">except</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"错误"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> None<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+
+<span class="token keyword">def</span> <span class="token function">motor_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment" spellcheck="true"># Define GPIO pins for left and right motors (change these pins according to your setup)</span>
+    left_motor_pins <span class="token operator">=</span> <span class="token punctuation">{</span>
+        <span class="token string">'pwm_channel_1'</span><span class="token punctuation">:</span> <span class="token number">12</span><span class="token punctuation">,</span>
+        <span class="token string">'in1'</span><span class="token punctuation">:</span> <span class="token number">17</span><span class="token punctuation">,</span>
+        <span class="token string">'in2'</span><span class="token punctuation">:</span> <span class="token number">27</span>
+    <span class="token punctuation">}</span>
+    right_motor_pins <span class="token operator">=</span> <span class="token punctuation">{</span>
+        <span class="token string">'pwm_channel_2'</span><span class="token punctuation">:</span> <span class="token number">13</span><span class="token punctuation">,</span>
+        <span class="token string">'in3'</span><span class="token punctuation">:</span> <span class="token number">19</span><span class="token punctuation">,</span>
+        <span class="token string">'in4'</span><span class="token punctuation">:</span> <span class="token number">26</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true"># Create an instance of MotorControl</span>
+    <span class="token keyword">return</span> MotorControl<span class="token punctuation">(</span><span class="token operator">**</span>left_motor_pins<span class="token punctuation">,</span> <span class="token operator">**</span>right_motor_pins<span class="token punctuation">,</span> standby<span class="token operator">=</span><span class="token number">22</span><span class="token punctuation">)</span>
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
+    motor_control <span class="token operator">=</span> motor_init<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span>debug<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> host<span class="token operator">=</span><span class="token string">'0.0.0.0'</span><span class="token punctuation">,</span> port<span class="token operator">=</span><span class="token number">5000</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>得到如下结果：<br><img src="/2023/12/29/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BB%BC%E5%90%88%E7%AF%87/web%E8%BF%9C%E7%A8%8B%E6%8E%A7%E5%88%B6%E5%B0%8F%E8%BD%A6.gif" alt="web远程控制小车"></li>
+</ul>
+<h1 id="📡人脸追踪"><a href="#📡人脸追踪" class="headerlink" title="📡人脸追踪"></a>📡人脸追踪</h1><ul>
+<li>添加人脸检测代码，对摄像头的图像进行人脸检测，通过人脸水平中心（列）和画面中心（列）的偏差，控制小车左右转向来保持人脸在画面中心，实现对人脸的追踪，这里为了保证小车的平稳转动不太慢、不超调，使用了PID算法。直接上完整程序.</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask<span class="token punctuation">,</span> jsonify<span class="token punctuation">,</span> request<span class="token punctuation">,</span> make_response
+<span class="token keyword">import</span> os<span class="token punctuation">,</span> time
+<span class="token keyword">import</span> threading
+<span class="token keyword">from</span> flask_cors <span class="token keyword">import</span> CORS
+<span class="token keyword">import</span> cv2
+<span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+<span class="token keyword">from</span> urllib <span class="token keyword">import</span> request <span class="token keyword">as</span> urlrequest
+
+<span class="token keyword">from</span> device <span class="token keyword">import</span> MotorControl
+
+app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">,</span> static_url_path<span class="token operator">=</span><span class="token string">""</span><span class="token punctuation">)</span>
+CORS<span class="token punctuation">(</span>app<span class="token punctuation">,</span> resources<span class="token operator">=</span><span class="token punctuation">{</span>r<span class="token string">"/position/*"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token string">"origins"</span><span class="token punctuation">:</span> <span class="token string">"*"</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+angle <span class="token operator">=</span> <span class="token number">0</span>			<span class="token comment" spellcheck="true"># sin delta angle</span>
+lock <span class="token operator">=</span> threading<span class="token punctuation">.</span>Lock<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">"/"</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">index</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">return</span> app<span class="token punctuation">.</span>send_static_file<span class="token punctuation">(</span><span class="token string">"index.html"</span><span class="token punctuation">)</span>
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/position'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token keyword">def</span> <span class="token function">send_button_position</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>  <span class="token comment" spellcheck="true"># put application's code here</span>
+    <span class="token keyword">global</span> angle
+    args <span class="token operator">=</span> request<span class="token punctuation">.</span>json
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        angle <span class="token operator">=</span> round<span class="token punctuation">(</span>args<span class="token punctuation">[</span><span class="token string">"angle"</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>f<span class="token string">'angle = {angle:.2f}'</span><span class="token punctuation">)</span>
+        time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">0.01</span><span class="token punctuation">)</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">True</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"成功发送位置"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> f<span class="token string">'angle={args["angle"]}'</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token keyword">except</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"错误"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> None<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">motor_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    left_motor_pins <span class="token operator">=</span> <span class="token punctuation">{</span>
+        <span class="token string">'pwm_channel_1'</span><span class="token punctuation">:</span> <span class="token number">12</span><span class="token punctuation">,</span>
+        <span class="token string">'in1'</span><span class="token punctuation">:</span> <span class="token number">17</span><span class="token punctuation">,</span>
+        <span class="token string">'in2'</span><span class="token punctuation">:</span> <span class="token number">27</span>
+    <span class="token punctuation">}</span>
+    right_motor_pins <span class="token operator">=</span> <span class="token punctuation">{</span>
+        <span class="token string">'pwm_channel_2'</span><span class="token punctuation">:</span> <span class="token number">13</span><span class="token punctuation">,</span>
+        <span class="token string">'in3'</span><span class="token punctuation">:</span> <span class="token number">19</span><span class="token punctuation">,</span>
+        <span class="token string">'in4'</span><span class="token punctuation">:</span> <span class="token number">26</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> MotorControl<span class="token punctuation">(</span><span class="token operator">**</span>left_motor_pins<span class="token punctuation">,</span> <span class="token operator">**</span>right_motor_pins<span class="token punctuation">,</span> standby<span class="token operator">=</span><span class="token number">22</span><span class="token punctuation">)</span>
+
+<span class="token keyword">class</span> <span class="token class-name">PIDController</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> kp<span class="token punctuation">,</span> ki<span class="token punctuation">,</span> kd<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>kp <span class="token operator">=</span> kp
+        self<span class="token punctuation">.</span>ki <span class="token operator">=</span> ki
+        self<span class="token punctuation">.</span>kd <span class="token operator">=</span> kd
+        self<span class="token punctuation">.</span>prev_error <span class="token operator">=</span> <span class="token number">0</span>
+        self<span class="token punctuation">.</span>integral <span class="token operator">=</span> <span class="token number">0</span>
+        self<span class="token punctuation">.</span>i_limit <span class="token operator">=</span> <span class="token number">10</span>
+
+    <span class="token keyword">def</span> <span class="token function">calculate_output</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> error<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        self<span class="token punctuation">.</span>integral <span class="token operator">+=</span> error
+        self<span class="token punctuation">.</span>integral <span class="token operator">=</span> max<span class="token punctuation">(</span>min<span class="token punctuation">(</span>self<span class="token punctuation">.</span>integral<span class="token punctuation">,</span> self<span class="token punctuation">.</span>i_limit<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">-</span>self<span class="token punctuation">.</span>i_limit<span class="token punctuation">)</span>
+        derivative <span class="token operator">=</span> error <span class="token operator">-</span> self<span class="token punctuation">.</span>prev_error
+        output <span class="token operator">=</span> self<span class="token punctuation">.</span>kp <span class="token operator">*</span> error <span class="token operator">+</span> self<span class="token punctuation">.</span>ki <span class="token operator">*</span> self<span class="token punctuation">.</span>integral <span class="token operator">+</span> self<span class="token punctuation">.</span>kd <span class="token operator">*</span> derivative
+        <span class="token comment" spellcheck="true"># ~ print(f'{self.kp * error},{self.ki * self.integral},{self.kd * derivative}')</span>
+        self<span class="token punctuation">.</span>prev_error <span class="token operator">=</span> error
+        <span class="token keyword">return</span> output
+
+motor_control <span class="token operator">=</span> motor_init<span class="token punctuation">(</span><span class="token punctuation">)</span>
+pid_controller <span class="token operator">=</span> PIDController<span class="token punctuation">(</span>kp<span class="token operator">=</span><span class="token number">0.02</span><span class="token punctuation">,</span> ki<span class="token operator">=</span><span class="token number">0.005</span><span class="token punctuation">,</span> kd<span class="token operator">=</span><span class="token number">0.005</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">downloadImg</span><span class="token punctuation">(</span>url<span class="token punctuation">)</span><span class="token punctuation">:</span>           <span class="token comment" spellcheck="true"># 读取网络摄像头视频帧</span>
+    <span class="token keyword">with</span> urlrequest<span class="token punctuation">.</span>urlopen<span class="token punctuation">(</span>url<span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+        data <span class="token operator">=</span> f<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        img1 <span class="token operator">=</span> np<span class="token punctuation">.</span>frombuffer<span class="token punctuation">(</span>data<span class="token punctuation">,</span> np<span class="token punctuation">.</span>uint8<span class="token punctuation">)</span>
+        <span class="token comment" spellcheck="true"># print("img1 shape ", img1.shape) # (83653,)</span>
+        img_cv <span class="token operator">=</span> cv2<span class="token punctuation">.</span>imdecode<span class="token punctuation">(</span>img1<span class="token punctuation">,</span> cv2<span class="token punctuation">.</span>IMREAD_ANYCOLOR<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> img_cv
+    
+<span class="token keyword">def</span> <span class="token function">face_detect</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>              <span class="token comment" spellcheck="true"># 人脸检测并控制小车转向</span>
+    <span class="token keyword">global</span> motor_control<span class="token punctuation">,</span> pid_controller
+    url <span class="token operator">=</span> <span class="token string">"http://视频流的IP地址/?action=snapshot"</span>
+    <span class="token comment" spellcheck="true"># 加载预训练模型</span>
+    face_cascade <span class="token operator">=</span> cv2<span class="token punctuation">.</span>CascadeClassifier<span class="token punctuation">(</span><span class="token string">'haarcascade_frontalface_alt2.xml'</span><span class="token punctuation">)</span>
+    <span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+        <span class="token comment" spellcheck="true"># 读取视频流中的一帧</span>
+        frame <span class="token operator">=</span> downloadImg<span class="token punctuation">(</span>url<span class="token punctuation">)</span>
+        <span class="token comment" spellcheck="true"># 将帧转换为灰度图像</span>
+        gray <span class="token operator">=</span> cv2<span class="token punctuation">.</span>cvtColor<span class="token punctuation">(</span>frame<span class="token punctuation">,</span> cv2<span class="token punctuation">.</span>COLOR_BGR2GRAY<span class="token punctuation">)</span>
+        <span class="token comment" spellcheck="true"># 检测人脸</span>
+        faces <span class="token operator">=</span> face_cascade<span class="token punctuation">.</span>detectMultiScale<span class="token punctuation">(</span>gray<span class="token punctuation">,</span> scaleFactor<span class="token operator">=</span><span class="token number">1.1</span><span class="token punctuation">,</span> minNeighbors<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span> len<span class="token punctuation">(</span>faces<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">:</span>
+            x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> w<span class="token punctuation">,</span> h <span class="token operator">=</span> faces<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+            target <span class="token operator">=</span> x <span class="token operator">+</span> w <span class="token operator">/</span> <span class="token number">2</span>
+            offset <span class="token operator">=</span> target <span class="token operator">-</span> gray<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">/</span> <span class="token number">2</span>         <span class="token comment" spellcheck="true"># 计算人脸和画面中心的水平偏差</span>
+            pwm_output <span class="token operator">=</span> int<span class="token punctuation">(</span>pid_controller<span class="token punctuation">.</span>calculate_output<span class="token punctuation">(</span>offset<span class="token punctuation">)</span><span class="token punctuation">)</span>       <span class="token comment" spellcheck="true"># pid计算</span>
+            <span class="token keyword">print</span><span class="token punctuation">(</span>f<span class="token string">'face: {offset}, pwm: {pwm_output}'</span><span class="token punctuation">)</span>
+            <span class="token keyword">if</span> abs<span class="token punctuation">(</span>offset<span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">8</span><span class="token punctuation">:</span>
+                <span class="token keyword">if</span> offset <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">:</span>
+                    motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token operator">-</span>abs<span class="token punctuation">(</span>pwm_output<span class="token punctuation">)</span><span class="token punctuation">,</span> abs<span class="token punctuation">(</span>pwm_output<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                <span class="token keyword">else</span><span class="token punctuation">:</span>
+                    motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span>abs<span class="token punctuation">(</span>pwm_output<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">-</span>abs<span class="token punctuation">(</span>pwm_output<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                time<span class="token punctuation">.</span>sleep<span class="token punctuation">(</span><span class="token number">0.15</span><span class="token punctuation">)</span>
+                motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+            <span class="token keyword">else</span><span class="token punctuation">:</span>
+                motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            motor_control<span class="token punctuation">.</span>set_pwm<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+    
+thread1 <span class="token operator">=</span> threading<span class="token punctuation">.</span>Thread<span class="token punctuation">(</span>name<span class="token operator">=</span><span class="token string">'t1'</span><span class="token punctuation">,</span> target<span class="token operator">=</span>face_detect<span class="token punctuation">)</span>       <span class="token comment" spellcheck="true"># 人脸检测线程</span>
+thread1<span class="token punctuation">.</span>daemon <span class="token operator">=</span> <span class="token boolean">True</span>
+thread1<span class="token punctuation">.</span>start<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">'__main__'</span><span class="token punctuation">:</span>
+    <span class="token comment" spellcheck="true"># app.run()</span>
+    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span>debug<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> host<span class="token operator">=</span><span class="token string">'0.0.0.0'</span><span class="token punctuation">,</span> port<span class="token operator">=</span><span class="token number">5000</span><span class="token punctuation">,</span> threaded<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><p>简单介绍一下程序，前面是flask程序部分，和之前一样没什么区别，之后初始化电机也是实现过的。</p>
+</li>
+<li><p>添加了PID控制器，输入是offset偏差，输出就是控制电机的pwm的占空比。</p>
+</li>
+<li><p>之后是人脸检测代码，从网络视频流上不断读取帧，进行人脸检测，这里用opencv的 haarcascade_frontalface_alt2.xml 文件，这是用 Haar 特征和级联分类器进行训练得到的人脸检测模型。如果检测到人脸就计算偏差，然后计算pid，输出控制。人脸检测的函数通过建立新的线程运行。</p>
+</li>
+<li><p>这里我使用了<strong>点动控制</strong>，相当于一个周期即便有旋转也只转动固定时长，否则我的电机即使在占空比为1**%的情况下转动速度也很快，很容易转动过头，点动控制牺牲了流畅度但是能比较准地进行追踪，如果电机可控范围足够，就可以不需要进行点动。</p>
+</li>
+<li><p>结果如下，小车随着人脸（镜头和人脸同步动的）进行转动，控制台打印检测结果，同时使用遥杆依然能发送数据到树莓派（控制我没写进去，这里只是测试接收）。<br><img src="/2023/12/29/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BB%BC%E5%90%88%E7%AF%87/%E6%A0%91%E8%8E%93%E6%B4%BE%E4%BA%BA%E8%84%B8%E6%A3%80%E6%B5%8B%E5%8F%8A%E5%B0%8F%E8%BD%A6%E6%8E%A7%E5%88%B6.jpg" alt="控制台打印结果"> </p>
+<figure>
+  <img src="/2023/12/29/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BB%BC%E5%90%88%E7%AF%87/小车追踪人脸.gif" width="200" height="auto">
+  <span class="caption">小车追踪人脸</span>
+</figure></li>
+<li><p>可以看到效果还可以提升，如果能提高人脸检测的帧率以及电机可控范围就能使得控制更加丝滑。</p>
+</li>
+<li><p>至此，所有起初构想的功能都全部完成了。后续有更多的想法可能还会继续实现。</p>
+</li>
+</ul>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://localhost:4000/2023/12/29/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BB%BC%E5%90%88%E7%AF%87/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/API/" rel="tag">API</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TB6612FNG/" rel="tag">TB6612FNG</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/" rel="tag">树莓派</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            ESP32聊天助手——文心一言
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/12/21/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%94%B5%E6%8E%A7%E7%AF%87/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">LeoCar：树莓派智能车——电控篇</div>
+      </a>
+    
+  </nav>
+
+  
+   
+  
+    
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023-2024
+        <i class="ri-heart-fill heart_icon"></i> LegendLeo Chen
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/mylogo.png" alt="LegendLeo Chen 的空间"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">🚀主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">💾归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">🧭分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">🏷️标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">🛸关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/analytics">📊统计</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/secret">🔐秘密</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=1491212&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+  <!-- 背景气泡 -->
+  <!--
+  <div class="balls-container">
+    <div class="balls-particles">
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+    </div>
+  </div>
+  <style>
+    *
+    {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .balls-container
+    { 
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+    
+    .balls-particles
+    {
+      position: fixed;
+      display: flex;
+      z-index: 3;
+      padding: 0 20px;
+    }
+    
+    .balls-particles span
+    {
+      position: relative;
+      bottom: 30px;
+      width: 30px;
+      height: 30px;
+      background-color: #4fc3dc;
+      box-shadow: 0 0 0 10px #4fc3dc44,
+      0 0 50px #4fc3dc,
+      -100px 0 #4fc3dc99,
+      100px 0 #ff2d7599;
+      margin: 0 4px;
+      border-radius: 50%;
+      animation: animate 15s ease infinite;
+      animation-delay: calc(125s / var(--i));
+      transform: translateY(120vh);
+    }
+    .balls-particles span:nth-child(even) {
+      background-color: #ff2d75;
+      box-shadow: 0 0 0 10px #ff267544,
+      0 0 50px #ff2d75,
+      -100px 0 #4fc3dc99,
+      100px 0 #4fc3dc99;
+      ;
+    }
+    
+    @keyframes animate {
+      0%
+      {
+        transform: translateY(120vh) scale(0) rotate(0deg);
+      }
+      20%
+      {
+        transform: translateY(100vh) scale(1) rotate(0deg);
+      }
+      100%
+      {
+        transform: translateY(-50vh) scale(0.5) rotate(360deg);
+      }
+    }
+  </style> -->
+  <!-- 地月系统 -->
+  <!-- <div class="earth-container" >
+    <div class="planet"></div>
+    <div class="satellite"></div>
+   </div>
+   <style>
+    *{
+      padding: 0;
+      margin: 0;
+      }
+      .earth-container {
+        width: 36.25em;
+        height: 36.25em;
+        position: absolute;
+        top:5%;
+        left: 93%;
+        transform: translate(-50%, -50%);
+        opacity: 0.3;
+      }
+      
+      .planet{
+        width: 15.62*3em;
+        height: 15.62*3em;
+        background-color: #02c0f5;
+        border-radius: 50%;
+        position: absolute;
+        margin: auto;
+        top:0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+      }
+      
+      .planet::before{
+        content: '';
+        width: 4em;
+        height: 4em;
+        background-color: #008fd6;
+        position: absolute;
+        top:10em;
+        left: 8em;
+        border-radius: 50%; 
+        box-shadow: 15em 15em 0 2em #00d68b, 5em 8em 0 3em #10ade1;
+      }
+      
+      .satellite{
+        width: 5em;
+        height: 5em;
+        background-color: #dee517;
+        border-radius: 50%;
+        position: relative;
+        left: -5em;
+        bottom: -30em;
+        animation: spin 5s infinite;
+        z-index: 1;
+      }
+      
+      @keyframes spin {
+        49%{
+          z-index: 1;
+        }
+        50%{
+          bottom: 3em;
+          left: 35em;
+          z-index: -1;
+        }
+        100%{
+          z-index: -1;
+        }
+      }
+    </style> -->
+<!-- 三角彩带背景 -->
+  <canvas id="evanyou-canvas" style="opacity: 0.3; position: fixed; top: 0px; left: 0px; z-index: -1; width: 100%; height: 100%; pointer-events: none;"></canvas>
+  <script src="https://cdn.jsdelivr.net/gh/XXXZhy/Blog_Image/js/evanyou_canvas.js"></script>
+</body>
+
+</html>

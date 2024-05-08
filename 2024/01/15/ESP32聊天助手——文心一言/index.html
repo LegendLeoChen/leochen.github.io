@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta name="description" content="一个秘密空间" />
+      
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>ESP32聊天助手——文心一言 |  LegendLeo Chen 的空间</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/mylogo.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+<!-- 封面标闪烁 -->
+<link rel="stylesheet" href="/css/zhyBlogTitle.css">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- jquery，懒加载、统计、说说需要的jquery -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-ESP32聊天助手——文心一言"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  ESP32聊天助手——文心一言
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/" class="article-date">
+  <time datetime="2024-01-15T07:33:26.000Z" itemprop="datePublished">2024-01-15</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a> / <a class="article-category-link" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a> / <a class="article-category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">8 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="🔥前言"><a href="#🔥前言" class="headerlink" title="🔥前言"></a>🔥前言</h1><p>随着人工智能技术的不断发展，自然语言处理领域也得到了广泛的关注和应用。在这个领域中，文心一言作为一款强大的自然语言处理工具，具有许多重要的应用价值。本文将重点介绍如何通过ESP32接入国产大模型之文心一言api，以及其中的重点词汇或短语。  <span id="more"></span></p>
+<h2 id="了解文心一言"><a href="#了解文心一言" class="headerlink" title="了解文心一言"></a>了解文心一言</h2><p>文心一言是百度打造出来的人工智能大语言模型，具备跨模态、跨语言的深度语义理解与生成能力，文心一言有五大能力，文学创作、商业文案创作、数理逻辑推算、中文理解、多模态生成，其在搜索问答、内容创作生成、智能办公等众多领域都有更广阔的想象空间。文心一言企业服务由千帆大模型平台提供，包括推理服务及大模型微调等一系列开发和应用工具链。文心一言大模型现已升级至4.0，企业客户可通过百度智能云千帆大模型平台申请接入。</p>
+<h2 id="接入文心一言"><a href="#接入文心一言" class="headerlink" title="接入文心一言"></a>接入文心一言</h2><p>API 列表<br>百度智能云千帆平台提供了丰富的API，保留对话Chat、续写Completions、向量Embeddings、插件应用、Prompt工程、大模型训练、管理及服务等API能力，详情请查看<a target="_blank" rel="noopener" href="https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Nlks5zkzu">API列表</a>。</p>
+<ol>
+<li>大模型相关</li>
+</ol>
+<blockquote>
+<ul>
+<li>对话Chat：支持创建chat，用于发起一次对话。</li>
+<li>续写Completions：支持创建completion，用于发起一次续写请求，不支持多轮会话等。</li>
+<li>向量Embeddings：支持Embeddings，用于根据输入内容生成对应的向量表示。</li>
+<li>自定义模型导入：支持HuggingFace Transformer架构的自定义模型导入，提供自定义模型导入相关API能力。</li>
+<li>图像Images：提供图像相关API能力。</li>
+</ul>
+</blockquote>
+<ol start="2">
+<li>插件应用：提供域内知识搜索增强插件API相关能力。</li>
+<li>Prompt工程：提供模版相关API能力。</li>
+<li>大模型训练：提供创建训练任务、任务运行、停止任务运行及获取任务运行详情等API能力。</li>
+<li>大模型管理：提供获取模型、模型版本详情及将训练任务发布为模型等API能力。</li>
+<li>大模型服务：提供创建服务、获取服务详情等API能力。</li>
+</ol>
+<h1 id="🔥API-调用流程简介"><a href="#🔥API-调用流程简介" class="headerlink" title="🔥API 调用流程简介"></a>🔥API 调用流程简介</h1><p>API 的调用流程如下图所示。</p>
+<p><img src="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/API%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B.jpg" alt="API调用流程"></p>
+<ol>
+<li>创建一个千帆应用。根据实际需求创建千帆应用，创建成功后，获取AppID、API Key、Secret Key 等信息。</li>
+<li>API 授权。对应用的 AppID 进行授权。</li>
+<li>获取接口访问凭证 access_token 。根据第1步获取的 API Key 和 Secret Key ，调用获取<a target="_blank" rel="noopener" href="https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Ilkkrb0i5">access_token</a>接口获取 access_token ，通过 access_token 鉴权调用者身份。</li>
+<li>调用API接口。例如调用ERNIE-Bot相关接口，详见<a target="_blank" rel="noopener" href="https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Nlks5zkzu">API列表</a>。</li>
+</ol>
+<h1 id="🔥API-调用流程"><a href="#🔥API-调用流程" class="headerlink" title="🔥API 调用流程"></a>🔥API 调用流程</h1><h3 id="步骤一-创建千帆应用"><a href="#步骤一-创建千帆应用" class="headerlink" title="步骤一. 创建千帆应用"></a>步骤一. 创建千帆应用</h3><p>（1）登录百度智能云千帆控制台。</p>
+<p>请您注册并登录<a target="_blank" rel="noopener" href="https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application">百度智能云千帆控制台</a>。</p>
+<p><img src="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/%E5%8D%83%E5%B8%86%E6%8E%A7%E5%88%B6%E5%8F%B0.jpg" alt="千帆控制台"></p>
+<p>注意：为保障服务稳定运行，账户最好不处于欠费状态。</p>
+<p>（2）创建千帆应用</p>
+<p>进入<a target="_blank" rel="noopener" href="https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application/create">控制台创建应用</a>。</p>
+<p><img src="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/%E5%88%9B%E5%BB%BA%E5%8D%83%E5%B8%86%E5%BA%94%E7%94%A8.jpg" alt="创建千帆应用"></p>
+<p>（3）创建应用后，获取AppID、API Key、Secret Key。</p>
+<p><img src="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/%E8%8E%B7%E5%8F%96key.jpg" alt="获取key"></p>
+<h3 id="步骤二-调用API接口"><a href="#步骤二-调用API接口" class="headerlink" title="步骤二. 调用API接口"></a>步骤二. 调用API接口</h3><p>调用千帆提供的相关接口，如ERNIE-Bot等，详见<a target="_blank" rel="noopener" href="https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Nlks5zkzu">API列表</a>。</p>
+<ol>
+<li>ERNIE-Bot<br>我们选择ERNIE-Bot：ERNIE-Bot是百度自行研发的大语言模型，覆盖海量中文数据，具有更强的对话问答、内容创作生成等能力。</li>
+</ol>
+<p><img src="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/%E5%88%9B%E5%BB%BAchat.jpg" alt="创建chat"></p>
+<ol start="2">
+<li>在线调试<br>百度智能云千帆提供了 API在线调试平台-示例代码，用于帮助开发者调试接口，平台集成快速检索、查看开发文档、查看在线调用的请求内容和返回结果、复制和下载示例代码等功能，简单易用，更多内容请查看API在线调试介绍。</li>
+</ol>
+<p><img src="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81.jpg" alt="进入示例代码"><br>  3. 获取AccessToken<br>应用列表选择自己创建的《ESP32语音聊天助手》，采用C#示例代码，<br><img src="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/accesstoken.jpg" alt="获取AccessToken"></p>
+<p>然后点击调试，复制获取的AccessToken</p>
+<p><img src="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/accesstoken2.jpg" alt="获取AccessToken"><br>1处粘贴上面的AccessToken，在2处中括号中输入</p>
+<blockquote>
+<p>“role”:“user”,“content”:“介绍一下你自己”</p>
+</blockquote>
+<p><img src="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/%E8%B0%83%E8%AF%95.jpg" alt="调试"><br>调试结果如下  </p>
+<p><img src="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/%E8%B0%83%E8%AF%95%E7%BB%93%E6%9E%9C.jpg" alt="调试结果"><br>查看代码需要三部分，地址、请求头、body<br><img src="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/%E6%9F%A5%E7%9C%8B%E4%BB%A3%E7%A0%81.jpg" alt="查看代码"></p>
+<pre><code>&quot;https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token=xxxxx&quot;
+&quot;Content-Type&quot;, &quot;application/json&quot;
+&quot;&#123;&quot;&quot;messages&quot;&quot;:[&#123;&quot;&quot;role&quot;&quot;:&quot;&quot;user&quot;&quot;,&quot;&quot;content&quot;&quot;:&quot;&quot;介绍一下你自己&quot;&quot;&#125;,&#123;&quot;&quot;role&quot;&quot;:&quot;&quot;assistant&quot;&quot;,&quot;&quot;content&quot;&quot;:&quot;&quot;您好，我是文心一言，英文名是ERNIE Bot。我能够与人对话互动，回答问题，协助创作，高效便捷地帮助人们获取信息、知识和灵感。&quot;&quot;&#125;],&quot;&quot;disable_search&quot;&quot;:false,&quot;&quot;enable_citation&quot;&quot;:false&#125;&quot;
+</code></pre>
+<h1 id="🔥核心代码"><a href="#🔥核心代码" class="headerlink" title="🔥核心代码"></a>🔥核心代码</h1><p>ESP32 Arduino代码如下</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;WiFi.h></span></span>
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;HTTPClient.h></span></span>
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;ArduinoJson.h></span></span>
+
+<span class="token comment" spellcheck="true">// 1. Replace with your network credentials</span>
+<span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> ssid <span class="token operator">=</span> <span class="token string">"wifi名称"</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> password <span class="token operator">=</span> <span class="token string">"wifi密码"</span><span class="token punctuation">;</span>
+
+String inputText <span class="token operator">=</span> <span class="token string">"你好，文心一言"</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// 2. Replace with your access_token</span>
+String apiUrl <span class="token operator">=</span> <span class="token string">"https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token=xxxxxxxxx"</span><span class="token punctuation">;</span>
+
+String answer<span class="token punctuation">;</span>
+String <span class="token function">getGPTAnswer</span><span class="token punctuation">(</span>String inputText<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    HTTPClient http<span class="token punctuation">;</span>
+    http<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span>apiUrl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    http<span class="token punctuation">.</span><span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token number">30000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//超过时间，回答超时（ms）</span>
+    http<span class="token punctuation">.</span><span class="token function">addHeader</span><span class="token punctuation">(</span><span class="token string">"Content-Type"</span><span class="token punctuation">,</span> <span class="token string">"application/json"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// http.addHeader("access_token", String(access_token));</span>
+    String payload <span class="token operator">=</span> <span class="token string">"{\"messages\":[{\"role\": \"user\",\"content\": \""</span> <span class="token operator">+</span> inputText <span class="token operator">+</span> <span class="token string">"\"}],\"disable_search\": false,\"enable_citation\": false}"</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> httpResponseCode <span class="token operator">=</span> http<span class="token punctuation">.</span><span class="token function">POST</span><span class="token punctuation">(</span>payload<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>httpResponseCode <span class="token operator">==</span> <span class="token number">200</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    String response <span class="token operator">=</span> http<span class="token punctuation">.</span><span class="token function">getString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    http<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Parse JSON response</span>
+    DynamicJsonDocument <span class="token function">jsonDoc</span><span class="token punctuation">(</span><span class="token number">1024</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">deserializeJson</span><span class="token punctuation">(</span>jsonDoc<span class="token punctuation">,</span> response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    String outputText <span class="token operator">=</span> jsonDoc<span class="token punctuation">[</span><span class="token string">"result"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> outputText<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// Serial.println(outputText);</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    http<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Serial<span class="token punctuation">.</span><span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"Error %i \n"</span><span class="token punctuation">,</span> httpResponseCode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token string">"&lt;error>"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">void</span> <span class="token function">setup</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// Initialize Serial</span>
+    Serial<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token number">115200</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Connect to Wi-Fi network</span>
+    WiFi<span class="token punctuation">.</span><span class="token function">mode</span><span class="token punctuation">(</span>WIFI_STA<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    WiFi<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span>ssid<span class="token punctuation">,</span> password<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Serial<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token string">"Connecting to WiFi .."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>WiFi<span class="token punctuation">.</span><span class="token function">status</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> WL_CONNECTED<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    Serial<span class="token punctuation">.</span><span class="token function">print</span><span class="token punctuation">(</span><span class="token string">'.'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">delay</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>WiFi<span class="token punctuation">.</span><span class="token function">localIP</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    answer <span class="token operator">=</span> <span class="token function">getGPTAnswer</span><span class="token punctuation">(</span>inputText<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Answer: "</span> <span class="token operator">+</span> answer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Enter a prompt:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span>
+
+<span class="token keyword">void</span> <span class="token function">loop</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// do nothing</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>Serial<span class="token punctuation">.</span><span class="token function">available</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    inputText <span class="token operator">=</span> Serial<span class="token punctuation">.</span><span class="token function">readStringUntil</span><span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// inputText.trim();</span>
+    Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"\n Input:"</span><span class="token operator">+</span>inputText<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    answer <span class="token operator">=</span> <span class="token function">getGPTAnswer</span><span class="token punctuation">(</span>inputText<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Answer: "</span> <span class="token operator">+</span> answer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Serial<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Enter a prompt:"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">// delay(2);</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这段代码是一个基于Arduino平台（可能是ESP32或ESP8266）的示例，它通过WiFi连接到指定的无线网络，并利用HTTPClient库向百度文心一言API发送POST请求以获取AI生成的回答。以下是详细的解释：</p>
+<ol>
+<li>导入必要的库：</li>
+</ol>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;WiFi.h></span>   </span><span class="token comment" spellcheck="true">//用于处理Wi-Fi连接功能。</span>
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;HTTPClient.h></span>     </span><span class="token comment" spellcheck="true">//用于发送HTTP请求。</span>
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;ArduinoJson.h></span>    </span><span class="token comment" spellcheck="true">//用于解析从服务器返回的JSON格式数据。</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<ol start="2">
+<li>第一处修改定义Wi-Fi网络凭证：</li>
+</ol>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> ssid <span class="token operator">=</span> <span class="token string">"wifi名称"</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">//Wi-Fi网络名。</span>
+<span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> password <span class="token operator">=</span> <span class="token string">"wifi密码"</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">//Wi-Fi网络密码。</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ol start="3">
+<li>第二处修改定义要调用的API地址，只要在access_token部分换上之前拿到的即可：</li>
+</ol>
+<pre class="line-numbers language-cpp"><code class="language-cpp">String apiUrl <span class="token operator">=</span> <span class="token string">"https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions?access_token=xxxxxxxxx"</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ol start="4">
+<li>定义输入文本和函数 getGPTAnswer(String inputText)：</li>
+</ol>
+<ul>
+<li>输入文本是固定的问候语”你好，文心一言”，在实际应用中可以根据需要修改。</li>
+<li>函数 getGPTAnswer() 负责执行以下操作：<br>初始化HTTPClient对象并设置目标URL。设置Content-Type头信息，构造请求体payload，将用户输入的内容添加到JSON结构中。发送POST请求并检查HTTP响应码。如果响应码为200，则读取并解析返回的JSON数据，提取出结果字段作为回答。若非200，则返回错误字符串。</li>
+</ul>
+<ol start="5">
+<li>setup() 函数：</li>
+</ol>
+<ul>
+<li>初始化串口通信， 连接到指定的Wi-Fi网络。</li>
+<li>连接成功后，获取一个初始的回答并打印出来，然后提示用户输入新的问题。</li>
+</ul>
+<ol start="6">
+<li>loop() 函数：</li>
+</ol>
+<ul>
+<li>检查串口是否有可用的数据输入。</li>
+<li>如果有新输入，读取一行内容，调用 getGPTAnswer() 函数获取AI回答，并将对话过程输出到串口。</li>
+</ul>
+<blockquote>
+<p>注意：虽然代码中有OpenAI API相关注释，但实际上该代码是针对百度文心一言API编写的。如果你想要与OpenAI API交互，你需要使用OpenAI提供的API URL、access token及相应的JSON结构进行请求。</p>
+</blockquote>
+<h1 id="🔥测试结果"><a href="#🔥测试结果" class="headerlink" title="🔥测试结果"></a>🔥测试结果</h1><p>打开串口监视器，注意右下角选择换行符，选择115200波特率，输入你想问的问题，他就可以回答你，这里让它编写了一个python的flask服务，他也能顺利实现，其他简单的问题也没什么问题。</p>
+<h2 id="测试对话"><a href="#测试对话" class="headerlink" title="测试对话"></a>测试对话</h2><p><img src="/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/%E6%B5%8B%E8%AF%95%E5%AF%B9%E8%AF%9D.jpg" alt="测试对话"></p>
+<h2 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h2><p>如果返回error ，可以对照列表查询错误代码，结合提示排查解决。<br>我遇到过-11，就添加了<code>http.setTimeout(30000)</code>以允许30s的响应时间，使得模型可以有时间输出回答。</p>
+<table>
+<thead>
+<tr>
+<th align="center">错误</th>
+<th align="center">错误码</th>
+<th align="center">错误</th>
+<th align="center">错误码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">HTTPC_ERROR_CONNECTION_FAILED</td>
+<td align="center">-1</td>
+<td align="center">HTTPC_ERROR_NO_HTTP_SERVER</td>
+<td align="center">-7</td>
+</tr>
+<tr>
+<td align="center">HTTPC_ERROR_SEND_HEADER_FAILED</td>
+<td align="center">-2</td>
+<td align="center">HTTPC_ERROR_TOO_LESS_RAM</td>
+<td align="center">-8</td>
+</tr>
+<tr>
+<td align="center">HTTPC_ERROR_SEND_PAYLOAD_FAILED</td>
+<td align="center">-3</td>
+<td align="center">HTTPC_ERROR_ENCODING</td>
+<td align="center">-9</td>
+</tr>
+<tr>
+<td align="center">HTTPC_ERROR_NOT_CONNECTED</td>
+<td align="center">-4</td>
+<td align="center">HTTPC_ERROR_STREAM_WRITE</td>
+<td align="center">-10</td>
+</tr>
+<tr>
+<td align="center">HTTPC_ERROR_CONNECTION_LOST</td>
+<td align="center">-5</td>
+<td align="center">HTTPC_ERROR_READ_TIMEOUT</td>
+<td align="center">-11</td>
+</tr>
+<tr>
+<td align="center">HTTPC_ERROR_NO_STREAM</td>
+<td align="center">-6</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://localhost:4000/2024/01/15/ESP32%E8%81%8A%E5%A4%A9%E5%8A%A9%E6%89%8B%E2%80%94%E2%80%94%E6%96%87%E5%BF%83%E4%B8%80%E8%A8%80/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/" rel="tag">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ESP32/" rel="tag">ESP32</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LLM/" rel="tag">LLM</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2024/01/19/%E6%96%87%E6%9C%AC%E8%BD%AC%E8%AF%AD%E9%9F%B3%E6%A8%A1%E5%9D%97SNR9816TTS%E2%80%94%E2%80%94%E7%BB%93%E5%90%88%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E8%BF%9B%E8%A1%8C%E5%AF%B9%E8%AF%9D/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            文本转语音模块SNR9816TTS——结合语言模型进行对话
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/12/29/LeoCar%EF%BC%9A%E6%A0%91%E8%8E%93%E6%B4%BE%E6%99%BA%E8%83%BD%E8%BD%A6%E2%80%94%E2%80%94%E7%BB%BC%E5%90%88%E7%AF%87/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">LeoCar：树莓派智能车——综合篇</div>
+      </a>
+    
+  </nav>
+
+  
+   
+  
+    
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023-2024
+        <i class="ri-heart-fill heart_icon"></i> LegendLeo Chen
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/mylogo.png" alt="LegendLeo Chen 的空间"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">🚀主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">💾归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">🧭分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">🏷️标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">🛸关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/analytics">📊统计</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/secret">🔐秘密</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=1491212&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+  <!-- 背景气泡 -->
+  <!--
+  <div class="balls-container">
+    <div class="balls-particles">
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+    </div>
+  </div>
+  <style>
+    *
+    {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .balls-container
+    { 
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+    
+    .balls-particles
+    {
+      position: fixed;
+      display: flex;
+      z-index: 3;
+      padding: 0 20px;
+    }
+    
+    .balls-particles span
+    {
+      position: relative;
+      bottom: 30px;
+      width: 30px;
+      height: 30px;
+      background-color: #4fc3dc;
+      box-shadow: 0 0 0 10px #4fc3dc44,
+      0 0 50px #4fc3dc,
+      -100px 0 #4fc3dc99,
+      100px 0 #ff2d7599;
+      margin: 0 4px;
+      border-radius: 50%;
+      animation: animate 15s ease infinite;
+      animation-delay: calc(125s / var(--i));
+      transform: translateY(120vh);
+    }
+    .balls-particles span:nth-child(even) {
+      background-color: #ff2d75;
+      box-shadow: 0 0 0 10px #ff267544,
+      0 0 50px #ff2d75,
+      -100px 0 #4fc3dc99,
+      100px 0 #4fc3dc99;
+      ;
+    }
+    
+    @keyframes animate {
+      0%
+      {
+        transform: translateY(120vh) scale(0) rotate(0deg);
+      }
+      20%
+      {
+        transform: translateY(100vh) scale(1) rotate(0deg);
+      }
+      100%
+      {
+        transform: translateY(-50vh) scale(0.5) rotate(360deg);
+      }
+    }
+  </style> -->
+  <!-- 地月系统 -->
+  <!-- <div class="earth-container" >
+    <div class="planet"></div>
+    <div class="satellite"></div>
+   </div>
+   <style>
+    *{
+      padding: 0;
+      margin: 0;
+      }
+      .earth-container {
+        width: 36.25em;
+        height: 36.25em;
+        position: absolute;
+        top:5%;
+        left: 93%;
+        transform: translate(-50%, -50%);
+        opacity: 0.3;
+      }
+      
+      .planet{
+        width: 15.62*3em;
+        height: 15.62*3em;
+        background-color: #02c0f5;
+        border-radius: 50%;
+        position: absolute;
+        margin: auto;
+        top:0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+      }
+      
+      .planet::before{
+        content: '';
+        width: 4em;
+        height: 4em;
+        background-color: #008fd6;
+        position: absolute;
+        top:10em;
+        left: 8em;
+        border-radius: 50%; 
+        box-shadow: 15em 15em 0 2em #00d68b, 5em 8em 0 3em #10ade1;
+      }
+      
+      .satellite{
+        width: 5em;
+        height: 5em;
+        background-color: #dee517;
+        border-radius: 50%;
+        position: relative;
+        left: -5em;
+        bottom: -30em;
+        animation: spin 5s infinite;
+        z-index: 1;
+      }
+      
+      @keyframes spin {
+        49%{
+          z-index: 1;
+        }
+        50%{
+          bottom: 3em;
+          left: 35em;
+          z-index: -1;
+        }
+        100%{
+          z-index: -1;
+        }
+      }
+    </style> -->
+<!-- 三角彩带背景 -->
+  <canvas id="evanyou-canvas" style="opacity: 0.3; position: fixed; top: 0px; left: 0px; z-index: -1; width: 100%; height: 100%; pointer-events: none;"></canvas>
+  <script src="https://cdn.jsdelivr.net/gh/XXXZhy/Blog_Image/js/evanyou_canvas.js"></script>
+</body>
+
+</html>

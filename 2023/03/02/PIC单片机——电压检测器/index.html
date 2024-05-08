@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta name="description" content="一个秘密空间" />
+      
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>PIC单片机——电压检测器 |  LegendLeo Chen 的空间</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/mylogo.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+<!-- 封面标闪烁 -->
+<link rel="stylesheet" href="/css/zhyBlogTitle.css">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- jquery，懒加载、统计、说说需要的jquery -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-PIC单片机——电压检测器"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  PIC单片机——电压检测器
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/03/02/PIC%E5%8D%95%E7%89%87%E6%9C%BA%E2%80%94%E2%80%94%E7%94%B5%E5%8E%8B%E6%A3%80%E6%B5%8B%E5%99%A8/" class="article-date">
+  <time datetime="2023-03-02T11:13:38.000Z" itemprop="datePublished">2023-03-02</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E4%BB%BF%E7%9C%9F/">仿真</a> / <a class="article-category-link" href="/categories/%E5%B5%8C%E5%85%A5%E5%BC%8F/">嵌入式</a> / <a class="article-category-link" href="/categories/%E7%A1%AC%E4%BB%B6/">硬件</a> / <a class="article-category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a> / <a class="article-category-link" href="/categories/%E9%A1%B9%E7%9B%AE/">项目</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.7k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">6 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="·核心原理"><a href="#·核心原理" class="headerlink" title="·核心原理"></a>·核心原理</h1><img src="/2023/03/02/PIC%E5%8D%95%E7%89%87%E6%9C%BA%E2%80%94%E2%80%94%E7%94%B5%E5%8E%8B%E6%A3%80%E6%B5%8B%E5%99%A8/%E6%A6%82%E8%BF%B0%E5%9B%BE.png" class title="核心原理">
+<span id="more"></span>
+
+<blockquote>
+<p>　　采集最初采用一个半波采集100个数据的方法，这种方法理论上拥有最准确的精度和最稳定的效果，但是经过仿真跑表测试，单独循环AD函数将要花费442us，远超过要求的100us，删除掉AD计算电压值的这种花费时间的浮点数计算，也只能降到113us，然而这种计算是必不可少的。同时UART和LCD的实时显示都将占用不少的时间。最后全程序测试，发现在定时器设定最短的情况下，跑完一次半波采样只能进行1-3次不等的转换，这是远远无法满足要求的，更不用说实际硬件存在的不可避免的延时与误差。同时定时器中断将无法退出，间隔时长将短于定时器中断代码运行时长，意味着主循环内的任何代码都不可能运行。</p>
+<p>　　所以最后使用了单周期单采样的方法，从0度开始，每次采集相对于上一次对半波产生180*0.01电角度的移相，经过100个周期就会均匀采集满半波的100个点，理论上的效果是一致的，数据更新周期将为原来的1&#x2F;100，定时器需要的间隔将变为20.2ms，这个时长对于代码周期是十分充裕的。</p>
+</blockquote>
+<h1 id="·硬件"><a href="#·硬件" class="headerlink" title="·硬件"></a>·硬件</h1><h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><blockquote>
+<p>单片机使用的资源：<br>　　AD模块及模拟口1个<br>　　UART串口<br>　　定时器TMR1<br>　　RD引脚（普通电平口）</p>
+</blockquote>
+<h2 id="LCD1602"><a href="#LCD1602" class="headerlink" title="LCD1602"></a>LCD1602</h2><blockquote>
+<p>　　基本原理，电平控制16<em>2个显示位（每个位5</em>7个液晶像素点）不同的字符。模块内自带HD44780U显示芯片（主控，80个地址）用于控制像素显示，以及HD44100H芯片（可扩展）用于辅助驱动。不同位地址分配不同的DRAM，地址和位数据通过2个口和8个口（ASCII码对应显示内容）输入。这两个通用性高的芯片使得编程思路变得相对方便且适用于各种单片机。</p>
+</blockquote>
+<h2 id="仿真电路"><a href="#仿真电路" class="headerlink" title="仿真电路"></a>仿真电路</h2><img src="/2023/03/02/PIC%E5%8D%95%E7%89%87%E6%9C%BA%E2%80%94%E2%80%94%E7%94%B5%E5%8E%8B%E6%A3%80%E6%B5%8B%E5%99%A8/%E4%BB%BF%E7%9C%9F%E7%94%B5%E8%B7%AF.png" class title="仿真电路">
+
+<h1 id="·软件"><a href="#·软件" class="headerlink" title="·软件"></a>·软件</h1><h2 id="AD部分"><a href="#AD部分" class="headerlink" title="AD部分"></a>AD部分</h2><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">unsigned</span> <span class="token keyword">int</span> AD<span class="token punctuation">;</span>
+<span class="token keyword">float</span> OUT<span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//AD转出来的电压值</span>
+
+<span class="token keyword">void</span> <span class="token function">AD_CSH</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span><span class="token punctuation">{</span>      <span class="token comment" spellcheck="true">//初始化</span>
+    T1CON<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+    TRISA<span class="token operator">|</span><span class="token operator">=</span>0B01110000<span class="token punctuation">;</span>		<span class="token comment" spellcheck="true">//模拟接收口、参考电压口</span>
+    TMR1H<span class="token operator">=</span>T1_20MS<span class="token operator">>></span><span class="token number">8</span><span class="token punctuation">;</span>
+    TMR1L<span class="token operator">=</span>T1_20MS<span class="token punctuation">;</span>
+    TMR1ON<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>   
+<span class="token punctuation">}</span>
+<span class="token keyword">unsigned</span> <span class="token keyword">int</span> <span class="token function">AD_SUB</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">int</span> k<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//ad操作函数，k是采样通道，本次取1</span>
+    ADCON1<span class="token operator">=</span>0B10000000<span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">//参考电压，0、5V</span>
+    ADCON0<span class="token operator">=</span>0B01000001<span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">//选择分频，使能AD</span>
+    ADCON0<span class="token operator">=</span>ADCON0<span class="token operator">|</span><span class="token punctuation">(</span>k<span class="token operator">&lt;&lt;</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 	<span class="token comment" spellcheck="true">//将通道赋值在中间四位</span>
+    <span class="token function">__delay_us</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//延时等电容充电</span>
+    GO<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>           	<span class="token comment" spellcheck="true">//开始AD转换</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span>GO<span class="token operator">==</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//等待转换完成</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>ADRESH<span class="token operator">&lt;&lt;</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token operator">+</span>ADRESL<span class="token punctuation">)</span><span class="token punctuation">;</span>      
+            <span class="token comment" spellcheck="true">//拼接结果并输出</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="串口部分"><a href="#串口部分" class="headerlink" title="串口部分"></a>串口部分</h2><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">volatile</span> <span class="token keyword">unsigned</span> <span class="token keyword">char</span> X<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//发送数据</span>
+<span class="token keyword">volatile</span> <span class="token keyword">unsigned</span> <span class="token keyword">char</span> Y<span class="token punctuation">[</span><span class="token number">20</span><span class="token punctuation">]</span><span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//存放收到数据</span>
+<span class="token keyword">volatile</span> <span class="token keyword">unsigned</span> <span class="token keyword">char</span> idata<span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">//接受测试变量</span>
+<span class="token keyword">void</span> <span class="token function">UART_CSH</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span><span class="token punctuation">{</span>     <span class="token comment" spellcheck="true">//初始化</span>
+    OPTION_REG<span class="token operator">=</span>0B11010110<span class="token punctuation">;</span>                
+    INTCON<span class="token operator">=</span>0B11000000<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//中断使能</span>
+    RCIE<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//接收中断使能</span>
+    SPBRG<span class="token operator">=</span><span class="token number">25</span><span class="token punctuation">;</span>  		<span class="token comment" spellcheck="true">//8位下配置波特率因子1</span>
+    RCSTA<span class="token operator">=</span>0B10010000<span class="token punctuation">;</span>
+    TXSTA<span class="token operator">=</span>0B00100100<span class="token punctuation">;</span>    
+<span class="token punctuation">}</span>
+<span class="token keyword">void</span> <span class="token function">UART_Send</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span>str<span class="token punctuation">)</span><span class="token punctuation">{</span>          
+<span class="token comment" spellcheck="true">//发送字符串，输入为所发字符串</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span><span class="token operator">*</span>str<span class="token operator">!=</span><span class="token string">'\0'</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        TXREG<span class="token operator">=</span><span class="token operator">*</span>str<span class="token punctuation">;</span>
+        <span class="token keyword">while</span><span class="token punctuation">(</span>TRMT<span class="token operator">==</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        str<span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="LCD上层函数"><a href="#LCD上层函数" class="headerlink" title="LCD上层函数"></a>LCD上层函数</h2><pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">define</span> LCD_E RD6     </span><span class="token comment" spellcheck="true">//读写使能</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> LCD_RW RD5</span><span class="token comment" spellcheck="true">//读1/写0控制线</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> LCD_RS RD4   </span><span class="token comment" spellcheck="true">//寄存器选择</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> COM 0       </span><span class="token comment" spellcheck="true">//0表示写命令</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> DATA 1      </span><span class="token comment" spellcheck="true">//1表示写数据</span>
+<span class="token keyword">extern</span> <span class="token keyword">char</span> DD<span class="token punctuation">[</span><span class="token number">16</span><span class="token punctuation">]</span><span class="token punctuation">;</span>      
+     <span class="token comment" spellcheck="true">//定义数组用来存放整行显示数据</span>
+<span class="token keyword">void</span> <span class="token function">DISP_C</span><span class="token punctuation">(</span><span class="token keyword">char</span> line<span class="token punctuation">)</span><span class="token punctuation">{</span>         <span class="token comment" spellcheck="true">//显示某整行</span>
+    <span class="token keyword">char</span> i<span class="token punctuation">;</span>
+    <span class="token function">LCD_WRITE</span><span class="token punctuation">(</span>line<span class="token punctuation">,</span>COM<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//写信号</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span>i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>i<span class="token operator">&lt;</span><span class="token number">16</span><span class="token punctuation">;</span>i<span class="token operator">++</span><span class="token punctuation">)</span>  <span class="token comment" spellcheck="true">//遍历行写入</span>
+        <span class="token function">LCD_WRITE</span><span class="token punctuation">(</span>DD<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span>DATA<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">void</span> <span class="token function">LCD_WRITE</span><span class="token punctuation">(</span><span class="token keyword">char</span> R1<span class="token punctuation">,</span><span class="token keyword">char</span> FLAG<span class="token punctuation">)</span><span class="token punctuation">{</span>      <span class="token comment" spellcheck="true">//写八位</span>
+    <span class="token keyword">char</span> R2<span class="token punctuation">;</span>
+    <span class="token function">LCD_BUSY</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    R2<span class="token operator">=</span>R1<span class="token operator">&amp;</span><span class="token number">0XF0</span><span class="token punctuation">;</span>
+    R2<span class="token operator">=</span>R2<span class="token operator">>></span><span class="token number">4</span><span class="token punctuation">;</span>
+    <span class="token function">LCD_WRITE_4</span><span class="token punctuation">(</span>R2<span class="token punctuation">,</span>FLAG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    R2<span class="token operator">=</span>R1<span class="token operator">&amp;</span><span class="token number">0X0F</span><span class="token punctuation">;</span>
+    <span class="token function">LCD_WRITE_4</span><span class="token punctuation">(</span>R2<span class="token punctuation">,</span>FLAG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">__delay_us</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="装置主逻辑"><a href="#装置主逻辑" class="headerlink" title="装置主逻辑"></a>装置主逻辑</h2><h3 id="变量和初始化"><a href="#变量和初始化" class="headerlink" title="变量和初始化"></a>变量和初始化</h3><pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">define</span> TMR1_20MS 45663</span>
+   <span class="token comment" spellcheck="true">//定时器时长，保证采样个数的关键</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> LINE1 0b10000000</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> LINE2 0b11000000</span>
+<span class="token keyword">int</span> last_OUT<span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//上一个电压值</span>
+<span class="token keyword">int</span> last_AD<span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//上一个电压值</span>
+<span class="token keyword">long</span> <span class="token keyword">int</span> sum<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//半波电压和</span>
+<span class="token keyword">int</span> data_index<span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">//数组索引</span>
+<span class="token keyword">int</span> data_ave<span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//半波平均值</span>
+<span class="token keyword">int</span> data_val<span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//半波有效值</span>
+<span class="token keyword">int</span> dataSave<span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//是否存储数据（正半周）,0不存  </span>
+<span class="token keyword">char</span> data<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//发送串口的字符串暂存</span>
+
+<span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    idata<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token function">UART_CSH</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">//各个模块初始化</span>
+    <span class="token function">AD_CSH</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">LCD_CSH</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">__delay_ms</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    TMR1IE<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>		<span class="token comment" spellcheck="true">//定时器使能</span>
+    TMR1ON<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span> 
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="定时器中断采样"><a href="#定时器中断采样" class="headerlink" title="定时器中断采样"></a>定时器中断采样</h3><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">__interrupt</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token function">INT_SER</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>TMR1IF<span class="token operator">==</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        TMR1IF<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+        TMR1H<span class="token operator">=</span>TMR1_20MS<span class="token operator">>></span><span class="token number">8</span><span class="token punctuation">;</span>
+        TMR1L<span class="token operator">=</span>TMR1_20MS<span class="token punctuation">;</span>
+        last_AD<span class="token operator">=</span>AD<span class="token punctuation">;</span>
+        last_OUT<span class="token operator">=</span>OUT<span class="token punctuation">;</span>      <span class="token comment" spellcheck="true">//存放上一个OUT</span>
+        AD<span class="token operator">=</span><span class="token function">AD_SUB</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	<span class="token comment" spellcheck="true">//AD采样操作</span>
+        OUT<span class="token operator">=</span>AD<span class="token operator">*</span><span class="token number">5000.0</span><span class="token operator">/</span><span class="token number">1023.0</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">//0到+5参考电压下的电压（mV）</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span> last_AD<span class="token operator">==</span><span class="token number">0</span> <span class="token operator">&amp;&amp;</span> AD<span class="token operator">></span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>	<span class="token comment" spellcheck="true">//负到正过零点，进入正半周</span>
+            dataSave<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>	<span class="token comment" spellcheck="true">//开始收集数据</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>last_AD<span class="token operator">></span><span class="token number">0</span> <span class="token operator">&amp;&amp;</span> AD<span class="token operator">==</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span> <span class="token comment" spellcheck="true">//正到负过零点，不存数据</span>
+            dataSave<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+            <span class="token function">ClearData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">//正半周结束进行数据处理</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>dataSave<span class="token operator">==</span><span class="token number">1</span> <span class="token operator">&amp;&amp;</span> AD<span class="token operator">></span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>  <span class="token comment" spellcheck="true">//只有正半周存储数据</span>
+            sum<span class="token operator">+</span><span class="token operator">=</span>OUT<span class="token punctuation">;</span> 	<span class="token comment" spellcheck="true">//求和的方式存数据不占据内存</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>data_val<span class="token operator">&lt;</span>OUT<span class="token punctuation">)</span> 	<span class="token comment" spellcheck="true">//找到最大值，用于算有效值</span>
+                data_val<span class="token operator">=</span>OUT<span class="token punctuation">;</span>
+            data_index<span class="token operator">++</span><span class="token punctuation">;</span>       <span class="token comment" spellcheck="true">//记录采样点个数</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h3><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">ClearData</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span><span class="token punctuation">{</span>  		<span class="token comment" spellcheck="true">//正半周数据每100次处理一次，获得平均值和有效值，并且发送串口</span>
+    data_ave<span class="token operator">=</span>sum<span class="token operator">/</span>data_index<span class="token punctuation">;</span>             	<span class="token comment" spellcheck="true">//求平均值</span>
+    data_val<span class="token operator">=</span>data_val<span class="token operator">/</span><span class="token function">sqrt</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>      		<span class="token comment" spellcheck="true">//求有效值</span>
+    <span class="token function">UART_Send</span><span class="token punctuation">(</span><span class="token function">BCD</span><span class="token punctuation">(</span>data_index<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    			<span class="token comment" spellcheck="true">//BCD转换 采样点数 生成字符串并发送</span>
+    <span class="token function">UART_Send</span><span class="token punctuation">(</span><span class="token function">BCD</span><span class="token punctuation">(</span>data_ave<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>       		<span class="token comment" spellcheck="true">//BCD转换 平均值 生成字符串并发送</span>
+    <span class="token function">LCD_SHOW</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token function">BCD</span><span class="token punctuation">(</span>data_ave<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>            	<span class="token comment" spellcheck="true">//屏幕显示第一行</span>
+    <span class="token function">UART_Send</span><span class="token punctuation">(</span><span class="token function">BCD</span><span class="token punctuation">(</span>data_val<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>               <span class="token comment" spellcheck="true">//BCD转换 有效值 生成字符串并发送</span>
+    <span class="token function">LCD_SHOW</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token function">BCD</span><span class="token punctuation">(</span>data_val<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>            	<span class="token comment" spellcheck="true">//屏幕显示第二行</span>
+    TXREG<span class="token operator">=</span><span class="token number">13</span><span class="token punctuation">;</span>           		<span class="token comment" spellcheck="true">//ENTER</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span>TRMT<span class="token operator">==</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    data_index<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>    		<span class="token comment" spellcheck="true">//发送一次三数归零</span>
+    sum<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+    data_val<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="LCD显示"><a href="#LCD显示" class="headerlink" title="LCD显示"></a>LCD显示</h3><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">LCD_SHOW</span><span class="token punctuation">(</span><span class="token keyword">int</span> line<span class="token punctuation">,</span><span class="token keyword">char</span><span class="token operator">*</span> show<span class="token punctuation">)</span><span class="token punctuation">{</span>		<span class="token comment" spellcheck="true">//LCD显示，输入为行号（0或1）、内容的字符串</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>line<span class="token operator">==</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">//格式：  AVE=x.xxxV</span>
+        <span class="token function">BCD</span><span class="token punctuation">(</span>data_ave<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'A'</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'V'</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'E'</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'='</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token operator">*</span>show<span class="token punctuation">;</span>
+        show<span class="token operator">++</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'.'</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">6</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token operator">*</span>show<span class="token punctuation">;</span>
+        show<span class="token operator">++</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token operator">*</span>show<span class="token punctuation">;</span>
+        show<span class="token operator">++</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">8</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token operator">*</span>show<span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">9</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'V'</span><span class="token punctuation">;</span>
+        <span class="token function">DISP_C</span><span class="token punctuation">(</span>LINE1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>line<span class="token operator">==</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>      <span class="token comment" spellcheck="true">//格式：  VAL=x.xxxV</span>
+        <span class="token function">BCD</span><span class="token punctuation">(</span>data_val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'V'</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'A'</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'L'</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'='</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token operator">*</span>show<span class="token punctuation">;</span>
+        show<span class="token operator">++</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'.'</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">6</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token operator">*</span>show<span class="token punctuation">;</span>
+        show<span class="token operator">++</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">7</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token operator">*</span>show<span class="token punctuation">;</span>
+        show<span class="token operator">++</span><span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">8</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token operator">*</span>show<span class="token punctuation">;</span>
+        DD<span class="token punctuation">[</span><span class="token number">9</span><span class="token punctuation">]</span><span class="token operator">=</span><span class="token string">'V'</span><span class="token punctuation">;</span>
+        <span class="token function">DISP_C</span><span class="token punctuation">(</span>LINE2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="·结果"><a href="#·结果" class="headerlink" title="·结果"></a>·结果</h1><h2 id="仿真"><a href="#仿真" class="headerlink" title="仿真"></a>仿真</h2><img src="/2023/03/02/PIC%E5%8D%95%E7%89%87%E6%9C%BA%E2%80%94%E2%80%94%E7%94%B5%E5%8E%8B%E6%A3%80%E6%B5%8B%E5%99%A8/%E4%BB%BF%E7%9C%9F%E7%BB%93%E6%9E%9C1.png" class title="仿真结果1">
+<img src="/2023/03/02/PIC%E5%8D%95%E7%89%87%E6%9C%BA%E2%80%94%E2%80%94%E7%94%B5%E5%8E%8B%E6%A3%80%E6%B5%8B%E5%99%A8/%E4%BB%BF%E7%9C%9F%E7%BB%93%E6%9E%9C2.png" class title="仿真结果2">
+<h2 id="实物"><a href="#实物" class="headerlink" title="实物"></a>实物</h2><img src="/2023/03/02/PIC%E5%8D%95%E7%89%87%E6%9C%BA%E2%80%94%E2%80%94%E7%94%B5%E5%8E%8B%E6%A3%80%E6%B5%8B%E5%99%A8/%E5%AE%9E%E7%89%A9%E7%BB%93%E6%9E%9C1.jpg" class title="实物结果1">
+<img src="/2023/03/02/PIC%E5%8D%95%E7%89%87%E6%9C%BA%E2%80%94%E2%80%94%E7%94%B5%E5%8E%8B%E6%A3%80%E6%B5%8B%E5%99%A8/%E5%AE%9E%E7%89%A9%E7%BB%93%E6%9E%9C2.png" class title="实物结果2">
+<img src="/2023/03/02/PIC%E5%8D%95%E7%89%87%E6%9C%BA%E2%80%94%E2%80%94%E7%94%B5%E5%8E%8B%E6%A3%80%E6%B5%8B%E5%99%A8/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%9C.png" class title="数据结果">
+<h2 id="创新"><a href="#创新" class="headerlink" title="创新"></a>创新</h2><blockquote>
+<p>　　在本套装置使用过程中，发现PC端可以利用串口实现数据接收，便可以利用该优势，对数据进行实时可视化显示和存储，在实际过程中对电压的检测势必也需要使用者对数据有直观的接收，以便对情况高效作出判断，存储数据也利于对历史情况进行分析。于是基于python，在电脑端通过Pyqt5实现能够数据可视化的串口接收程序，利用强大的组件我设计了一个可方便使用的界面，按钮组件实现数据保存，折线图动态更新，使用自己编写的图表模块实现折线图显示。采样点、平均值、有效值也能清晰地显示在界面当中。</p>
+</blockquote>
+<img src="/2023/03/02/PIC%E5%8D%95%E7%89%87%E6%9C%BA%E2%80%94%E2%80%94%E7%94%B5%E5%8E%8B%E6%A3%80%E6%B5%8B%E5%99%A8/pc%E7%AB%AF%E4%BB%A3%E7%A0%81.png" class title="pc端代码">
+<img src="/2023/03/02/PIC%E5%8D%95%E7%89%87%E6%9C%BA%E2%80%94%E2%80%94%E7%94%B5%E5%8E%8B%E6%A3%80%E6%B5%8B%E5%99%A8/%E5%8F%AF%E8%A7%86%E5%8C%96%E7%95%8C%E9%9D%A2.png" class title="可视化界面">
+<img src="/2023/03/02/PIC%E5%8D%95%E7%89%87%E6%9C%BA%E2%80%94%E2%80%94%E7%94%B5%E5%8E%8B%E6%A3%80%E6%B5%8B%E5%99%A8/pc%E6%95%B0%E6%8D%AE%E5%AD%98%E6%94%BE.png" class title="pc数据存放">
+
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://localhost:4000/2023/03/02/PIC%E5%8D%95%E7%89%87%E6%9C%BA%E2%80%94%E2%80%94%E7%94%B5%E5%8E%8B%E6%A3%80%E6%B5%8B%E5%99%A8/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/AD/" rel="tag">AD</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80/" rel="tag">C语言</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LCD/" rel="tag">LCD</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PIC/" rel="tag">PIC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E4%B8%B2%E5%8F%A3%E9%80%9A%E4%BF%A1/" rel="tag">串口通信</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8D%95%E7%89%87%E6%9C%BA/" rel="tag">单片机</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/03/04/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9F%A5%E8%AF%86%E7%82%B9/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            微信小程序知识点
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/03/02/PLC%E5%88%80%E5%85%B7%E5%BA%93/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">PLC刀具库</div>
+      </a>
+    
+  </nav>
+
+  
+   
+  
+    
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023-2024
+        <i class="ri-heart-fill heart_icon"></i> LegendLeo Chen
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/mylogo.png" alt="LegendLeo Chen 的空间"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">🚀主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">💾归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">🧭分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">🏷️标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">🛸关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/analytics">📊统计</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/secret">🔐秘密</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=1491212&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+  <!-- 背景气泡 -->
+  <!--
+  <div class="balls-container">
+    <div class="balls-particles">
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+    </div>
+  </div>
+  <style>
+    *
+    {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .balls-container
+    { 
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+    
+    .balls-particles
+    {
+      position: fixed;
+      display: flex;
+      z-index: 3;
+      padding: 0 20px;
+    }
+    
+    .balls-particles span
+    {
+      position: relative;
+      bottom: 30px;
+      width: 30px;
+      height: 30px;
+      background-color: #4fc3dc;
+      box-shadow: 0 0 0 10px #4fc3dc44,
+      0 0 50px #4fc3dc,
+      -100px 0 #4fc3dc99,
+      100px 0 #ff2d7599;
+      margin: 0 4px;
+      border-radius: 50%;
+      animation: animate 15s ease infinite;
+      animation-delay: calc(125s / var(--i));
+      transform: translateY(120vh);
+    }
+    .balls-particles span:nth-child(even) {
+      background-color: #ff2d75;
+      box-shadow: 0 0 0 10px #ff267544,
+      0 0 50px #ff2d75,
+      -100px 0 #4fc3dc99,
+      100px 0 #4fc3dc99;
+      ;
+    }
+    
+    @keyframes animate {
+      0%
+      {
+        transform: translateY(120vh) scale(0) rotate(0deg);
+      }
+      20%
+      {
+        transform: translateY(100vh) scale(1) rotate(0deg);
+      }
+      100%
+      {
+        transform: translateY(-50vh) scale(0.5) rotate(360deg);
+      }
+    }
+  </style> -->
+  <!-- 地月系统 -->
+  <!-- <div class="earth-container" >
+    <div class="planet"></div>
+    <div class="satellite"></div>
+   </div>
+   <style>
+    *{
+      padding: 0;
+      margin: 0;
+      }
+      .earth-container {
+        width: 36.25em;
+        height: 36.25em;
+        position: absolute;
+        top:5%;
+        left: 93%;
+        transform: translate(-50%, -50%);
+        opacity: 0.3;
+      }
+      
+      .planet{
+        width: 15.62*3em;
+        height: 15.62*3em;
+        background-color: #02c0f5;
+        border-radius: 50%;
+        position: absolute;
+        margin: auto;
+        top:0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+      }
+      
+      .planet::before{
+        content: '';
+        width: 4em;
+        height: 4em;
+        background-color: #008fd6;
+        position: absolute;
+        top:10em;
+        left: 8em;
+        border-radius: 50%; 
+        box-shadow: 15em 15em 0 2em #00d68b, 5em 8em 0 3em #10ade1;
+      }
+      
+      .satellite{
+        width: 5em;
+        height: 5em;
+        background-color: #dee517;
+        border-radius: 50%;
+        position: relative;
+        left: -5em;
+        bottom: -30em;
+        animation: spin 5s infinite;
+        z-index: 1;
+      }
+      
+      @keyframes spin {
+        49%{
+          z-index: 1;
+        }
+        50%{
+          bottom: 3em;
+          left: 35em;
+          z-index: -1;
+        }
+        100%{
+          z-index: -1;
+        }
+      }
+    </style> -->
+<!-- 三角彩带背景 -->
+  <canvas id="evanyou-canvas" style="opacity: 0.3; position: fixed; top: 0px; left: 0px; z-index: -1; width: 100%; height: 100%; pointer-events: none;"></canvas>
+  <script src="https://cdn.jsdelivr.net/gh/XXXZhy/Blog_Image/js/evanyou_canvas.js"></script>
+</body>
+
+</html>

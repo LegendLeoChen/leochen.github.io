@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta name="description" content="一个秘密空间" />
+      
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>Python restful API入门及本地调试 |  LegendLeo Chen 的空间</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/mylogo.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      
+<link rel="stylesheet" href="/css/fonts/remixicon.css">
+
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+<!-- 封面标闪烁 -->
+<link rel="stylesheet" href="/css/zhyBlogTitle.css">
+<script src="https://cdn.bootcdn.net/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- jquery，懒加载、统计、说说需要的jquery -->
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-Python-restful-API入门及调试"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Python restful API入门及本地调试
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/03/19/Python-restful-API%E5%85%A5%E9%97%A8%E5%8F%8A%E8%B0%83%E8%AF%95/" class="article-date">
+  <time datetime="2023-03-19T12:34:54.000Z" itemprop="datePublished">2023-03-19</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%BC%96%E7%A8%8B/">编程</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.9k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">8 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>Python能够轻松实现搭建restful API，本次使用flask模块框架，使用Apipost工具进行调试，我在一个项目中学会如何实现这些，本次也以此为例进行记录。</p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><ul>
+<li>Python RESTful的优点包括：</li>
+</ul>
+<ol>
+<li>简单易用：使用Python编程语言可以轻松地创建RESTful API。<span id="more"></span></li>
+<li>可扩展性：可以轻松地扩展API功能。</li>
+<li>可读性：使用RESTful API可以提高代码的可读性，因为它们基于资源而不是操作。</li>
+<li>灵活性：RESTful API可以使用各种HTTP方法来执行各种操作。</li>
+</ol>
+<ul>
+<li><p>总之，Python RESTful是一种灵活、简单易用并且可扩展的方式来创建RESTful API。它基于资源而不是操作，可以提高代码的可读性，并且可以使用各种HTTP方法来执行各种操作。</p>
+</li>
+<li><p>四种请求方法，GET、POST、PUT和DELETE是HTTP协议中常用的四种请求方法，用于客户端与服务器之间进行数据交互。</p>
+</li>
+</ul>
+<ol>
+<li>GET：用于获取资源，请求的数据会附在URL后面作为参数，可以被缓存，不应该用于更新服务器上的数据。例如，当你在浏览器地址栏中输入一个URL时，实际上就是GET请求。</li>
+<li>POST：用于向服务器提交数据，请求的数据在请求体中，不会被缓存，可以用于更新服务器上的数据，例如在网站上提交表单。</li>
+<li>PUT：用于更新资源，请求的数据在请求体中，如果该资源不存在，则会创建一个新的资源，如果存在，则会被更新。</li>
+<li>DELETE：用于删除资源，请求的数据在请求体中，用于删除服务器上的数据。<br>总之，GET、POST、PUT和DELETE是用于客户端与服务器之间进行数据交互的四种常用请求方法，每种方法都有特定的用途和语义。</li>
+</ol>
+<h1 id="Python程序"><a href="#Python程序" class="headerlink" title="Python程序"></a>Python程序</h1><ul>
+<li>数据准备：数据格式如下，invitecode是授权码（邀请码），device是设备，activation是授权码状态（已激活和未激活），name是用户名</li>
+</ul>
+<pre><code>invitecode,device,activation,name
+kkk,20121322,0,chen
+zyh,121380,1,张
+77kk,2022,0,刘
+php,201322,0,wnag
+Leo1442676170,1442676170,0,li
+jiang,231214,0,xv
+jia,2231214,0,niu
+</code></pre>
+<ul>
+<li>初始化部分：建立datalist存放json数据</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">import</span> os
+<span class="token keyword">import</span> csv
+<span class="token keyword">from</span> flask <span class="token keyword">import</span> Flask<span class="token punctuation">,</span> jsonify<span class="token punctuation">,</span> request
+
+app <span class="token operator">=</span> Flask<span class="token punctuation">(</span>__name__<span class="token punctuation">)</span>
+datalist <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">'invitecode'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string">'device'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string">'activation'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token string">'name'</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+path <span class="token operator">=</span> r<span class="token string">"data/{}"</span><span class="token punctuation">.</span>format<span class="token punctuation">(</span><span class="token string">"userlist.csv"</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>操作函数：写一些操作数据的方法，从上到下依次是获取数据，激活特定授权码，重置特定授权码，删除某个授权码，添加特定授权码</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">def</span> <span class="token function">openCsv</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>          <span class="token comment" spellcheck="true"># 获取data文件夹里面的csv并打开,存入datalist</span>
+    <span class="token keyword">global</span> datalist
+    invitecodes <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    devices <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    activations <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    names <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">with</span> open<span class="token punctuation">(</span>path<span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">,</span> mode<span class="token operator">=</span><span class="token string">"r"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> file<span class="token punctuation">:</span>
+        <span class="token comment" spellcheck="true"># 基于打开的文件，创建csv.DictReader实例</span>
+        reader <span class="token operator">=</span> csv<span class="token punctuation">.</span>DictReader<span class="token punctuation">(</span>file<span class="token punctuation">)</span>
+        <span class="token keyword">for</span> row <span class="token keyword">in</span> reader<span class="token punctuation">:</span>        <span class="token comment" spellcheck="true"># 遍历每列</span>
+            invitecodes<span class="token punctuation">.</span>append<span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token string">"invitecode"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            devices<span class="token punctuation">.</span>append<span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token string">"device"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            activations<span class="token punctuation">.</span>append<span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token string">"activation"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+            names<span class="token punctuation">.</span>append<span class="token punctuation">(</span>row<span class="token punctuation">[</span><span class="token string">"name"</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        data<span class="token operator">=</span><span class="token punctuation">{</span>
+          <span class="token string">"invitecode"</span><span class="token punctuation">:</span>invitecodes<span class="token punctuation">,</span>
+          <span class="token string">"device"</span><span class="token punctuation">:</span>devices<span class="token punctuation">,</span>
+          <span class="token string">"activation"</span><span class="token punctuation">:</span>activations<span class="token punctuation">,</span>
+          <span class="token string">"name"</span><span class="token punctuation">:</span>names
+          <span class="token punctuation">}</span>
+        datalist<span class="token punctuation">.</span>update<span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">activateCode</span><span class="token punctuation">(</span>invitecode<span class="token punctuation">)</span><span class="token punctuation">:</span>          <span class="token comment" spellcheck="true"># 激活某个授权码</span>
+    in_file <span class="token operator">=</span> open<span class="token punctuation">(</span>path<span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">,</span> mode<span class="token operator">=</span><span class="token string">"r"</span><span class="token punctuation">)</span>
+    reader <span class="token operator">=</span> csv<span class="token punctuation">.</span>reader<span class="token punctuation">(</span>in_file<span class="token punctuation">)</span>
+    out_file <span class="token operator">=</span> open<span class="token punctuation">(</span>path<span class="token punctuation">,</span> newline<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">,</span> mode<span class="token operator">=</span><span class="token string">"r+"</span><span class="token punctuation">)</span>
+    writer <span class="token operator">=</span> csv<span class="token punctuation">.</span>writer<span class="token punctuation">(</span>out_file<span class="token punctuation">)</span>
+    <span class="token keyword">for</span> row <span class="token keyword">in</span> reader<span class="token punctuation">:</span>
+        <span class="token keyword">if</span> row<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">==</span> invitecode<span class="token punctuation">:</span>  <span class="token comment" spellcheck="true"># 如果找到授权码，就把它的activation置1</span>
+            row<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span>
+        writer<span class="token punctuation">.</span>writerow<span class="token punctuation">(</span>row<span class="token punctuation">)</span>
+    in_file<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    out_file<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">resetCode</span><span class="token punctuation">(</span>invitecode<span class="token punctuation">)</span><span class="token punctuation">:</span>          <span class="token comment" spellcheck="true"># 重置某个授权码</span>
+    in_file <span class="token operator">=</span> open<span class="token punctuation">(</span>path<span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">,</span> mode<span class="token operator">=</span><span class="token string">"r"</span><span class="token punctuation">)</span>
+    reader <span class="token operator">=</span> csv<span class="token punctuation">.</span>reader<span class="token punctuation">(</span>in_file<span class="token punctuation">)</span>
+    out_file <span class="token operator">=</span> open<span class="token punctuation">(</span>path<span class="token punctuation">,</span> newline<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">,</span> mode<span class="token operator">=</span><span class="token string">"r+"</span><span class="token punctuation">)</span>
+    writer <span class="token operator">=</span> csv<span class="token punctuation">.</span>writer<span class="token punctuation">(</span>out_file<span class="token punctuation">)</span>
+    <span class="token keyword">if</span> invitecode <span class="token operator">==</span> <span class="token string">"LegendLeo"</span><span class="token punctuation">:</span>           <span class="token comment" spellcheck="true"># 特殊信号，代表全部置0</span>
+        <span class="token keyword">for</span> row <span class="token keyword">in</span> reader<span class="token punctuation">:</span>
+            <span class="token keyword">if</span> row<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token string">"invitecode"</span><span class="token punctuation">:</span>        <span class="token comment" spellcheck="true"># 排除表头</span>
+                row<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span>
+            writer<span class="token punctuation">.</span>writerow<span class="token punctuation">(</span>row<span class="token punctuation">)</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>                               <span class="token comment" spellcheck="true"># 单点重置</span>
+        <span class="token keyword">for</span> row <span class="token keyword">in</span> reader<span class="token punctuation">:</span>
+            <span class="token keyword">if</span> row<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">==</span> invitecode<span class="token punctuation">:</span>  <span class="token comment" spellcheck="true"># 如果找到授权码，就把它的activation置0</span>
+                row<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span>
+            writer<span class="token punctuation">.</span>writerow<span class="token punctuation">(</span>row<span class="token punctuation">)</span>
+    in_file<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    out_file<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">def</span> <span class="token function">deleteCode</span><span class="token punctuation">(</span>invitecode<span class="token punctuation">)</span><span class="token punctuation">:</span>             <span class="token comment" spellcheck="true"># 删除某行授权码</span>
+    <span class="token keyword">with</span> open<span class="token punctuation">(</span>path<span class="token punctuation">,</span> <span class="token string">'r'</span><span class="token punctuation">,</span> newline<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> csvfile<span class="token punctuation">:</span>
+        reader <span class="token operator">=</span> csv<span class="token punctuation">.</span>reader<span class="token punctuation">(</span>csvfile<span class="token punctuation">)</span>         <span class="token comment" spellcheck="true"># 创建一个空列表，用于存储数据</span>
+        rows <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>           <span class="token comment" spellcheck="true"># 遍历每一行数据</span>
+        <span class="token keyword">for</span> row <span class="token keyword">in</span> reader<span class="token punctuation">:</span>
+            <span class="token keyword">if</span> row<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">!=</span> invitecode<span class="token punctuation">:</span>
+                rows<span class="token punctuation">.</span>append<span class="token punctuation">(</span>row<span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true"># 重新写入csv文件</span>
+    <span class="token keyword">with</span> open<span class="token punctuation">(</span>path<span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">,</span> newline<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> csvfile<span class="token punctuation">:</span>
+        writer <span class="token operator">=</span> csv<span class="token punctuation">.</span>writer<span class="token punctuation">(</span>csvfile<span class="token punctuation">)</span>    <span class="token comment" spellcheck="true"># 创建一个csv写入器</span>
+        <span class="token keyword">for</span> row <span class="token keyword">in</span> rows<span class="token punctuation">:</span>            <span class="token comment" spellcheck="true"># 遍历数据列表，写入到csv文件中</span>
+            writer<span class="token punctuation">.</span>writerow<span class="token punctuation">(</span>row<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true"># 添加一行授权码，row代表插入之后在第几行（不包括表头）</span>
+<span class="token keyword">def</span> <span class="token function">addCode</span><span class="token punctuation">(</span>row<span class="token operator">=</span>None<span class="token punctuation">,</span> invitecode<span class="token operator">=</span>None<span class="token punctuation">,</span> device<span class="token operator">=</span>None<span class="token punctuation">,</span> activation<span class="token operator">=</span>None<span class="token punctuation">,</span> name<span class="token operator">=</span>None<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">with</span> open<span class="token punctuation">(</span>path<span class="token punctuation">,</span> <span class="token string">'r'</span><span class="token punctuation">,</span> newline<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> csvfile<span class="token punctuation">:</span>
+        reader <span class="token operator">=</span> csv<span class="token punctuation">.</span>reader<span class="token punctuation">(</span>csvfile<span class="token punctuation">)</span>
+        rows <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>  <span class="token comment" spellcheck="true"># 创建一个空列表，用于存储数据</span>
+        <span class="token keyword">for</span> r <span class="token keyword">in</span> reader<span class="token punctuation">:</span>        <span class="token comment" spellcheck="true"># 遍历每一行数据</span>
+            <span class="token comment" spellcheck="true"># 如果当前行是要插入的位置，则先插入新行，再将当前行添加到列表中</span>
+            <span class="token keyword">if</span> row <span class="token keyword">is</span> <span class="token operator">not</span> None <span class="token operator">and</span> reader<span class="token punctuation">.</span>line_num <span class="token operator">==</span> row <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">:</span>
+                rows<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">[</span>invitecode<span class="token punctuation">,</span> device<span class="token punctuation">,</span> activation<span class="token punctuation">,</span> name<span class="token punctuation">]</span><span class="token punctuation">)</span>
+            rows<span class="token punctuation">.</span>append<span class="token punctuation">(</span>r<span class="token punctuation">)</span>      <span class="token comment" spellcheck="true"># 将当前行添加到列表中</span>
+        <span class="token keyword">if</span> row <span class="token keyword">is</span> None<span class="token punctuation">:</span>         <span class="token comment" spellcheck="true"># 如果插入位置是最后一行，则在末尾添加新行</span>
+            rows<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token punctuation">[</span>invitecode<span class="token punctuation">,</span> device<span class="token punctuation">,</span> activation<span class="token punctuation">,</span> name<span class="token punctuation">]</span><span class="token punctuation">)</span>
+    <span class="token keyword">with</span> open<span class="token punctuation">(</span>path<span class="token punctuation">,</span> <span class="token string">'w'</span><span class="token punctuation">,</span> newline<span class="token operator">=</span><span class="token string">''</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> csvfile<span class="token punctuation">:</span>
+        <span class="token comment" spellcheck="true"># 创建一个csv写入器</span>
+        writer <span class="token operator">=</span> csv<span class="token punctuation">.</span>writer<span class="token punctuation">(</span>csvfile<span class="token punctuation">)</span>
+        <span class="token comment" spellcheck="true"># 遍历数据列表，写入到csv文件中</span>
+        <span class="token keyword">for</span> r <span class="token keyword">in</span> rows<span class="token punctuation">:</span>
+            writer<span class="token punctuation">.</span>writerow<span class="token punctuation">(</span>r<span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>服务部分：五个服务对应了五个方法，第一个是GET只有发送数据（json）格式，其他都是POST，其中 request.json 代表接收的数据，可以按关键字进行索引，返回值可以携带消息告知请求方结果等</li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python">@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/get'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'GET'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true"># 获取数据</span>
+<span class="token keyword">def</span> <span class="token function">get_data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    openCsv<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span>datalist<span class="token punctuation">)</span>
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/activate'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true"># 激活授权码</span>
+<span class="token keyword">def</span> <span class="token function">activate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    args <span class="token operator">=</span> request<span class="token punctuation">.</span>json
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        goal <span class="token operator">=</span> args<span class="token punctuation">[</span><span class="token string">"invitecode"</span><span class="token punctuation">]</span>       <span class="token comment" spellcheck="true"># 要激活的授权码</span>
+        activateCode<span class="token punctuation">(</span>goal<span class="token punctuation">)</span>              <span class="token comment" spellcheck="true"># 将该授权码激活状态置为1</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">True</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"成功"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> None<span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token keyword">except</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"错误"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> None<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/reset'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true"># 重置授权码</span>
+<span class="token keyword">def</span> <span class="token function">reset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    args <span class="token operator">=</span> request<span class="token punctuation">.</span>json
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        goal <span class="token operator">=</span> args<span class="token punctuation">[</span><span class="token string">"invitecode"</span><span class="token punctuation">]</span>       <span class="token comment" spellcheck="true"># 取消激活的授权码</span>
+        resetCode<span class="token punctuation">(</span>goal<span class="token punctuation">)</span>              <span class="token comment" spellcheck="true"># 将该授权码激活状态置为0</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">True</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"成功"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> None<span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token keyword">except</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"错误"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> None<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/delete'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true"># 删除授权码</span>
+<span class="token keyword">def</span> <span class="token function">delete</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    args <span class="token operator">=</span> request<span class="token punctuation">.</span>json
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        goal <span class="token operator">=</span> args<span class="token punctuation">[</span><span class="token string">"invitecode"</span><span class="token punctuation">]</span>       <span class="token comment" spellcheck="true"># 要删除的授权码</span>
+        deleteCode<span class="token punctuation">(</span>goal<span class="token punctuation">)</span>            <span class="token comment" spellcheck="true"># 将该授权码删除</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">True</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"成功"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> None<span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token keyword">except</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"错误"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> None<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+@app<span class="token punctuation">.</span>route<span class="token punctuation">(</span><span class="token string">'/add'</span><span class="token punctuation">,</span>methods<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">'POST'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true"># 添加授权码</span>
+<span class="token keyword">def</span> <span class="token function">add</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    args <span class="token operator">=</span> request<span class="token punctuation">.</span>json
+    <span class="token keyword">try</span><span class="token punctuation">:</span>
+        row <span class="token operator">=</span> args<span class="token punctuation">[</span><span class="token string">"row"</span><span class="token punctuation">]</span>
+        invitecode <span class="token operator">=</span> args<span class="token punctuation">[</span><span class="token string">"invitecode"</span><span class="token punctuation">]</span>       <span class="token comment" spellcheck="true"># 添加的授权码</span>
+        device <span class="token operator">=</span> args<span class="token punctuation">[</span><span class="token string">"device"</span><span class="token punctuation">]</span>
+        activation <span class="token operator">=</span> args<span class="token punctuation">[</span><span class="token string">"activation"</span><span class="token punctuation">]</span>
+        name <span class="token operator">=</span> args<span class="token punctuation">[</span><span class="token string">"name"</span><span class="token punctuation">]</span>
+        <span class="token comment" spellcheck="true"># 添加授权码</span>
+        addCode<span class="token punctuation">(</span>row<span class="token operator">=</span>row<span class="token punctuation">,</span> invitecode<span class="token operator">=</span>invitecode<span class="token punctuation">,</span> device<span class="token operator">=</span>device<span class="token punctuation">,</span> activation<span class="token operator">=</span>activation<span class="token punctuation">,</span> name<span class="token operator">=</span>name<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">True</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"成功"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> None<span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token keyword">except</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> jsonify<span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token string">"passed"</span><span class="token punctuation">:</span> <span class="token boolean">False</span><span class="token punctuation">,</span> <span class="token string">"message"</span><span class="token punctuation">:</span> <span class="token string">"错误"</span><span class="token punctuation">,</span> <span class="token string">"data"</span><span class="token punctuation">:</span> None<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>最后main函数运行api，会有如下信息，记住这个http地址，这就是 api 运行的本地地址：<br><img src="/2023/03/19/Python-restful-API%E5%85%A5%E9%97%A8%E5%8F%8A%E8%B0%83%E8%AF%95/%E8%BF%90%E8%A1%8CAPI.png" alt="运行API"></li>
+</ul>
+<pre class="line-numbers language-python"><code class="language-python"><span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    app<span class="token punctuation">.</span>run<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ul>
+<li>在自己的IDE（Pycharm、VScode之类的）运行上述程序</li>
+</ul>
+<h1 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h1><ul>
+<li>浏览器搜索ApiPost进入官网直接下载无脑安装。</li>
+<li>打开后点击Api调试，新建目录，命名什么的不赘述。<br><img src="/2023/03/19/Python-restful-API%E5%85%A5%E9%97%A8%E5%8F%8A%E8%B0%83%E8%AF%95/%E6%96%B0%E5%BB%BA%E9%A1%B9%E7%9B%AE.png" alt="新建项目"> </li>
+<li>在目录下新建一个接口，右边界面是主操作界面，如下，填入之前提到的http地址，然后跟着输入路径，即代码中<code>@app.route</code>后面的 &#x2F;get 之类的，这就是具体要测试的某项请求服务，这里先调 &#x2F;activate ，注意这是 POST 请求，要把地址左边的选项改成 POST。</li>
+<li>然后选择 Body 栏，选择 raw 选项，按图中输入请求数据，这就是请求消息 data 中的具体 json 格式数据，invitecode 对应授权码。然后点击发送就收到了下面的响应，显示成功，这个成功也是我们在代码返回值里设置好的<br><img src="/2023/03/19/Python-restful-API%E5%85%A5%E9%97%A8%E5%8F%8A%E8%B0%83%E8%AF%95/%E6%8E%A5%E5%8F%A3%E6%93%8D%E4%BD%9C1.png" alt="接口操作"></li>
+<li>测试成功，我们保存该接口即可</li>
+<li>接着新建一个接口调试 get 方法，这是个 GET 请求，记得改选项，然后把路径改成 &#x2F;get ，Body不重要因为没有用到任何请求方的数据，可有可无。然后调试，得到下图结果，可以下拉得到整个数据，之前内容为 zyh 的授权码被我们激活了，所以第二个是1，也说明 activate 请求测试的成功。<br><img src="/2023/03/19/Python-restful-API%E5%85%A5%E9%97%A8%E5%8F%8A%E8%B0%83%E8%AF%95/%E8%AF%B7%E6%B1%82%E7%BB%93%E6%9E%9C.png" alt="请求结果"></li>
+<li>我们可以接着完成其他服务的测试。</li>
+</ul>
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://localhost:4000/2023/03/19/Python-restful-API%E5%85%A5%E9%97%A8%E5%8F%8A%E8%B0%83%E8%AF%95/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ApiPost/" rel="tag">ApiPost</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/" rel="tag">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/restful/" rel="tag">restful</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/03/22/Python%E7%88%AC%E8%99%AB%E5%85%A5%E9%97%A8%E2%80%94%E2%80%94b%E7%AB%99%E8%A7%86%E9%A2%91%E6%95%B0%E6%8D%AE/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Python爬虫入门——b站视频数据
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2023/03/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E4%BA%91%E6%89%98%E7%AE%A1%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">微信小程序云托管数据传输（Python restful）</div>
+      </a>
+    
+  </nav>
+
+  
+   
+  
+    
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2023-2024
+        <i class="ri-heart-fill heart_icon"></i> LegendLeo Chen
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></span>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/mylogo.png" alt="LegendLeo Chen 的空间"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">🚀主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">💾归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">🧭分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">🏷️标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">🛸关于</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/analytics">📊统计</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/secret">🔐秘密</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.staticfile.org/jquery-modal/0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.staticfile.org/justifiedGallery/3.8.1/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.staticfile.org/photoswipe/4.1.3/default-skin/default-skin.min.css">
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="https://cdn.staticfile.org/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+ 
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+ 
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.staticfile.org/clipboard.js/2.0.10/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    <div id="music">
+    
+    
+    
+    <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
+        src="//music.163.com/outchain/player?type=2&id=1491212&auto=1&height=32"></iframe>
+</div>
+
+<style>
+    #music {
+        position: fixed;
+        right: 15px;
+        bottom: 0;
+        z-index: 998;
+    }
+</style>
+    
+    
+
+  </div>
+  <!-- 背景气泡 -->
+  <!--
+  <div class="balls-container">
+    <div class="balls-particles">
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+      <span style="--i:11;"></span>
+      <span style="--i:12;"></span>
+      <span style="--i:24;"></span>
+      <span style="--i:10;"></span>
+      <span style="--i:14;"></span>
+      <span style="--i:23;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:16;"></span>
+      <span style="--i:19;"></span>
+      <span style="--i:20;"></span>
+      <span style="--i:22;"></span>
+      <span style="--i:25;"></span>
+      <span style="--i:18;"></span>
+      <span style="--i:21;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:15;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:17;"></span>
+      <span style="--i:13;"></span>
+      <span style="--i:26;"></span>
+      <span style="--i:28;"></span>
+    </div>
+  </div>
+  <style>
+    *
+    {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    .balls-container
+    { 
+      position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      opacity: 0.3;
+    }
+    
+    .balls-particles
+    {
+      position: fixed;
+      display: flex;
+      z-index: 3;
+      padding: 0 20px;
+    }
+    
+    .balls-particles span
+    {
+      position: relative;
+      bottom: 30px;
+      width: 30px;
+      height: 30px;
+      background-color: #4fc3dc;
+      box-shadow: 0 0 0 10px #4fc3dc44,
+      0 0 50px #4fc3dc,
+      -100px 0 #4fc3dc99,
+      100px 0 #ff2d7599;
+      margin: 0 4px;
+      border-radius: 50%;
+      animation: animate 15s ease infinite;
+      animation-delay: calc(125s / var(--i));
+      transform: translateY(120vh);
+    }
+    .balls-particles span:nth-child(even) {
+      background-color: #ff2d75;
+      box-shadow: 0 0 0 10px #ff267544,
+      0 0 50px #ff2d75,
+      -100px 0 #4fc3dc99,
+      100px 0 #4fc3dc99;
+      ;
+    }
+    
+    @keyframes animate {
+      0%
+      {
+        transform: translateY(120vh) scale(0) rotate(0deg);
+      }
+      20%
+      {
+        transform: translateY(100vh) scale(1) rotate(0deg);
+      }
+      100%
+      {
+        transform: translateY(-50vh) scale(0.5) rotate(360deg);
+      }
+    }
+  </style> -->
+  <!-- 地月系统 -->
+  <!-- <div class="earth-container" >
+    <div class="planet"></div>
+    <div class="satellite"></div>
+   </div>
+   <style>
+    *{
+      padding: 0;
+      margin: 0;
+      }
+      .earth-container {
+        width: 36.25em;
+        height: 36.25em;
+        position: absolute;
+        top:5%;
+        left: 93%;
+        transform: translate(-50%, -50%);
+        opacity: 0.3;
+      }
+      
+      .planet{
+        width: 15.62*3em;
+        height: 15.62*3em;
+        background-color: #02c0f5;
+        border-radius: 50%;
+        position: absolute;
+        margin: auto;
+        top:0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+      }
+      
+      .planet::before{
+        content: '';
+        width: 4em;
+        height: 4em;
+        background-color: #008fd6;
+        position: absolute;
+        top:10em;
+        left: 8em;
+        border-radius: 50%; 
+        box-shadow: 15em 15em 0 2em #00d68b, 5em 8em 0 3em #10ade1;
+      }
+      
+      .satellite{
+        width: 5em;
+        height: 5em;
+        background-color: #dee517;
+        border-radius: 50%;
+        position: relative;
+        left: -5em;
+        bottom: -30em;
+        animation: spin 5s infinite;
+        z-index: 1;
+      }
+      
+      @keyframes spin {
+        49%{
+          z-index: 1;
+        }
+        50%{
+          bottom: 3em;
+          left: 35em;
+          z-index: -1;
+        }
+        100%{
+          z-index: -1;
+        }
+      }
+    </style> -->
+<!-- 三角彩带背景 -->
+  <canvas id="evanyou-canvas" style="opacity: 0.3; position: fixed; top: 0px; left: 0px; z-index: -1; width: 100%; height: 100%; pointer-events: none;"></canvas>
+  <script src="https://cdn.jsdelivr.net/gh/XXXZhy/Blog_Image/js/evanyou_canvas.js"></script>
+</body>
+
+</html>
